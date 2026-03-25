@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+{% block title %}Notices - EMS{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center flex-wrap mb-3">
+    <div>
+        <h2 class="mb-1">Notices</h2>
+        <p class="text-muted mb-0">Announcements shared with students and staff.</p>
+    </div>
+    <div class="d-flex gap-2">
+        <form method="get" class="d-flex gap-2">
+            <input
+                type="search"
+                class="form-control"
+                name="q"
+                placeholder="Search notices"
+                value="{{ request.GET.q }}"
+            >
+            <select class="form-select" name="target">
+                <option value="">All targets</option>
+                {% for choice in target_choices %}
+                <option value="{{ choice.0 }}" {% if request.GET.target == choice.0 %}selected{% endif %}>
+                    {{ choice.1 }}
+                </option>
+                {% endfor %}
+            </select>
+            <button type="submit" class="btn btn-outline-primary">Filter</button>
+        </form>
+        {% if user.role != 'STUDENT' %}
+        <a href="{% url 'notice_add' %}" class="btn btn-primary">
+            <i class="fa-solid fa-bullhorn me-1"></i>Add Notice
+        </a>
+        {% endif %}
+    </div>
+</div>
+
+<div class="row g-3">
+    {% for notice in notices %}
+    <div class="col-lg-6">
+        <div class="chart-card p-4 h-100">
+            <div class="d-flex justify-content-between align-items-start mb-2">
+                <div>
+                    <h5 class="mb-1">{{ notice.title }}</h5>
+                    <small class="text-muted">Target: {{ notice.get_target_display }}</small>
+                </div>
+                <span class="status-pill">{{ notice.publish_date|date:"M d, Y" }}</span>
+            </div>
+            <p class="text-muted mb-3">{{ notice.description }}</p>
+            <div class="d-flex justify-content-between align-items-center">
+                <small class="text-muted">
+                    {% if notice.expiry_date %}
+                        Expires {{ notice.expiry_date|date:"M d, Y" }}
+                    {% else %}
+                        No expiry date
+                    {% endif %}
+                </small>
+                <small class="text-muted">
+                    By
+                    {% if notice.created_by %}
+                        {{ notice.created_by.get_full_name|default:notice.created_by.username }}
+                    {% else %}
+                        System
+                    {% endif %}
+                </small>
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <div class="col-12">
+        <div class="empty-state">
+            <h5>No notices yet</h5>
+            <p class="text-muted mb-0">Create the first announcement for your institution.</p>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="420" height="280" viewBox="0 0 420 280">
+  <defs>
+    <linearGradient id="heroSky" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#e8f0ff"/>
+      <stop offset="100%" stop-color="#ffffff"/>
+    </linearGradient>
+  </defs>
+  <rect width="420" height="280" rx="24" fill="url(#heroSky)"/>
+  <rect x="40" y="40" width="140" height="90" rx="12" fill="#2a4db0" opacity="0.15"/>
+  <rect x="210" y="60" width="170" height="110" rx="16" fill="#4e73df" opacity="0.18"/>
+  <rect x="70" y="160" width="220" height="80" rx="18" fill="#1cc88a" opacity="0.15"/>
+  <circle cx="320" cy="70" r="26" fill="#f6c23e" opacity="0.35"/>
+  <circle cx="120" cy="200" r="18" fill="#e74a3b" opacity="0.25"/>
+</svg>

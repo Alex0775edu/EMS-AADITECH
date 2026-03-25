@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% block title %}Add Notice - EMS{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center flex-wrap mb-3">
+    <div>
+        <h2 class="mb-1">Add Notice</h2>
+        <p class="text-muted mb-0">Publish an announcement for students or staff.</p>
+    </div>
+    <a href="{% url 'notice_list' %}" class="btn btn-outline-secondary">Back to List</a>
+</div>
+
+<div class="chart-card p-4">
+    <form method="post" action="{% url 'notice_add' %}">
+        {% csrf_token %}
+        <div class="row g-3">
+            <div class="col-md-8">
+                <label class="form-label" for="noticeTitle">Title</label>
+                <input class="form-control" id="noticeTitle" name="title" required>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label" for="noticeTarget">Target</label>
+                <select class="form-select" id="noticeTarget" name="target">
+                    <option value="all">All</option>
+                    <option value="students">Students</option>
+                    <option value="teachers">Teachers</option>
+                    <option value="staff">Staff</option>
+                </select>
+            </div>
+            <div class="col-12">
+                <label class="form-label" for="noticeContent">Description</label>
+                <textarea class="form-control" id="noticeContent" name="content" rows="6" required></textarea>
+            </div>
+            <div class="col-md-6">
+                <label class="form-label" for="noticeExpiry">Expiry Date</label>
+                <input class="form-control" id="noticeExpiry" type="date" name="valid_until">
+            </div>
+        </div>
+        <div class="d-flex justify-content-end gap-2 mt-4">
+            <a class="btn btn-outline-secondary" href="{% url 'notice_list' %}">Cancel</a>
+            <button type="submit" class="btn btn-primary">Publish Notice</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

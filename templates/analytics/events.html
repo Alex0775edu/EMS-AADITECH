@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% block title %}Analytics Events - EMS{% endblock %}
+{% block content %}
+<div class="chart-card p-4">
+    <h4 class="mb-2">Platform Event Logs</h4>
+    <p class="text-muted">Track user activity for analytics and security monitoring.</p>
+    {% if events %}
+        <div class="table-responsive">
+            <table class="table align-middle">
+                <thead>
+                    <tr>
+                        <th>Event</th>
+                        <th>User</th>
+                        <th>Time</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for event in events %}
+                    <tr>
+                        <td>{{ event.event_type }}</td>
+                        <td>{{ event.user.username|default:"System" }}</td>
+                        <td>{{ event.created_at|date:"M d, Y H:i" }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <div class="empty-state">
+            <h5>No events captured</h5>
+            <p class="text-muted mb-0">Analytics events will appear once tracking is enabled.</p>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

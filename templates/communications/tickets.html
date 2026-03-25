@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block title %}Support Tickets - EMS{% endblock %}
+{% block content %}
+<div class="chart-card p-4">
+    <h4 class="mb-2">Support Tickets</h4>
+    <p class="text-muted">Track support requests and resolutions.</p>
+    {% if tickets %}
+        <ul class="list-unstyled mb-0">
+            {% for ticket in tickets %}
+            <li class="d-flex align-items-center justify-content-between py-2 border-bottom">
+                <span>{{ ticket.subject }}</span>
+                <span class="badge bg-info text-dark">{{ ticket.status }}</span>
+            </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <div class="empty-state">
+            <h5>No tickets created</h5>
+            <p class="text-muted mb-0">Create a support request to start tracking.</p>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

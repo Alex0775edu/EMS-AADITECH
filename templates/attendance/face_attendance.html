@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block title %}Smart Attendance - EMS{% endblock %}
+
+{% block content %}
+<div class="chart-card">
+    <h4 class="mb-3">Smart Attendance (Face Recognition)</h4>
+    <p class="text-muted">Upload a student face image to auto-mark attendance. Replace backend placeholder with OpenCV + face_recognition for production.</p>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="mb-3">
+            <input type="file" class="form-control" name="face_image" accept="image/*" required>
+        </div>
+        <button class="btn btn-primary" type="submit">Scan & Mark Attendance</button>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+{% block title %}Terms & Conditions{% endblock %}
+{% block content %}
+<div class="row g-4">
+    <div class="col-lg-8">
+        <div class="chart-card p-4">
+            <p class="section-kicker">Policy</p>
+            <h2 class="section-title">Terms and Conditions</h2>
+            <p class="section-subtitle">By using AaDiTeCh EMS, you agree to the following terms.</p>
+            <div class="accordion mt-3" id="termsAccordion">
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="termsOne">
+                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#termsCollapseOne" aria-expanded="true" aria-controls="termsCollapseOne">
+                            Acceptable use
+                        </button>
+                    </h2>
+                    <div id="termsCollapseOne" class="accordion-collapse collapse show" aria-labelledby="termsOne" data-bs-parent="#termsAccordion">
+                        <div class="accordion-body">
+                            Users must follow institutional policies and avoid misuse of student data.
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="termsTwo">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#termsCollapseTwo" aria-expanded="false" aria-controls="termsCollapseTwo">
+                            Account responsibility
+                        </button>
+                    </h2>
+                    <div id="termsCollapseTwo" class="accordion-collapse collapse" aria-labelledby="termsTwo" data-bs-parent="#termsAccordion">
+                        <div class="accordion-body">
+                            Keep credentials private and report suspicious access immediately.
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="termsThree">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#termsCollapseThree" aria-expanded="false" aria-controls="termsCollapseThree">
+                            Service availability
+                        </button>
+                    </h2>
+                    <div id="termsCollapseThree" class="accordion-collapse collapse" aria-labelledby="termsThree" data-bs-parent="#termsAccordion">
+                        <div class="accordion-body">
+                            We aim for high uptime but planned maintenance may occur with notice.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-4">
+        <div class="chart-card p-4 h-100">
+            <h5 class="mb-2">Questions?</h5>
+            <p class="text-muted mb-3">Contact us for any term related queries.</p>
+            <a href="mailto:aaditya0775@gmail.com" class="btn btn-primary w-100">Email Support</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

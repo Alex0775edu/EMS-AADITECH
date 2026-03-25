@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% block title %}Help Center{% endblock %}
+{% block content %}
+<div class="row g-4">
+    <div class="col-lg-8">
+        <div class="chart-card p-4">
+            <p class="section-kicker">Support</p>
+            <h2 class="section-title">Help Center</h2>
+            <p class="section-subtitle">Quick answers for students, teachers, and admins. Find guides, fixes, and best practices.</p>
+            <div class="row g-3 mt-2">
+                <div class="col-md-6">
+                    <div class="feature-card p-3 h-100">
+                        <h6>Account Access</h6>
+                        <p class="text-muted mb-0">Login issues, password reset, and institute ID help.</p>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="feature-card p-3 h-100">
+                        <h6>Attendance</h6>
+                        <p class="text-muted mb-0">Marking, reports, and face scan troubleshooting.</p>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="feature-card p-3 h-100">
+                        <h6>Exams and Results</h6>
+                        <p class="text-muted mb-0">Schedule updates, grading, and performance insights.</p>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="feature-card p-3 h-100">
+                        <h6>Fees and Notices</h6>
+                        <p class="text-muted mb-0">Fee status, receipts, and institution notices.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-4">
+        <div class="chart-card p-4 h-100">
+            <h5 class="mb-2">Need instant help?</h5>
+            <p class="text-muted mb-3">Use the AI assistant or contact support directly.</p>
+            <div class="d-grid gap-2">
+                <button type="button" class="btn btn-primary open-chatbot-link">Open AI Chatbot</button>
+                <a href="https://wa.me/919023208267" class="btn btn-outline-success" target="_blank" rel="noopener noreferrer">WhatsApp Support</a>
+                <a href="mailto:aaditya0775@gmail.com" class="btn btn-outline-secondary">Email Support</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

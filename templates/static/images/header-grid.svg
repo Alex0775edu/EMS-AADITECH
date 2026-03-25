@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="260" height="120" viewBox="0 0 260 120">
+  <rect width="260" height="120" fill="none"/>
+  <g stroke="#ffffff" stroke-opacity="0.4" stroke-width="1">
+    <path d="M0 20 H260" />
+    <path d="M0 60 H260" />
+    <path d="M0 100 H260" />
+    <path d="M20 0 V120" />
+    <path d="M80 0 V120" />
+    <path d="M140 0 V120" />
+    <path d="M200 0 V120" />
+    <path d="M240 0 V120" />
+  </g>
+  <circle cx="40" cy="20" r="6" fill="#ffffff" opacity="0.6"/>
+  <circle cx="140" cy="60" r="6" fill="#ffffff" opacity="0.6"/>
+  <circle cx="220" cy="100" r="6" fill="#ffffff" opacity="0.6"/>
+</svg>

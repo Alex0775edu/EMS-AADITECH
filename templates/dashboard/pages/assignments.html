@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+{% block title %}Assignments - EMS{% endblock %}
+{% block content %}
+<div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-3">
+    <div>
+        <h4 class="mb-1">Assignments</h4>
+        <p class="text-muted mb-0">Track pending tasks and submit deliverables on time.</p>
+    </div>
+</div>
+
+<div class="chart-card">
+    <div class="table-responsive">
+        <table class="table align-middle">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Course</th>
+                    <th>Due Date</th>
+                    {% if user.role == 'STUDENT' %}
+                    <th>Status</th>
+                    <th>Action</th>
+                    {% endif %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for a in assignments %}
+                <tr>
+                    <td>{{ a.title }}</td>
+                    <td>{{ a.course.name }}</td>
+                    <td>{{ a.due_date }}</td>
+                    {% if user.role == 'STUDENT' %}
+                    <td>
+                        {% if a.submission %}
+                            <span class="badge bg-success">Submitted</span>
+                        {% else %}
+                            <span class="badge bg-warning text-dark">Pending</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <a class="btn btn-sm btn-outline-primary" href="{% url 'dashboard:assignment_submit' a.id %}">
+                            {% if a.submission %}Resubmit{% else %}Submit{% endif %}
+                        </a>
+                    </td>
+                    {% endif %}
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="{% if user.role == 'STUDENT' %}5{% else %}3{% endif %}" class="text-muted text-center">No assignments found</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

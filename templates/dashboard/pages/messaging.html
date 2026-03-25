@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Messaging - EMS{% endblock %}
+{% block content %}
+<div class="row g-4">
+    <div class="col-lg-4">
+        <div class="chart-card p-4 h-100">
+            <h5 class="mb-3">Team Directory</h5>
+            <p class="text-muted">Start a chat with students or teachers.</p>
+            <div class="mb-3">
+                <h6 class="text-muted text-uppercase small">Teachers</h6>
+                {% if teachers %}
+                    {% for teacher in teachers %}
+                    <div class="d-flex align-items-center gap-2 mb-2">
+                        <i class="fa-solid fa-user-circle text-primary"></i>
+                        <div>
+                            <div class="fw-semibold">{{ teacher.user.get_full_name|default:teacher.user.username }}</div>
+                            <small class="text-muted">{{ teacher.subject|default:"Faculty" }}</small>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="text-muted">No teachers found.</div>
+                {% endif %}
+            </div>
+            <div>
+                <h6 class="text-muted text-uppercase small">Students</h6>
+                {% if students %}
+                    {% for student in students %}
+                    <div class="d-flex align-items-center gap-2 mb-2">
+                        <i class="fa-solid fa-user-graduate text-primary"></i>
+                        <div>
+                            <div class="fw-semibold">{{ student.user.get_full_name|default:student.user.username }}</div>
+                            <small class="text-muted">Class {{ student.class_name }} {{ student.section }}</small>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="text-muted">No students found.</div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-8">
+        <div class="chart-card p-4 h-100 d-flex flex-column">
+            <div class="d-flex align-items-center justify-content-between">
+                <div>
+                    <h4 class="mb-1">Messaging Hub</h4>
+                    <p class="text-muted mb-0">Real-time conversations with built-in context.</p>
+                </div>
+                <span class="status-pill is-live"><i class="fa-solid fa-message"></i> Live chat</span>
+            </div>
+            <div class="empty-state mt-4 flex-grow-1 d-flex flex-column align-items-center justify-content-center">
+                <img src="{% static 'images/main-hero.svg' %}" alt="Messaging illustration" loading="lazy">
+                <h5>Start a new conversation</h5>
+                <p class="text-muted mb-0">Select a contact to open a secure chat.</p>
+            </div>
+            <div class="input-group mt-3">
+                <input type="text" class="form-control" placeholder="Type a message..." disabled>
+                <button class="btn btn-primary" type="button" disabled>Send</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

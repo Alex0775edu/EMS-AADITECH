@@ -1,0 +1,93 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Payments - EMS{% endblock %}
+{% block content %}
+<div class="row g-4">
+    <div class="col-lg-4">
+        <div class="soft-card p-4 h-100">
+            <div class="d-flex align-items-center justify-content-between mb-2">
+                <h6 class="text-muted mb-0">Pending</h6>
+                <i class="fa-solid fa-hourglass-half text-warning"></i>
+            </div>
+            <h3 class="mb-1">INR {{ pending_total|floatformat:2 }}</h3>
+            <p class="text-muted mb-0">Outstanding balances</p>
+        </div>
+    </div>
+    <div class="col-lg-4">
+        <div class="soft-card p-4 h-100">
+            <div class="d-flex align-items-center justify-content-between mb-2">
+                <h6 class="text-muted mb-0">Paid</h6>
+                <i class="fa-solid fa-circle-check text-success"></i>
+            </div>
+            <h3 class="mb-1">INR {{ paid_total|floatformat:2 }}</h3>
+            <p class="text-muted mb-0">Completed payments</p>
+        </div>
+    </div>
+    <div class="col-lg-4">
+        <div class="soft-card p-4 h-100">
+            <div class="d-flex align-items-center justify-content-between mb-2">
+                <h6 class="text-muted mb-0">Collection Rate</h6>
+                <i class="fa-solid fa-chart-pie text-info"></i>
+            </div>
+            <h3 class="mb-1">{{ paid_ratio }}%</h3>
+            <div class="progress-track mt-2">
+                <div class="progress-fill" style="width: {{ paid_ratio }}%;"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4 mt-1">
+    <div class="col-12">
+        <div class="chart-card p-4">
+            <div class="d-flex align-items-center justify-content-between mb-3">
+                <div>
+                    <h4 class="mb-1">Payment Ledger</h4>
+                    <p class="text-muted mb-0">Track fees, references, and payment status.</p>
+                </div>
+                <span class="status-pill"><i class="fa-solid fa-credit-card"></i> Secure payments</span>
+            </div>
+            {% if fees %}
+            <div class="table-responsive">
+                <table class="table align-middle">
+                    <thead>
+                        <tr>
+                            <th>Student</th>
+                            <th>Amount</th>
+                            <th>Status</th>
+                            <th>Reference</th>
+                            <th>Payment Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for fee in fees %}
+                        <tr>
+                            <td>{{ fee.student.user.get_full_name|default:fee.student.user.username }}</td>
+                            <td>INR {{ fee.amount }}</td>
+                            <td>
+                                {% if fee.status == 'PAID' %}
+                                    <span class="badge bg-success">Paid</span>
+                                {% elif fee.status == 'PARTIAL' %}
+                                    <span class="badge bg-warning text-dark">Partial</span>
+                                {% else %}
+                                    <span class="badge bg-danger">Pending</span>
+                                {% endif %}
+                            </td>
+                            <td>{{ fee.reference|default:"-" }}</td>
+                            <td>{{ fee.payment_date|default:"-" }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="empty-state">
+                <img src="{% static 'images/main-hero.svg' %}" alt="No payments" loading="lazy">
+                <h5>No payments recorded yet</h5>
+                <p class="text-muted mb-0">Payment entries will appear once fees are logged.</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

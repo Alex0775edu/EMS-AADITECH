@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="220" height="220" viewBox="0 0 220 220">
+  <defs>
+    <radialGradient id="orbGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.8"/>
+      <stop offset="60%" stop-color="#9fb7ff" stop-opacity="0.5"/>
+      <stop offset="100%" stop-color="#2a4db0" stop-opacity="0.1"/>
+    </radialGradient>
+  </defs>
+  <circle cx="110" cy="110" r="95" fill="url(#orbGlow)"/>
+  <circle cx="150" cy="70" r="30" fill="#ffffff" opacity="0.5"/>
+</svg>

@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+{% block title %}Courses - EMS{% endblock %}
+{% block content %}
+<div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-3">
+    <div>
+        <h4 class="mb-1">Courses</h4>
+        <p class="text-muted mb-0">Active courses across your institution.</p>
+    </div>
+</div>
+
+<div class="chart-card">
+    <div class="table-responsive">
+        <table class="table align-middle">
+            <thead>
+                <tr>
+                    <th>Code</th>
+                    <th>Name</th>
+                    <th>Teacher</th>
+                    <th>Credits</th>
+                    {% if user.role == 'STUDENT' %}
+                    <th>Progress</th>
+                    {% endif %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for c in courses %}
+                <tr>
+                    <td>{{ c.code }}</td>
+                    <td>{{ c.name }}</td>
+                    <td>{{ c.teacher.name|default:'-' }}</td>
+                    <td>{{ c.credits }}</td>
+                    {% if user.role == 'STUDENT' %}
+                    <td>
+                        {% if c.progress_percent %}
+                        <div class="progress" style="height: 0.6rem;">
+                            <div class="progress-bar" role="progressbar" style="width: {{ c.progress_percent }}%;" aria-valuenow="{{ c.progress_percent }}" aria-valuemin="0" aria-valuemax="100">
+                                {{ c.progress_percent }}%
+                            </div>
+                        </div>
+                        {% else %}
+                        <span class="text-muted">Not enrolled</span>
+                        {% endif %}
+                    </td>
+                    {% endif %}
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="{% if user.role == 'STUDENT' %}5{% else %}4{% endif %}" class="text-muted text-center">No courses found</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

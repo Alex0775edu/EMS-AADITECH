@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+{% block title %}Search - EMS{% endblock %}
+{% block content %}
+<div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-3">
+    <div>
+        <h4 class="mb-1">Search</h4>
+        <p class="text-muted mb-0">Results for "{{ query|default:'...' }}".</p>
+    </div>
+    <a class="btn btn-outline-primary" href="{% url 'dashboard:dashboard' %}">Back to Dashboard</a>
+</div>
+
+{% if not query %}
+<div class="chart-card">
+    <p class="mb-0 text-muted">Type a keyword in the search bar to find students, teachers, courses, or notices.</p>
+</div>
+{% else %}
+<div class="row g-3">
+    <div class="col-lg-6">
+        <div class="chart-card h-100">
+            <h6 class="mb-3">Students</h6>
+            <ul class="list-group list-group-flush">
+                {% for student in students %}
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <span>{{ student.user.get_full_name|default:student.user.username }}</span>
+                    <a class="btn btn-sm btn-outline-primary" href="{% url 'students:student_detail' student.id %}">View</a>
+                </li>
+                {% empty %}
+                <li class="list-group-item text-muted">No students found.</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+    <div class="col-lg-6">
+        <div class="chart-card h-100">
+            <h6 class="mb-3">Teachers</h6>
+            <ul class="list-group list-group-flush">
+                {% for teacher in teachers %}
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <span>{{ teacher.name }}</span>
+                    <a class="btn btn-sm btn-outline-primary" href="{% url 'teachers:teacher_detail' teacher.id %}">View</a>
+                </li>
+                {% empty %}
+                <li class="list-group-item text-muted">No teachers found.</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+    <div class="col-lg-6">
+        <div class="chart-card h-100">
+            <h6 class="mb-3">Courses</h6>
+            <ul class="list-group list-group-flush">
+                {% for course in courses %}
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <span>{{ course.code }} · {{ course.name }}</span>
+                    <a class="btn btn-sm btn-outline-primary" href="{% url 'dashboard:courses_page' %}">Open</a>
+                </li>
+                {% empty %}
+                <li class="list-group-item text-muted">No courses found.</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+    <div class="col-lg-6">
+        <div class="chart-card h-100">
+            <h6 class="mb-3">Notices</h6>
+            <ul class="list-group list-group-flush">
+                {% for notice in notices %}
+                <li class="list-group-item">
+                    <div class="fw-semibold">{{ notice.title }}</div>
+                    <div class="text-muted small">{{ notice.description|truncatechars:120 }}</div>
+                </li>
+                {% empty %}
+                <li class="list-group-item text-muted">No notices found.</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock %}

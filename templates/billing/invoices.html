@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% block title %}Invoices - EMS{% endblock %}
+{% block content %}
+<div class="chart-card p-4">
+    <h4 class="mb-2">Invoices</h4>
+    <p class="text-muted">Track issued and paid invoices.</p>
+    {% if invoices %}
+        <div class="table-responsive">
+            <table class="table align-middle">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Amount</th>
+                        <th>Status</th>
+                        <th>Issued</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for invoice in invoices %}
+                    <tr>
+                        <td>#{{ invoice.id }}</td>
+                        <td>{{ invoice.currency }} {{ invoice.amount }}</td>
+                        <td><span class="badge bg-info text-dark">{{ invoice.status }}</span></td>
+                        <td>{{ invoice.issued_at|date:"M d, Y" }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <div class="empty-state">
+            <h5>No invoices yet</h5>
+            <p class="text-muted mb-0">Invoices will appear once billing is active.</p>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,97 @@
+{% extends 'base.html' %}
+{% block title %}Reports - EMS{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center flex-wrap mb-3">
+    <div>
+        <h2 class="mb-1">Reports</h2>
+        <p class="text-muted mb-0">Performance insights and recent activity across the institution.</p>
+    </div>
+    <button type="button" class="btn btn-outline-primary open-chatbot-link">
+        <i class="fa-solid fa-robot me-1"></i> Ask AI Assistant
+    </button>
+</div>
+
+<div class="row g-3 mb-3">
+    <div class="col-md-4">
+        <div class="dashboard-kpi">
+            <small class="text-muted">Performance Records</small>
+            <h3 class="mb-0">{{ performance|length }}</h3>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="dashboard-kpi">
+            <small class="text-muted">Activity Logs</small>
+            <h3 class="mb-0">{{ logs|length }}</h3>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="dashboard-kpi">
+            <small class="text-muted">Last Refresh</small>
+            <h3 class="mb-0">{% now "d M Y" %}</h3>
+        </div>
+    </div>
+</div>
+
+<div class="row g-3">
+    <div class="col-lg-6">
+        <div class="chart-card">
+            <div class="d-flex justify-content-between align-items-center flex-wrap mb-2">
+                <h5 class="mb-1">Student Performance</h5>
+                <small class="text-muted">Search and sort columns</small>
+            </div>
+            <div class="table-responsive">
+                <table class="table align-middle" data-table="true">
+                    <thead>
+                        <tr>
+                            <th data-sortable="true">Student</th>
+                            <th data-sortable="true">Course</th>
+                            <th data-sortable="true">Score</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for p in performance %}
+                        <tr>
+                            <td>{{ p.student.user.username }}</td>
+                            <td>{{ p.course.name }}</td>
+                            <td>{{ p.score }}</td>
+                        </tr>
+                        {% empty %}
+                        <tr><td colspan="3" class="text-muted text-center">No performance data</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-6">
+        <div class="chart-card">
+            <div class="d-flex justify-content-between align-items-center flex-wrap mb-2">
+                <h5 class="mb-1">Activity Logs</h5>
+                <small class="text-muted">Search and sort columns</small>
+            </div>
+            <div class="table-responsive">
+                <table class="table align-middle" data-table="true">
+                    <thead>
+                        <tr>
+                            <th data-sortable="true">User</th>
+                            <th data-sortable="true">Path</th>
+                            <th data-sortable="true">Time</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for log in logs %}
+                        <tr>
+                            <td>{{ log.user.username|default:'system' }}</td>
+                            <td class="text-truncate" style="max-width: 180px;">{{ log.path }}</td>
+                            <td>{{ log.created_at }}</td>
+                        </tr>
+                        {% empty %}
+                        <tr><td colspan="3" class="text-muted text-center">No logs available</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

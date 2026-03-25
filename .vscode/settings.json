@@ -1,0 +1,12 @@
+{
+    "sqltools.connections": [
+        {
+            "previewLimit": 50,
+            "driver": "SQLite",
+            "database": "db.sqlite3",
+            "name": "ems",
+            "group": "ems"
+        }
+    ],
+    "sqltools.useNodeRuntime": true
+}

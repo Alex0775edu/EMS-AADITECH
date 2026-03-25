@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% block title %}Schedule Exam - EMS{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center flex-wrap mb-3">
+    <div>
+        <h2 class="mb-1">Schedule Exam</h2>
+        <p class="text-muted mb-0">Create a new exam entry.</p>
+    </div>
+    <a href="{% url 'exam_list' %}" class="btn btn-outline-secondary">Back to List</a>
+</div>
+
+<div class="chart-card p-4">
+    <form method="post" action="{% url 'exam_add' %}">
+        {% csrf_token %}
+        <div class="row g-3">
+            <div class="col-md-6">
+                <label class="form-label" for="examName">Exam Name</label>
+                <input class="form-control" id="examName" name="name" required>
+            </div>
+            <div class="col-md-6">
+                <label class="form-label" for="examDate">Exam Date</label>
+                <input class="form-control" id="examDate" type="date" name="date" required>
+            </div>
+            <div class="col-md-6">
+                <label class="form-label" for="totalMarks">Total Marks</label>
+                <input class="form-control" id="totalMarks" type="number" name="total_marks" min="1" required>
+            </div>
+        </div>
+        <div class="d-flex justify-content-end gap-2 mt-4">
+            <a class="btn btn-outline-secondary" href="{% url 'exam_list' %}">Cancel</a>
+            <button type="submit" class="btn btn-primary">Create Exam</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

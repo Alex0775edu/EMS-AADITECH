@@ -1,0 +1,107 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Login - EMS{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/auth.css' %}?v={{ STATIC_VERSION }}">
+{% endblock %}
+
+{% block content %}
+<section class="auth-shell">
+    <div class="auth-bg-orb orb-1"></div>
+    <div class="auth-bg-orb orb-2"></div>
+    <div class="auth-bg-orb orb-3"></div>
+
+    <div class="container">
+        <div class="row g-4 align-items-center">
+            <div class="col-lg-6">
+                <div class="auth-hero-card animatable">
+                    <p class="auth-kicker">Smart Education Platform</p>
+                    <h1 class="auth-title">Welcome Back</h1>
+                    <p class="auth-subtitle">
+                        Securely manage students, attendance, courses, fees and reports from one professional dashboard.
+                    </p>
+                    <div class="auth-feature-list">
+                        <div><i class="fa-solid fa-shield-halved"></i> Institution-level data privacy</div>
+                        <div><i class="fa-solid fa-chart-simple"></i> Real-time analytics and reporting</div>
+                        <div>
+                            <i class="fa-solid fa-robot"></i>
+                            <span class="auth-chatbot-link open-chatbot-link" role="button" tabindex="0">AI assistant</span>
+                            and smart workflows
+                        </div>
+                    </div>
+                    <div class="auth-hero-image mt-4">
+                        <img src="{% static 'images/main-hero.svg' %}" alt="AaDiTeCh EMS Dashboard Preview">
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-6">
+                <div class="card auth-login-card shadow-lg animatable">
+                    <div class="card-body p-4 p-md-5">
+                        <div class="text-center mb-4">
+                            <h4 class="mb-1">Sign In</h4>
+                            <p class="text-muted mb-0">Use Institute ID or Email to continue</p>
+                        </div>
+
+                        <form method="post" action="{% url 'accounts:login' %}">
+                            {% csrf_token %}
+                            <input type="hidden" name="next" value="{{ request.GET.next }}">
+
+                            {% if error %}
+                                <div class="alert alert-danger">{{ error }}</div>
+                            {% endif %}
+
+                            <div class="mb-3">
+                                <label for="identifier" class="form-label">Institute ID or Email</label>
+                                <input type="text" class="form-control" id="identifier" name="identifier" value="{{ identifier|default:'' }}" required autofocus>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="password" class="form-label">Password</label>
+                                <div class="input-group">
+                                    <input type="password" class="form-control" id="password" name="password" required>
+                                    <button type="button" class="btn btn-outline-secondary" id="togglePassword">
+                                        <i class="fa-regular fa-eye"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <div class="form-check m-0">
+                                    <input type="checkbox" class="form-check-input" id="remember" name="remember">
+                                    <label class="form-check-label" for="remember">Remember me</label>
+                                </div>
+                                <a href="{% url 'accounts:forgot_password' %}" class="small text-decoration-none">Forgot Password?</a>
+                            </div>
+
+                            <div class="d-grid">
+                                <button type="submit" class="btn btn-primary btn-lg">Login</button>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="card-footer text-center">
+                        <small class="text-muted">Need account access? Contact your institute admin.</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const toggle = document.getElementById('togglePassword');
+    const input = document.getElementById('password');
+    if (!toggle || !input) return;
+    toggle.addEventListener('click', function () {
+        const isPwd = input.getAttribute('type') === 'password';
+        input.setAttribute('type', isPwd ? 'text' : 'password');
+        toggle.innerHTML = isPwd ? '<i class="fa-regular fa-eye-slash"></i>' : '<i class="fa-regular fa-eye"></i>';
+    });
+});
+</script>
+{% endblock %}

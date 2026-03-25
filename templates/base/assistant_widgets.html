@@ -1,0 +1,25 @@
+{% load static %}
+<div class="aaditech-chatbot" aria-live="polite">
+    <div class="aaditech-chatbot__panel" role="dialog" aria-label="AaDiTeCh support chat">
+        <div class="aaditech-chatbot__header">
+            <div>
+                <h4>AaDiTeCh AI Assistant</h4>
+                <div class="aaditech-chatbot__status">Student Support Chatbot</div>
+            </div>
+            <div class="aaditech-chatbot__status">Online</div>
+        </div>
+        <div class="aaditech-chatbot__note">Ask about this website, or login help.</div>
+        <div class="aaditech-chatbot__body"></div>
+        <div class="aaditech-chatbot__footer">
+            <input class="aaditech-chatbot__input" type="text" placeholder="Type a message..." aria-label="Message">
+            <button class="aaditech-chatbot__send" type="button">Send</button>
+        </div>
+    </div>
+    <div class="aaditech-chatbot__label">AI Chatbot</div>
+    <button class="aaditech-chatbot__toggle" type="button" aria-label="Open AaDiTeCh chat">
+        <img src="{% static 'images/aaditech_logo.jpeg' %}" alt="AaDiTeCh">
+    </button>
+</div>
+<a class="whatsapp-float" href="https://wa.me/919023208267" target="_blank" rel="noopener noreferrer" aria-label="Chat on WhatsApp">
+    <i class="fa-brands fa-whatsapp"></i>
+</a>

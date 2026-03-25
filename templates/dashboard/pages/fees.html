@@ -1,0 +1,5 @@
+{% extends 'base.html' %}
+{% block title %}Fees - EMS{% endblock %}
+{% block content %}
+<div class="chart-card"><h4>Fee Tracking</h4><div class="table-responsive"><table class="table"><thead><tr><th>Student</th><th>Amount</th><th>Status</th><th>Payment Date</th></tr></thead><tbody>{% for fee in fees %}<tr><td>{{ fee.student.user.username }}</td><td>{{ fee.amount }}</td><td>{{ fee.status }}</td><td>{{ fee.payment_date|default:'-' }}</td></tr>{% empty %}<tr><td colspan="4" class="text-muted text-center">No fee records found</td></tr>{% endfor %}</tbody></table></div></div>
+{% endblock %}

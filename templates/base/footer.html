@@ -1,0 +1,159 @@
+{% load static %}
+<footer class="footer mt-auto border-top custom-footer position-relative overflow-hidden">
+    <img src="{% static 'images/footer-grid.svg' %}" alt="" class="footer-grid" aria-hidden="true">
+    <div class="container-fluid py-5">
+        <div class="row g-3 mb-4">
+            <div class="col-md-4">
+                <a class="footer-quick-card" href="https://wa.me/919023208267" target="_blank" rel="noopener noreferrer">
+                    <div class="footer-quick-icon"><i class="fa-brands fa-whatsapp"></i></div>
+                    <div>
+                        <div class="footer-quick-title">WhatsApp Support</div>
+                        <div class="footer-quick-text">Chat with AaDiTeCh instantly</div>
+                    </div>
+                </a>
+            </div>
+            <div class="col-md-4">
+                <a class="footer-quick-card" href="mailto:aaditya0775@gmail.com">
+                    <div class="footer-quick-icon"><i class="fa-solid fa-envelope"></i></div>
+                    <div>
+                        <div class="footer-quick-title">Email Support</div>
+                        <div class="footer-quick-text">aaditya0775@gmail.com</div>
+                    </div>
+                </a>
+            </div>
+            <div class="col-md-4">
+                <a class="footer-quick-card open-chatbot-link" href="#" aria-label="Open AI Assistant">
+                    <div class="footer-quick-icon"><i class="fa-solid fa-robot"></i></div>
+                    <div>
+                        <div class="footer-quick-title">AI Assistant</div>
+                        <div class="footer-quick-text">Get instant student support</div>
+                    </div>
+                </a>
+            </div>
+        </div>
+        <div class="row g-4">
+            <div class="col-lg-4">
+                <div class="footer-brand d-flex align-items-center gap-3 mb-3">
+                    <img src="{% static 'images/aaditech_logo.jpeg' %}" alt="AaDiTeCh" width="52" height="52" class="rounded-circle border">
+                    <div>
+                        <h5 class="mb-1">AaDiTeCh EMS</h5>
+                        <p class="mb-0 text-muted">Education Management System</p>
+                    </div>
+                </div>
+                <p class="footer-text mb-3">
+                    This System is developed by <strong>AaDiTeCh</strong> to help institutions manage
+                    students, attendance, courses, fees, and performance in one secure platform.
+                </p>
+                <div class="footer-badges mb-4">
+                    <span class="footer-badge"><i class="fa-solid fa-shield-halved"></i> Secure</span>
+                    <span class="footer-badge"><i class="fa-solid fa-bolt"></i> Real-time</span>
+                    <span class="footer-badge"><i class="fa-solid fa-circle-check"></i> Reliable</span>
+                </div>
+                <div class="footer-social">
+                    <a href="https://instagram.com/_alex_0775_" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+                        <i class="fab fa-instagram"></i>
+                    </a>
+                    <a href="https://www.linkedin.com/in/aditya-kumar-cse/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
+                        <i class="fab fa-linkedin-in"></i>
+                    </a>
+                    <a href="mailto:aaditya0775@gmail.com" aria-label="Email">
+                        <i class="fas fa-envelope"></i>
+                    </a>
+                </div>
+            </div>
+
+            <div class="col-6 col-md-4 col-lg-2">
+                <h6 class="footer-title">Platform</h6>
+                <ul class="footer-list">
+                    <li><a href="{% url 'dashboard:dashboard' %}">Dashboard</a></li>
+                    <li><a href="{% url 'dashboard:students_page' %}">Students</a></li>
+                    <li><a href="{% url 'dashboard:teachers_page' %}">Teachers</a></li>
+                    <li><a href="{% url 'dashboard:attendance_page' %}">Attendance</a></li>
+                    <li><a href="{% url 'dashboard:reports_page' %}">Analytics</a></li>
+                    <li><a href="{% url 'dashboard:results_page' %}">Results</a></li>
+                    <li><a href="{% url 'dashboard:payments_page' %}">Payments</a></li>
+                    <li><a href="{% url 'dashboard:settings_page' %}">Settings</a></li>
+                    <li><a href="{% url 'dashboard:notifications_page' %}">Notifications</a></li>
+                </ul>
+            </div>
+
+            <div class="col-6 col-md-4 col-lg-2">
+                <h6 class="footer-title">Resources</h6>
+                <ul class="footer-list">
+                    <li><a href="{% url 'help_center' %}">Help Center</a></li>
+                    <li><a href="{% url 'documentation' %}">Documentation</a></li>
+                    <li><a href="{% url 'api_status' %}">API Status</a></li>
+                    <li><a href="{% url 'security' %}">Security</a></li>
+                    <li><a href="{% url 'support' %}">Support</a></li>
+                    <li><a class="open-chatbot-link" href="#">AI Chatbot</a></li>
+                </ul>
+            </div>
+
+            <div class="col-6 col-md-4 col-lg-2">
+                <h6 class="footer-title">Company</h6>
+                <ul class="footer-list">
+                    <li><a href="{% url 'about' %}">About</a></li>
+                    <li><a href="{% url 'careers' %}">Careers</a></li>
+                    <li><a href="{% url 'partners' %}">Partners</a></li>
+                    <li><a href="{% url 'privacy' %}">Privacy</a></li>
+                    <li><a href="{% url 'terms' %}">Terms</a></li>
+                </ul>
+            </div>
+
+            <div class="col-6 col-md-4 col-lg-2">
+                <h6 class="footer-title">Student Access</h6>
+                <ul class="footer-list">
+                    <li><a href="{% url 'accounts:login' %}">Login</a></li>
+                    <li><a href="{% url 'accounts:register' %}">Register</a></li>
+                    <li><a href="{% url 'dashboard:dashboard' %}">Dashboard</a></li>
+                    <li><a href="{% url 'dashboard:courses_page' %}">Courses</a></li>
+                    <li><a href="{% url 'dashboard:assignments_page' %}">Assignments</a></li>
+                    <li><a href="{% url 'dashboard:messaging_page' %}">Messaging</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="row g-4 mt-4">
+            <div class="col-lg-7">
+                <div class="footer-contact">
+                    <div class="contact-item">
+                        <i class="fa-solid fa-location-dot"></i>
+                        <span>Ballia, Uttar Pradesh, India</span>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fa-solid fa-clock"></i>
+                        <span>Support hours: 9:00 AM to 6:00 PM IST</span>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fa-solid fa-phone"></i>
+                        <span>+91 9023208267</span>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fa-solid fa-envelope"></i>
+                        <span>aaditya0775@gmail.com</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-5">
+                <form class="footer-newsletter" method="post" action="{% url 'newsletter' %}">
+                    {% csrf_token %}
+                    <div>
+                        <h6 class="footer-title mb-1">Newsletter</h6>
+                        <p class="text-muted mb-3">Get product updates, training resources, and new course alerts.</p>
+                    </div>
+                    <div class="input-group">
+                        <input type="email" class="form-control" name="email" placeholder="Enter your email" aria-label="Email" required>
+                        <button class="btn btn-primary" type="submit">
+                            Subscribe <i class="fa-solid fa-arrow-right ms-1"></i>
+                        </button>
+                    </div>
+                    <div class="newsletter-feedback small mt-2" role="status" aria-live="polite"></div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer-bottom text-center py-3">
+       &copy; 2026 AaDiTeCh Education Management System. All Rights Reserved.
+    </div>
+</footer>

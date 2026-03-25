@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+{% block title %}Fee History - EMS{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center flex-wrap mb-3">
+    <div>
+        <h2 class="mb-1">Fee Transactions</h2>
+        <p class="text-muted mb-0">Track payments and adjustments.</p>
+    </div>
+    <a href="{% url 'fees:fee_invoice' %}" class="btn btn-outline-primary">
+        <i class="fa-solid fa-file-invoice me-1"></i>Generate Invoice
+    </a>
+</div>
+
+<div class="row g-3 mb-3">
+    <div class="col-md-4">
+        <div class="dashboard-kpi">
+            <small class="text-muted">Credits</small>
+            <h3 class="mb-0">INR {{ total_credit }}</h3>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="dashboard-kpi">
+            <small class="text-muted">Debits</small>
+            <h3 class="mb-0">INR {{ total_debit }}</h3>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="dashboard-kpi">
+            <small class="text-muted">Net Balance</small>
+            <h3 class="mb-0">INR {{ balance }}</h3>
+        </div>
+    </div>
+</div>
+
+<div class="chart-card p-4">
+    <div class="table-responsive">
+        <table class="table align-middle">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Student</th>
+                    <th>Type</th>
+                    <th>Amount</th>
+                    <th>Description</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for transaction in transactions %}
+                <tr>
+                    <td>{{ transaction.transaction_date|date:"M d, Y" }}</td>
+                    <td>{{ transaction.student.user.get_full_name|default:transaction.student.user.username }}</td>
+                    <td>
+                        {% if transaction.transaction_type == 'CREDIT' %}
+                            <span class="badge bg-success">Credit</span>
+                        {% else %}
+                            <span class="badge bg-secondary">Debit</span>
+                        {% endif %}
+                    </td>
+                    <td>INR {{ transaction.amount }}</td>
+                    <td>{{ transaction.description|default:"-" }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5" class="text-center text-muted">No transactions found.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

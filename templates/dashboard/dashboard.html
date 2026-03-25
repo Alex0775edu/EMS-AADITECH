@@ -1,0 +1,115 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard - EMS Cloud{% endblock %}
+
+{% block content %}
+<div class="d-flex flex-wrap align-items-start justify-content-between gap-3 mb-4">
+    <div>
+        <h2 class="mb-1">Campus Command Center</h2>
+        <p class="text-muted mb-0">Monitor learners, finances, and engagement in one real-time workspace.</p>
+    </div>
+    <div class="d-flex flex-wrap gap-2">
+        {% if user.role == 'ADMIN' or user.is_superuser %}
+        <a href="{% url 'dashboard:data_hub' %}" class="btn btn-primary"><i class="fa-solid fa-database"></i> Add Data</a>
+        {% endif %}
+        <a href="{% url 'dashboard:reports_page' %}" class="btn btn-outline-primary"><i class="fa-solid fa-chart-line"></i> View Reports</a>
+    </div>
+</div>
+
+<div class="row g-3 mb-4">
+    <div class="col-md-6 col-lg-3">
+        <div class="dashboard-kpi h-100">
+            <small class="text-muted">Total Students</small>
+            <h3 class="mb-1">{{ total_students }}</h3>
+            <div class="text-muted small">Active enrollments</div>
+        </div>
+    </div>
+    <div class="col-md-6 col-lg-3">
+        <div class="dashboard-kpi h-100">
+            <small class="text-muted">Total Teachers</small>
+            <h3 class="mb-1">{{ total_teachers }}</h3>
+            <div class="text-muted small">Faculty onboarded</div>
+        </div>
+    </div>
+    <div class="col-md-6 col-lg-3">
+        <div class="dashboard-kpi h-100">
+            <small class="text-muted">Pending Fees</small>
+            <h3 class="mb-1">{{ pending_fees_count }}</h3>
+            <div class="text-muted small">Invoices awaiting payment</div>
+        </div>
+    </div>
+    <div class="col-md-6 col-lg-3">
+        <div class="dashboard-kpi h-100">
+            <small class="text-muted">Active Courses</small>
+            <h3 class="mb-1">{{ active_classes_count }}</h3>
+            <div class="text-muted small">Publishing now</div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-3">
+    <div class="col-lg-8">
+        <div class="chart-card mb-3">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h6 class="mb-0">Attendance Trend</h6>
+                <span class="badge bg-primary">Last 6 months</span>
+            </div>
+            <canvas id="attendanceTrendChart" height="120"></canvas>
+        </div>
+        <div class="chart-card">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h6 class="mb-0">Recent Notices</h6>
+                <a href="{% url 'dashboard:notices_page' %}" class="btn btn-sm btn-outline-primary">View All</a>
+            </div>
+            <div class="table-responsive">
+                <table class="table align-middle mb-0">
+                    <thead>
+                        <tr>
+                            <th>Title</th>
+                            <th>Target</th>
+                            <th>Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for notice in recent_notices %}
+                        <tr>
+                            <td>{{ notice.title }}</td>
+                            <td>{{ notice.target }}</td>
+                            <td>{{ notice.publish_date }}</td>
+                        </tr>
+                        {% empty %}
+                        <tr><td colspan="3" class="text-center text-muted">No notices available</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-4">
+        <div class="chart-card mb-3">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h6 class="mb-0">Performance Trend</h6>
+                <span class="badge bg-info">Avg score</span>
+            </div>
+            <canvas id="performanceTrendChart" height="210"></canvas>
+        </div>
+        <div class="chart-card">
+            <h6 class="mb-3">Quick Actions</h6>
+            <div class="d-grid gap-2">
+                <a class="btn btn-outline-primary" href="{% url 'dashboard:students_page' %}"><i class="fa-solid fa-user-graduate"></i> Manage Students</a>
+                <a class="btn btn-outline-primary" href="{% url 'dashboard:teachers_page' %}"><i class="fa-solid fa-chalkboard-user"></i> Manage Teachers</a>
+                <a class="btn btn-outline-primary" href="{% url 'dashboard:assignments_page' %}"><i class="fa-solid fa-file-arrow-up"></i> Assignments</a>
+                <a class="btn btn-outline-primary" href="{% url 'dashboard:messaging_page' %}"><i class="fa-solid fa-comments"></i> Messaging</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+window.dashboardChartPayload = {
+    labels: {{ chart_labels|safe }},
+    attendance: {{ attendance_data|safe }},
+    performance: {{ performance_data|safe }}
+};
+</script>
+{% endblock %}

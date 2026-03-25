@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="140" viewBox="0 0 900 140">
+  <rect width="900" height="140" fill="none"/>
+  <g stroke="#2a4db0" stroke-opacity="0.18" stroke-width="1">
+    <path d="M0 20 H900" />
+    <path d="M0 60 H900" />
+    <path d="M0 100 H900" />
+    <path d="M40 0 V140" />
+    <path d="M140 0 V140" />
+    <path d="M240 0 V140" />
+    <path d="M340 0 V140" />
+    <path d="M440 0 V140" />
+    <path d="M540 0 V140" />
+    <path d="M640 0 V140" />
+    <path d="M740 0 V140" />
+    <path d="M840 0 V140" />
+  </g>
+  <circle cx="120" cy="60" r="10" fill="#2a4db0" opacity="0.25"/>
+  <circle cx="420" cy="100" r="14" fill="#1cc88a" opacity="0.2"/>
+  <circle cx="720" cy="40" r="12" fill="#f6c23e" opacity="0.2"/>
+</svg>

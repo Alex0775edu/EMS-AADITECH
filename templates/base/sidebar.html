@@ -1,0 +1,58 @@
+<nav id="sidebarMenu" class="col-lg-2 col-md-3 d-md-block sidebar collapse" aria-label="Sidebar navigation">
+    <div class="sidebar-sticky pt-3">
+        <div class="sidebar-mobile-header d-flex align-items-center justify-content-between px-3 pb-2 d-lg-none">
+            <span class="text-uppercase small fw-semibold text-muted">Menu</span>
+            <button class="btn btn-link text-muted sidebar-toggle" type="button" aria-label="Close sidebar" aria-controls="sidebarMenu" aria-expanded="false">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+        <ul class="nav flex-column">
+            <li class="sidebar-section">Core</li>
+            <li class="nav-item"><a class="nav-link" href="{% url 'dashboard:dashboard' %}"><i class="fa-solid fa-gauge"></i><span class="nav-label">Dashboard</span></a></li>
+            <li class="nav-item"><a class="nav-link" href="{% url 'dashboard:reports_page' %}"><i class="fa-solid fa-chart-line"></i><span class="nav-label">Analytics</span></a></li>
+
+            <li class="sidebar-section">Learning</li>
+            <li class="nav-item"><a class="nav-link" href="{% url 'dashboard:courses_page' %}"><i class="fa-solid fa-book-open"></i><span class="nav-label">Courses</span></a></li>
+            <li class="nav-item"><a class="nav-link" href="{% url 'dashboard:assignments_page' %}"><i class="fa-solid fa-file-arrow-up"></i><span class="nav-label">Assignments</span></a></li>
+            <li class="nav-item"><a class="nav-link" href="{% url 'dashboard:exams_page' %}"><i class="fa-solid fa-file-pen"></i><span class="nav-label">Exams</span></a></li>
+            <li class="nav-item"><a class="nav-link" href="{% url 'dashboard:results_page' %}"><i class="fa-solid fa-award"></i><span class="nav-label">Results</span></a></li>
+            <li class="nav-item"><a class="nav-link" href="{% url 'materials:material_library' %}"><i class="fa-solid fa-folder-open"></i><span class="nav-label">Materials</span></a></li>
+            <li class="nav-item"><a class="nav-link" href="{% url 'ai_services:ai_insights' %}"><i class="fa-solid fa-wand-magic-sparkles"></i><span class="nav-label">AI Insights</span></a></li>
+
+            <li class="sidebar-section">People</li>
+            <li class="nav-item"><a class="nav-link" href="{% url 'dashboard:attendance_page' %}"><i class="fa-solid fa-calendar-check"></i><span class="nav-label">Attendance</span></a></li>
+            {% if user.role != 'STUDENT' %}
+            <li class="nav-item"><a class="nav-link" href="{% url 'dashboard:students_page' %}"><i class="fa-solid fa-user-graduate"></i><span class="nav-label">Students</span></a></li>
+            <li class="nav-item"><a class="nav-link" href="{% url 'dashboard:teachers_page' %}"><i class="fa-solid fa-chalkboard-user"></i><span class="nav-label">Teachers</span></a></li>
+            {% endif %}
+
+            <li class="sidebar-section">Engagement</li>
+            <li class="nav-item"><a class="nav-link" href="{% url 'dashboard:notices_page' %}"><i class="fa-solid fa-bullhorn"></i><span class="nav-label">Notices</span></a></li>
+            <li class="nav-item"><a class="nav-link" href="{% url 'dashboard:notifications_page' %}"><i class="fa-solid fa-bell"></i><span class="nav-label">Notifications</span></a></li>
+            <li class="nav-item"><a class="nav-link" href="{% url 'dashboard:messaging_page' %}"><i class="fa-solid fa-comments"></i><span class="nav-label">Messaging</span></a></li>
+            <li class="nav-item"><a class="nav-link" href="{% url 'communications:ticket_list' %}"><i class="fa-solid fa-life-ring"></i><span class="nav-label">Support Tickets</span></a></li>
+
+            <li class="sidebar-section">Finance</li>
+            <li class="nav-item"><a class="nav-link" href="{% url 'dashboard:fees_page' %}"><i class="fa-solid fa-money-check-dollar"></i><span class="nav-label">Fees</span></a></li>
+            <li class="nav-item"><a class="nav-link" href="{% url 'dashboard:payments_page' %}"><i class="fa-solid fa-credit-card"></i><span class="nav-label">Payments</span></a></li>
+            <li class="nav-item"><a class="nav-link" href="{% url 'billing:invoice_list' %}"><i class="fa-solid fa-file-invoice"></i><span class="nav-label">Invoices</span></a></li>
+
+            <li class="sidebar-section">Admin</li>
+            <li class="nav-item"><a class="nav-link" href="{% url 'dashboard:settings_page' %}"><i class="fa-solid fa-gear"></i><span class="nav-label">Settings</span></a></li>
+            {% if user.role == 'ADMIN' or user.is_superuser %}
+            <li class="nav-item"><a class="nav-link" href="{% url 'dashboard:data_hub' %}"><i class="fa-solid fa-database"></i><span class="nav-label">Data Hub</span></a></li>
+            {% endif %}
+
+            <li class="sidebar-section">Account</li>
+            <li class="nav-item">
+                <form method="post" action="{% url 'accounts:logout' %}">
+                    {% csrf_token %}
+                    <button type="submit" class="nav-link btn btn-link w-100 text-start">
+                        <i class="fa-solid fa-right-from-bracket"></i>
+                        <span class="nav-label">Logout</span>
+                    </button>
+                </form>
+            </li>
+        </ul>
+    </div>
+</nav>
