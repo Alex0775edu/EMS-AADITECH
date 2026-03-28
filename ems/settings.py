@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
 from pathlib import Path
+from urllib.parse import urlparse
 import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -30,42 +31,81 @@ def env_bool(name, default=False):
     value = os.getenv(name)
     if value is None:
         return default
-    return value.strip().lower() in ('1', 'true', 'yes', 'on')
+    return value.strip().lower() in {'1', 'true', 'yes', 'on'}
 
 
 def env_list(name, default):
     value = os.getenv(name)
-    if not value:
+    if value is None:
         return default
     return [item.strip() for item in value.split(',') if item.strip()]
 
 
+def database_from_url(db_url):
+    parsed = urlparse(db_url)
+    engine_map = {
+        'postgres': 'django.db.backends.postgresql',
+        'postgresql': 'django.db.backends.postgresql',
+        'mysql': 'django.db.backends.mysql',
+        'sqlite': 'django.db.backends.sqlite3',
+    }
+    engine = engine_map.get(parsed.scheme)
+    if not engine:
+        return None
+
+    if engine == 'django.db.backends.sqlite3':
+        db_path = parsed.path.lstrip('/') or str(BASE_DIR / 'db.sqlite3')
+        return {'ENGINE': engine, 'NAME': db_path}
+
+    return {
+        'ENGINE': engine,
+        'NAME': parsed.path.lstrip('/'),
+        'USER': parsed.username or '',
+        'PASSWORD': parsed.password or '',
+        'HOST': parsed.hostname or '',
+        'PORT': str(parsed.port or ''),
+    }
+
+
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'django-insecure-cf9==tvkkicc$&-rcy*z61q#!chj71zl^8ma-2(epq=#r-v%tb')
+SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'dev-secret-key-change-me')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env_bool('DJANGO_DEBUG', True)
 
-ALLOWED_HOSTS = env_list(
-    'DJANGO_ALLOWED_HOSTS',
-    [
-        '127.0.0.1',
-        'localhost',
+default_allowed_hosts = [
+    '127.0.0.1',
+    'localhost',
+]
+if DEBUG:
+    default_allowed_hosts.extend([
         '10.162.61.218',
         '.trycloudflare.com',
-    ],
-)
+    ])
 
-CSRF_TRUSTED_ORIGINS = env_list(
-    'DJANGO_CSRF_TRUSTED_ORIGINS',
-    [
-        'http://127.0.0.1:8000',
-        'http://localhost:8000',
+ALLOWED_HOSTS = env_list('DJANGO_ALLOWED_HOSTS', default_allowed_hosts)
+
+default_csrf_trusted = [
+    'http://127.0.0.1:8000',
+    'http://localhost:8000',
+]
+if DEBUG:
+    default_csrf_trusted.extend([
         'http://10.162.61.218:8000',
         'http://*.trycloudflare.com',
         'https://*.trycloudflare.com',
-    ],
-)
+    ])
+
+if DEBUG:
+    csrf_default = default_csrf_trusted
+else:
+    csrf_default = [
+        f'https://{host}'
+        for host in ALLOWED_HOSTS
+        if host and not host.startswith('.')
+    ]
+
+CSRF_TRUSTED_ORIGINS = env_list('DJANGO_CSRF_TRUSTED_ORIGINS', csrf_default)
 
 # Rate limiting (per IP, per path)
 RATE_LIMIT_WINDOW = 60
@@ -81,6 +121,10 @@ SESSION_COOKIE_SAMESITE = 'Lax'
 CSRF_COOKIE_SAMESITE = 'Lax'
 
 if not DEBUG:
+    if SECRET_KEY == 'dev-secret-key-change-me':
+        raise RuntimeError('Set DJANGO_SECRET_KEY in production.')
+    if not os.getenv('DJANGO_ALLOWED_HOSTS'):
+        raise RuntimeError('Set DJANGO_ALLOWED_HOSTS in production.')
     SECURE_SSL_REDIRECT = True
     SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
     SESSION_COOKIE_SECURE = True
@@ -169,16 +213,30 @@ WSGI_APPLICATION = 'ems.wsgi.application'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
 
-DATABASES = {
-    'default': {
-        'ENGINE': os.getenv('DB_ENGINE', 'django.db.backends.mysql'),
-        'NAME': os.getenv('DB_NAME', 'ems_db'),
-        'USER': os.getenv('DB_USER', 'root'),
-        'PASSWORD': os.getenv('DB_PASSWORD', '123@Aditya.0775'),
-        'HOST': os.getenv('DB_HOST', 'localhost'),
-        'PORT': os.getenv('DB_PORT', '3306'),
+database_url = os.getenv('DATABASE_URL')
+database_from_env = database_from_url(database_url) if database_url else None
+
+if database_from_env:
+    DATABASES = {'default': database_from_env}
+elif os.getenv('DB_NAME'):
+    DATABASES = {
+        'default': {
+            'ENGINE': os.getenv('DB_ENGINE', 'django.db.backends.mysql'),
+            'NAME': os.getenv('DB_NAME', ''),
+            'USER': os.getenv('DB_USER', ''),
+            'PASSWORD': os.getenv('DB_PASSWORD', ''),
+            'HOST': os.getenv('DB_HOST', ''),
+            'PORT': os.getenv('DB_PORT', ''),
+            'CONN_MAX_AGE': int(os.getenv('DB_CONN_MAX_AGE', '60')),
+        }
     }
-}
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
 
 
 # Password validation
