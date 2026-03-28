@@ -25,26 +25,47 @@ MEDIA_ROOT = BASE_DIR / 'media'
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
+# Helpers for environment-based configuration
+def env_bool(name, default=False):
+    value = os.getenv(name)
+    if value is None:
+        return default
+    return value.strip().lower() in ('1', 'true', 'yes', 'on')
+
+
+def env_list(name, default):
+    value = os.getenv(name)
+    if not value:
+        return default
+    return [item.strip() for item in value.split(',') if item.strip()]
+
+
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-cf9==tvkkicc$&-rcy*z61q#!chj71zl^8ma-2(epq=#r-v%tb'
+SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'django-insecure-cf9==tvkkicc$&-rcy*z61q#!chj71zl^8ma-2(epq=#r-v%tb')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = env_bool('DJANGO_DEBUG', True)
 
-ALLOWED_HOSTS = [
-    '127.0.0.1',
-    'localhost',
-    '10.162.61.218',
-    '.trycloudflare.com',
-]
+ALLOWED_HOSTS = env_list(
+    'DJANGO_ALLOWED_HOSTS',
+    [
+        '127.0.0.1',
+        'localhost',
+        '10.162.61.218',
+        '.trycloudflare.com',
+    ],
+)
 
-CSRF_TRUSTED_ORIGINS = [
-    'http://127.0.0.1:8000',
-    'http://localhost:8000',
-    'http://10.162.61.218:8000',
-    'http://*.trycloudflare.com',
-    'https://*.trycloudflare.com',
-]
+CSRF_TRUSTED_ORIGINS = env_list(
+    'DJANGO_CSRF_TRUSTED_ORIGINS',
+    [
+        'http://127.0.0.1:8000',
+        'http://localhost:8000',
+        'http://10.162.61.218:8000',
+        'http://*.trycloudflare.com',
+        'https://*.trycloudflare.com',
+    ],
+)
 
 # Rate limiting (per IP, per path)
 RATE_LIMIT_WINDOW = 60
@@ -61,6 +82,7 @@ CSRF_COOKIE_SAMESITE = 'Lax'
 
 if not DEBUG:
     SECURE_SSL_REDIRECT = True
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
     SECURE_HSTS_SECONDS = 31536000
@@ -149,12 +171,12 @@ WSGI_APPLICATION = 'ems.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',  
-        'NAME': 'ems_db',                       
-        'USER': 'root',                     
-        'PASSWORD': '123@Aditya.0775',        
-        'HOST': 'localhost',                     
-        'PORT': '3306',                          
+        'ENGINE': os.getenv('DB_ENGINE', 'django.db.backends.mysql'),
+        'NAME': os.getenv('DB_NAME', 'ems_db'),
+        'USER': os.getenv('DB_USER', 'root'),
+        'PASSWORD': os.getenv('DB_PASSWORD', '123@Aditya.0775'),
+        'HOST': os.getenv('DB_HOST', 'localhost'),
+        'PORT': os.getenv('DB_PORT', '3306'),
     }
 }
 
@@ -207,6 +229,7 @@ STATICFILES_DIRS = [
     BASE_DIR / 'static',
     BASE_DIR / 'templates' / 'static',
 ]
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 
 # Default primary key field type

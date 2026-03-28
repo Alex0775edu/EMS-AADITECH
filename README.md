@@ -127,6 +127,7 @@ pip install -r requirements.txt
 
 ## Database Configuration
 
+<<<<<<< HEAD
 Use environment variables (see `.env.example`).
 
 - If `DATABASE_URL` or `DB_NAME` is set, Django uses that database.
@@ -134,6 +135,10 @@ Use environment variables (see `.env.example`).
 
 For MySQL / PythonAnywhere set:
 
+=======
+Use environment variables (see `.env.example`). Defaults remain for local dev, but production should set:
+
+>>>>>>> 7c1f029 (Prepare for PythonAnywhere deployment)
 - `DB_ENGINE`
 - `DB_NAME`
 - `DB_USER`
