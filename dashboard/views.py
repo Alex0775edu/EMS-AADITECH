@@ -719,7 +719,6 @@ def data_hub(request):
 
 
 @require_POST
-@login_required
 def chatbot_ask(request):
     try:
         payload = json.loads(request.body.decode('utf-8'))

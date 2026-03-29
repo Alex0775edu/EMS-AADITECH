@@ -1,12 +1,13 @@
 from django.contrib import admin
 from django.urls import path, include
-from dashboard.views import home
+from dashboard.views import home, chatbot_ask
 from django.conf import settings
 from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', home, name='home'),
+    path('api/chatbot/', chatbot_ask, name='chatbot_api'),
     path('accounts/', include('accounts.urls')),
     path('', include('core.urls')),
     path('dashboard/', include('dashboard.urls')),
