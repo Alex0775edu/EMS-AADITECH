@@ -726,7 +726,13 @@ def chatbot_ask(request):
         return JsonResponse({'reply': 'Invalid request.'}, status=400)
 
     question = (payload.get('message') or '').strip()
+    if not question:
+        return JsonResponse({'reply': 'Please type a question so I can help.'})
     reply = _rule_based_reply(request.user, question)
+    if reply:
+        return JsonResponse({'reply': reply})
+
+    reply = _public_faq_reply(request.user, question)
     if reply:
         return JsonResponse({'reply': reply})
 
@@ -734,34 +740,104 @@ def chatbot_ask(request):
     if ai_reply:
         return JsonResponse({'reply': ai_reply})
 
-    return JsonResponse({'reply': 'I can help with attendance, next exam, assignments, and study guidance.'})
+    return JsonResponse({'reply': 'I can help with login, attendance, exams, assignments, fees, and study guidance. Try asking about one of those.'})
 
 
 def _rule_based_reply(user, question):
     q = question.lower()
     student = getattr(user, 'student_profile', None)
 
-    if 'attendance' in q and student:
+    if 'attendance' in q:
+        if not user.is_authenticated:
+            return 'Please log in to view attendance.'
+        if not student:
+            return 'Attendance is available for student accounts. Please log in with a student profile.'
         total = Attendance.objects.filter(student=student).count()
         present = Attendance.objects.filter(student=student, status='PRESENT').count()
         pct = round((present / total) * 100, 2) if total else 0
         return f'Your attendance is {pct}% ({present}/{total} days present).'
 
-    if ('next exam' in q or 'exam' in q) and student:
+    if 'exam' in q:
+        if not user.is_authenticated:
+            return 'Please log in to view exams.'
+        if not student:
+            return 'Exam details are available for student accounts. Please log in with a student profile.'
         nxt = Exam.objects.filter(date__gte=date.today()).order_by('date').first()
         if nxt:
             return f'Your next exam is {nxt.name} on {nxt.date:%d %b %Y}.'
         return 'No upcoming exams are scheduled right now.'
 
-    if 'assignment' in q and student:
+    if 'assignment' in q or 'homework' in q:
+        if not user.is_authenticated:
+            return 'Please log in to view assignments.'
+        if not student:
+            return 'Assignments are available for student accounts. Please log in with a student profile.'
         ass = Assignment.objects.order_by('due_date')[:5]
         if not ass:
             return 'No assignments are currently available.'
         titles = ', '.join(a.title for a in ass)
         return f'Latest assignments: {titles}.'
 
-    if 'study' in q or 'help' in q:
+    if 'study' in q or 'revision' in q or 'exam prep' in q or 'exam preparation' in q:
         return 'Study plan: 45 min deep study, 10 min revision, 10 min quiz. Repeat for 3 cycles daily.'
+
+    return None
+
+
+def _public_faq_reply(user, question):
+    q = question.lower()
+
+    def has_any(terms):
+        return any(term in q for term in terms)
+
+    if has_any(['login', 'log in', 'sign in']):
+        return 'You can log in at /accounts/login/ using Institute ID, email, or username.'
+
+    if has_any(['register', 'sign up', 'signup', 'create account']):
+        return 'Create an account at /accounts/register/.'
+
+    if has_any(['forgot password', 'reset password', 'password reset', 'forgot']):
+        if user.is_authenticated:
+            return 'Change your password at /dashboard/settings/password/.'
+        return 'Use /accounts/forgot-password/ to reset your password.'
+
+    if has_any(['fees', 'payment', 'invoice', 'receipt']):
+        if user.is_authenticated:
+            return 'Open /dashboard/fees/ to view fee details.'
+        return 'Please log in to view fees.'
+
+    if has_any(['attendance', 'present', 'absent']):
+        if user.is_authenticated:
+            return 'Open /dashboard/attendance/ for attendance details.'
+        return 'Please log in to view attendance.'
+
+    if has_any(['exam', 'result', 'marks']):
+        if user.is_authenticated:
+            return 'Open /dashboard/exams/ for upcoming exams.'
+        return 'Please log in to view exams and results.'
+
+    if has_any(['assignment', 'homework']):
+        if user.is_authenticated:
+            return 'Open /dashboard/assignments/ for assignments.'
+        return 'Please log in to view assignments.'
+
+    if has_any(['support', 'help center', 'helpdesk', 'contact']):
+        return 'Visit /help-center/ or /support/ for help.'
+
+    if has_any(['documentation', 'docs', 'api status']):
+        return 'See /documentation/ and /api-status/ for docs and system status.'
+
+    if has_any(['privacy', 'terms', 'security']):
+        return 'See /privacy/, /terms/, or /security/ pages for policies.'
+
+    if has_any(['features', 'modules', 'what can', 'capabilities']):
+        return 'EMS includes attendance, exams, fees, notices, analytics, materials, communications, and role-based dashboards.'
+
+    if has_any(['roles', 'admin', 'teacher', 'student', 'institute']):
+        return 'Supported roles include ADMIN, TEACHER, STUDENT, and INSTITUTE.'
+
+    if has_any(['chatbot', 'ai']):
+        return 'You can ask about login, attendance, exams, assignments, fees, or study guidance. For personal data, please log in.'
 
     return None
 
@@ -775,8 +851,13 @@ def _openai_reply(question):
 
         client = OpenAI(api_key=settings.OPENAI_API_KEY)
         response = client.responses.create(
-            model='gpt-4.1-mini',
-            input=f"You are an EMS tutor assistant. Answer briefly.\nQuestion: {question}",
+            model=getattr(settings, 'OPENAI_MODEL', 'gpt-4.1-mini'),
+            input=(
+                "You are an EMS support assistant. "
+                "Answer briefly and only about EMS, student support, or study guidance. "
+                "If you are unsure, say you are not sure.\n"
+                f"Question: {question}"
+            ),
         )
         return response.output_text
     except Exception:
