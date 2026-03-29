@@ -13,9 +13,32 @@ class SafeRemoveField(migrations.RemoveField):
         model_state = state.models.get(model_key)
         if not model_state:
             return
-        field_names = {name for name, _ in model_state.fields}
+        fields = model_state.fields
+        if isinstance(fields, dict):
+            field_names = set(fields.keys())
+        else:
+            field_names = set()
+            for field in fields:
+                if isinstance(field, (list, tuple)):
+                    if field:
+                        field_names.add(field[0])
+                else:
+                    field_names.add(field)
         if self.name not in field_names:
             return
+        options = model_state.options or {}
+        unique_together = options.get('unique_together')
+        if unique_together:
+            cleaned = []
+            for item in unique_together:
+                if isinstance(item, (list, tuple, set)):
+                    if self.name not in item:
+                        cleaned.append(tuple(item))
+            if isinstance(unique_together, set):
+                options['unique_together'] = set(cleaned)
+            else:
+                options['unique_together'] = cleaned
+            model_state.options = options
         super().state_forwards(app_label, state)
 
     def database_forwards(self, app_label, schema_editor, from_state, to_state):
@@ -24,7 +47,15 @@ class SafeRemoveField(migrations.RemoveField):
             from_model._meta.get_field(self.name)
         except FieldDoesNotExist:
             return
-        super().database_forwards(app_label, schema_editor, from_state, to_state)
+        original_unique = from_model._meta.unique_together
+        cleaned_unique = [
+            unique for unique in original_unique if self.name not in unique
+        ]
+        from_model._meta.unique_together = cleaned_unique
+        try:
+            super().database_forwards(app_label, schema_editor, from_state, to_state)
+        finally:
+            from_model._meta.unique_together = original_unique
 
     def database_backwards(self, app_label, schema_editor, from_state, to_state):
         to_model = to_state.apps.get_model(app_label, self.model_name)
