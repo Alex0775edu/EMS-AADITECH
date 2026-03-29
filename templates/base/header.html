@@ -1,7 +1,7 @@
 ﻿{% load static %}
 <header class="navbar navbar-expand-lg navbar-dark topbar shadow-sm px-3 position-relative overflow-hidden" role="banner">
-    <img src="{% static 'images/header-orb.svg' %}" alt="" class="header-orb" aria-hidden="true">
-    <img src="{% static 'images/header-grid.svg' %}" alt="" class="header-grid" aria-hidden="true">
+    <img src="{% static 'images/header-orb.svg' %}" alt="" class="header-orb" aria-hidden="true" loading="lazy" decoding="async">
+    <img src="{% static 'images/header-grid.svg' %}" alt="" class="header-grid" aria-hidden="true" loading="lazy" decoding="async">
 
     {% if user.is_authenticated %}
     
@@ -15,7 +15,7 @@
     {% else %}
     <a class="navbar-brand fw-bold d-flex align-items-center" href="{% url 'home' %}">
     {% endif %}
-        <img src="{% static 'images/aaditech_logo.jpeg' %}" alt="EMS" height="30" class="me-2">
+        <img src="{% static 'images/aaditech_logo.jpeg' %}" alt="EMS" height="30" class="me-2" loading="eager" decoding="async">
         EMS Cloud
     </a>
     <span class="brand-pill ms-2 d-none d-md-inline-flex">
