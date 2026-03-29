@@ -231,13 +231,43 @@
                     <div class="highlight-card p-4 h-100">
                         <h5>Modules Included</h5>
                         <div class="row g-3 mt-3">
-                            <div class="col-6"><div class="module-card">Student Management</div></div>
-                            <div class="col-6"><div class="module-card">Teacher Management</div></div>
-                            <div class="col-6"><div class="module-card">Attendance System</div></div>
-                            <div class="col-6"><div class="module-card">Exam System</div></div>
-                            <div class="col-6"><div class="module-card">Fee Management</div></div>
                             <div class="col-6">
-                                <div class="module-card open-chatbot-link" role="button" tabindex="0">AI Assistant</div>
+                                {% if user.is_authenticated %}
+                                <a class="module-card" href="{% url 'dashboard:students_page' %}">Student Management</a>
+                                {% else %}
+                                <a class="module-card" href="{% url 'accounts:login' %}?next={% url 'dashboard:students_page' %}">Student Management</a>
+                                {% endif %}
+                            </div>
+                            <div class="col-6">
+                                {% if user.is_authenticated %}
+                                <a class="module-card" href="{% url 'dashboard:teachers_page' %}">Teacher Management</a>
+                                {% else %}
+                                <a class="module-card" href="{% url 'accounts:login' %}?next={% url 'dashboard:teachers_page' %}">Teacher Management</a>
+                                {% endif %}
+                            </div>
+                            <div class="col-6">
+                                {% if user.is_authenticated %}
+                                <a class="module-card" href="{% url 'dashboard:attendance_page' %}">Attendance System</a>
+                                {% else %}
+                                <a class="module-card" href="{% url 'accounts:login' %}?next={% url 'dashboard:attendance_page' %}">Attendance System</a>
+                                {% endif %}
+                            </div>
+                            <div class="col-6">
+                                {% if user.is_authenticated %}
+                                <a class="module-card" href="{% url 'dashboard:exams_page' %}">Exam System</a>
+                                {% else %}
+                                <a class="module-card" href="{% url 'accounts:login' %}?next={% url 'dashboard:exams_page' %}">Exam System</a>
+                                {% endif %}
+                            </div>
+                            <div class="col-6">
+                                {% if user.is_authenticated %}
+                                <a class="module-card" href="{% url 'dashboard:fees_page' %}">Fee Management</a>
+                                {% else %}
+                                <a class="module-card" href="{% url 'accounts:login' %}?next={% url 'dashboard:fees_page' %}">Fee Management</a>
+                                {% endif %}
+                            </div>
+                            <div class="col-6">
+                                <button class="module-card open-chatbot-link" type="button">AI Assistant</button>
                             </div>
                         </div>
                     </div>

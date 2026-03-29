@@ -973,6 +973,7 @@ html {
 }
 
 .module-card {
+    display: block;
     padding: 0.85rem 0.9rem;
     border-radius: 14px;
     background: rgba(79, 70, 229, 0.08);
@@ -980,6 +981,17 @@ html {
     font-weight: 600;
     color: #1e1b4b;
     text-align: center;
+    text-decoration: none;
+    cursor: pointer;
+    font: inherit;
+    transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+}
+
+.module-card:hover {
+    background: rgba(79, 70, 229, 0.16);
+    box-shadow: 0 10px 20px rgba(79, 70, 229, 0.18);
+    transform: translateY(-1px);
+    color: #1e1b4b;
 }
 
 .section-kicker {
