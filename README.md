@@ -28,7 +28,12 @@ This project supports school, college, university, and coaching workflows from o
   - Chatbot endpoint (rule-based + OpenAI fallback)
   - Face attendance service hook
 
-## 3. Project Structure
+## 3. Documentation
+
+- `AGENTS.md` for AI automation rules and workflow
+- `CONTRIBUTING.md` for contributor setup and standards
+- `CHANGELOG.md` for release notes
+## 4. Project Structure
 
 ```text
 ems/
@@ -47,7 +52,7 @@ ems/
 |- manage.py
 ```
 
-## 4. Core Data Model
+## 5. Core Data Model
 
 - `core.Institution`: institute master entity
 - `accounts.User`: custom auth model with role + institute mapping
@@ -56,7 +61,7 @@ ems/
 - `attendance.Attendance`: daily attendance record per student
 - `dashboard.Course`, `Assignment`, `FeePayment`, `StudentPerformance`, `ActivityLog`
 
-## 5. Authentication & Role Behavior
+## 6. Authentication & Role Behavior
 
 ### Login
 
@@ -76,7 +81,7 @@ ems/
 - Student role is restricted to read-only/self-scoped views for sensitive modules.
 - Data is scoped by institution for non-superusers.
 
-## 6. Main Routes
+## 7. Main Routes
 
 ### Project URLs
 
@@ -84,6 +89,8 @@ ems/
 - `/accounts/` auth module
 - `/dashboard/` dashboard module
 - `/students/`, `/teachers/`, `/attendance/`, `/exams/`, `/fees/`, `/notices/`
+- `/robots.txt` search engine directives
+- `/sitemap.xml` sitemap listing public routes
 
 ### Dashboard URLs
 
@@ -109,7 +116,7 @@ ems/
 - `/attendance/report/`
 - `/attendance/face-mark/`
 
-## 7. Local Setup
+## 8. Local Setup
 
 ## Prerequisites
 
@@ -162,7 +169,7 @@ python manage.py runserver 0.0.0.0:8000
 
 Use `0.0.0.0` for phone testing on same Wi-Fi.
 
-## 8. PythonAnywhere Deployment
+## 9. PythonAnywhere Deployment
 
 1. Create a PythonAnywhere account and a MySQL database.
 2. Set environment variables in the PythonAnywhere Web app:
@@ -206,7 +213,7 @@ from ems.wsgi import application
 
 6. Reload the web app.
 
-## 9. How Data Is Added
+## 10. How Data Is Added
 
 - Django Admin: `/admin/`
 - Data Hub: `/dashboard/data-hub/` (admin/superuser only)
@@ -217,13 +224,13 @@ from ems.wsgi import application
   - notices
   - attendance
 
-## 10. Password & Reset Flow
+## 11. Password & Reset Flow
 
 - User creation supports DOB-based default password format: `DDMMYYYY`
 - Forgot password page: `/accounts/forgot-password/`
 - Validation uses identifier + date of birth
 
-## 11. AI Features
+## 12. AI Features
 
 ### Chatbot
 
@@ -237,7 +244,7 @@ from ems.wsgi import application
 - Current implementation is a placeholder
 - Replace with real encoding/matching pipeline using OpenCV + `face_recognition`
 
-## 12. Security Notes
+## 13. Security Notes
 
 - CSRF protection enabled via Django middleware/forms
 - Role checks implemented in views
@@ -248,7 +255,7 @@ from ems.wsgi import application
   - strict password policy
   - audit log hardening
 
-## 13. Common Issues
+## 14. Common Issues
 
 ### `NoReverseMatch`
 
@@ -272,7 +279,7 @@ from ems.wsgi import application
 - Check missing migration dependency app
 - Recreate/fix migration chain before migrate
 
-## 14. Production Readiness Checklist
+## 15. Production Readiness Checklist
 
 - Move secrets to environment variables
 - Configure `ALLOWED_HOSTS`
@@ -281,7 +288,7 @@ from ems.wsgi import application
 - Add backup/restore strategy
 - Add monitoring and error tracking
 
-## 15. Roadmap
+## 16. Roadmap
 
 - Complete real face recognition attendance pipeline
 - Add payment gateway for online fee collection

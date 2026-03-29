@@ -449,6 +449,30 @@ main {
     border-color: var(--info-color);
 }
 
+.btn-loading {
+    position: relative;
+    pointer-events: none;
+    opacity: 0.85;
+}
+
+.btn-loading::after {
+    content: '';
+    width: 0.9rem;
+    height: 0.9rem;
+    border-radius: 50%;
+    border: 2px solid currentColor;
+    border-right-color: transparent;
+    display: inline-block;
+    margin-left: 0.45rem;
+    animation: btnSpinner 0.7s linear infinite;
+}
+
+@keyframes btnSpinner {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
 /* Badges */
 .badge {
     padding: 0.35em 0.65em;

@@ -1,0 +1,20 @@
+{% load static %}
+{% if request %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "AaDiTeCh EMS",
+  "url": "{{ request.scheme }}://{{ request.get_host }}",
+  "logo": "{{ request.scheme }}://{{ request.get_host }}{% static 'images/aaditech_logo.jpeg' %}"
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": "AaDiTeCh EMS",
+  "url": "{{ request.scheme }}://{{ request.get_host }}"
+}
+</script>
+{% endif %}

@@ -6,11 +6,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token }}">
     <meta name="description" content="AaDiTeCh EMS helps institutions manage students, attendance, fees, exams, and analytics from one secure platform.">
+    <meta name="robots" content="index,follow">
     <meta name="theme-color" content="#0b1120">
     <meta property="og:type" content="website">
     <meta property="og:title" content="Smart Education Management System">
     <meta property="og:description" content="Manage student success, operations, and analytics with AaDiTeCh EMS.">
     <meta property="og:image" content="{% static 'images/aaditech_logo.jpeg' %}">
+    {% if request %}
+    <meta property="og:url" content="{{ request.build_absolute_uri }}">
+    <link rel="canonical" href="{{ request.build_absolute_uri }}">
+    {% endif %}
     <meta name="twitter:card" content="summary">
     <title>Smart Education Management System</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -23,6 +28,7 @@
     <link rel="stylesheet" href="{% static 'css/chatbot.css' %}?v={{ STATIC_VERSION }}">
     <link rel="icon" href="{% static 'favicon.ico' %}" type="image/x-icon">
     <link rel="apple-touch-icon" href="{% static 'images/aaditech_logo.jpeg' %}">
+    {% include 'partials/structured_data.html' %}
 </head>
 <body>
     {% include 'base/header.html' %}

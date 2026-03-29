@@ -13,6 +13,9 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Initialize form validations
     initializeFormValidations();
+
+    // Initialize submit loading states
+    initializeSubmitLoading();
     
     // Initialize data tables
     initializeDataTables();
@@ -201,6 +204,31 @@ function initializeFormValidations() {
                     this.classList.add('is-invalid');
                 }
             });
+        });
+    });
+}
+
+// Initialize submit loading indicators
+function initializeSubmitLoading() {
+    const forms = document.querySelectorAll('form');
+    forms.forEach(form => {
+        form.addEventListener('submit', function() {
+            if (form.hasAttribute('data-ajax') || form.hasAttribute('data-no-loading')) {
+                return;
+            }
+
+            if (!form.checkValidity()) {
+                return;
+            }
+
+            const submitBtn = form.querySelector('button[type=\"submit\"], input[type=\"submit\"]');
+            if (!submitBtn || submitBtn.classList.contains('btn-loading')) {
+                return;
+            }
+
+            submitBtn.classList.add('btn-loading');
+            submitBtn.setAttribute('aria-busy', 'true');
+            submitBtn.disabled = true;
         });
     });
 }
