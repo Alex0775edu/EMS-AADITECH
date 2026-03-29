@@ -49,7 +49,7 @@ def home(request):
     context = {
         'total_students': Student.objects.count(),
         'total_teachers': Teacher.objects.count(),
-        'institutes_supported': Student.objects.values('institution').distinct().count(),
+        'institutes_supported': CoreInstitution.objects.count(),
     }
     return render(request, 'home/index.html', context)
 
