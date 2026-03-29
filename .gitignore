@@ -22,3 +22,5 @@ media/
 
 # Misc
 .DS_Store
+file-list-*.txt
+tmp-output.txt
