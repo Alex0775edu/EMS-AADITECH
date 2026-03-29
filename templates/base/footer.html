@@ -22,13 +22,13 @@
                 </a>
             </div>
             <div class="col-md-4">
-                <a class="footer-quick-card open-chatbot-link" href="#" aria-label="Open AI Assistant">
+                <button class="footer-quick-card footer-quick-button open-chatbot-link" type="button" aria-label="Open AI Assistant">
                     <div class="footer-quick-icon"><i class="fa-solid fa-robot"></i></div>
                     <div>
                         <div class="footer-quick-title">AI Assistant</div>
                         <div class="footer-quick-text">Get instant student support</div>
                     </div>
-                </a>
+                </button>
             </div>
         </div>
         <div class="row g-4">
@@ -65,6 +65,7 @@
             <div class="col-6 col-md-4 col-lg-2">
                 <h6 class="footer-title">Platform</h6>
                 <ul class="footer-list">
+                    {% if user.is_authenticated %}
                     <li><a href="{% url 'dashboard:dashboard' %}">Dashboard</a></li>
                     <li><a href="{% url 'dashboard:students_page' %}">Students</a></li>
                     <li><a href="{% url 'dashboard:teachers_page' %}">Teachers</a></li>
@@ -74,6 +75,17 @@
                     <li><a href="{% url 'dashboard:payments_page' %}">Payments</a></li>
                     <li><a href="{% url 'dashboard:settings_page' %}">Settings</a></li>
                     <li><a href="{% url 'dashboard:notifications_page' %}">Notifications</a></li>
+                    {% else %}
+                    <li><a href="{% url 'accounts:login' %}?next={% url 'dashboard:dashboard' %}">Dashboard</a></li>
+                    <li><a href="{% url 'accounts:login' %}?next={% url 'dashboard:students_page' %}">Students</a></li>
+                    <li><a href="{% url 'accounts:login' %}?next={% url 'dashboard:teachers_page' %}">Teachers</a></li>
+                    <li><a href="{% url 'accounts:login' %}?next={% url 'dashboard:attendance_page' %}">Attendance</a></li>
+                    <li><a href="{% url 'accounts:login' %}?next={% url 'dashboard:reports_page' %}">Analytics</a></li>
+                    <li><a href="{% url 'accounts:login' %}?next={% url 'dashboard:results_page' %}">Results</a></li>
+                    <li><a href="{% url 'accounts:login' %}?next={% url 'dashboard:payments_page' %}">Payments</a></li>
+                    <li><a href="{% url 'accounts:login' %}?next={% url 'dashboard:settings_page' %}">Settings</a></li>
+                    <li><a href="{% url 'accounts:login' %}?next={% url 'dashboard:notifications_page' %}">Notifications</a></li>
+                    {% endif %}
                 </ul>
             </div>
 
@@ -85,7 +97,7 @@
                     <li><a href="{% url 'api_status' %}">API Status</a></li>
                     <li><a href="{% url 'security' %}">Security</a></li>
                     <li><a href="{% url 'support' %}">Support</a></li>
-                    <li><a class="open-chatbot-link" href="#">AI Chatbot</a></li>
+                    <li><button type="button" class="footer-link-button open-chatbot-link">AI Chatbot</button></li>
                 </ul>
             </div>
 
@@ -105,10 +117,17 @@
                 <ul class="footer-list">
                     <li><a href="{% url 'accounts:login' %}">Login</a></li>
                     <li><a href="{% url 'accounts:register' %}">Register</a></li>
+                    {% if user.is_authenticated %}
                     <li><a href="{% url 'dashboard:dashboard' %}">Dashboard</a></li>
                     <li><a href="{% url 'dashboard:courses_page' %}">Courses</a></li>
                     <li><a href="{% url 'dashboard:assignments_page' %}">Assignments</a></li>
                     <li><a href="{% url 'dashboard:messaging_page' %}">Messaging</a></li>
+                    {% else %}
+                    <li><a href="{% url 'accounts:login' %}?next={% url 'dashboard:dashboard' %}">Dashboard</a></li>
+                    <li><a href="{% url 'accounts:login' %}?next={% url 'dashboard:courses_page' %}">Courses</a></li>
+                    <li><a href="{% url 'accounts:login' %}?next={% url 'dashboard:assignments_page' %}">Assignments</a></li>
+                    <li><a href="{% url 'accounts:login' %}?next={% url 'dashboard:messaging_page' %}">Messaging</a></li>
+                    {% endif %}
                 </ul>
             </div>
         </div>
