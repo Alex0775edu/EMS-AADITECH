@@ -284,8 +284,7 @@ TIME_ZONE = 'UTC'
 
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [
-    BASE_DIR / 'static',
-    BASE_DIR / 'templates' / 'static',
+    path for path in (BASE_DIR / 'static', BASE_DIR / 'templates' / 'static') if path.exists()
 ]
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
