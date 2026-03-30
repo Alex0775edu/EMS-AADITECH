@@ -50,13 +50,13 @@
                     <td>{{ teacher.subject }}</td>
                     <td>{{ teacher.qualification }}</td>
                     <td class="text-end">
-                        <a class="btn btn-sm btn-outline-primary" href="{% url 'teacher_detail' teacher.id %}">
+                        <a class="btn btn-sm btn-outline-primary" href="{% url 'teachers:teacher_detail' teacher.id %}">
                             View
                         </a>
-                        <a class="btn btn-sm btn-outline-secondary" href="{% url 'teacher_edit' teacher.id %}">
+                        <a class="btn btn-sm btn-outline-secondary" href="{% url 'teachers:teacher_edit' teacher.id %}">
                             Edit
                         </a>
-                        <a class="btn btn-sm btn-outline-success" href="{% url 'teacher_schedule' teacher.id %}">
+                        <a class="btn btn-sm btn-outline-success" href="{% url 'teachers:teacher_schedule' teacher.id %}">
                             Schedule
                         </a>
                     </td>

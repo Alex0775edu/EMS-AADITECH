@@ -467,10 +467,14 @@
                         <p class="section-kicker">Newsletter</p>
                         <h3 class="section-title">Get updates on new courses and features</h3>
                         <p class="section-subtitle">Join product newsletters for training resources, success stories, and platform updates.</p>
-                        <div class="input-group mt-3">
-                            <input type="email" class="form-control" placeholder="Enter your email">
-                            <button class="btn btn-gradient" type="button">Subscribe</button>
-                        </div>
+                        <form class="js-newsletter-form mt-3" method="post" action="{% url 'newsletter' %}">
+                            {% csrf_token %}
+                            <div class="input-group">
+                                <input type="email" class="form-control" name="email" placeholder="Enter your email" required>
+                                <button class="btn btn-gradient" type="submit">Subscribe</button>
+                            </div>
+                            <div class="newsletter-feedback small mt-2" role="status" aria-live="polite"></div>
+                        </form>
                     </div>
                 </div>
                 <div class="col-lg-5 reveal-on-scroll">

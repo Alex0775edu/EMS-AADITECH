@@ -7,7 +7,7 @@
         <h2 class="mb-1">Add Teacher</h2>
         <p class="text-muted mb-0">Create a faculty account.</p>
     </div>
-    <a href="{% url 'teacher_list' %}" class="btn btn-outline-secondary">Back to List</a>
+    <a href="{% url 'teachers:teacher_list' %}" class="btn btn-outline-secondary">Back to List</a>
 </div>
 
 <div class="chart-card p-4">
@@ -55,7 +55,7 @@
             </div>
         </div>
         <div class="d-flex justify-content-end gap-2 mt-4">
-            <a class="btn btn-outline-secondary" href="{% url 'teacher_list' %}">Cancel</a>
+            <a class="btn btn-outline-secondary" href="{% url 'teachers:teacher_list' %}">Cancel</a>
             <button type="submit" class="btn btn-primary">Create Teacher</button>
         </div>
     </form>

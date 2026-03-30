@@ -66,6 +66,25 @@ document.addEventListener('DOMContentLoaded', function() {
 // Initialize Bootstrap Components
 function initializeBootstrap() {
     if (typeof bootstrap === 'undefined') {
+        // Lightweight fallback for dropdown menus when Bootstrap JS is unavailable.
+        const dropdowns = document.querySelectorAll('.dropdown-toggle');
+        dropdowns.forEach(dropdown => {
+            dropdown.addEventListener('click', function(e) {
+                e.preventDefault();
+                const menu = this.nextElementSibling;
+                if (menu) {
+                    menu.classList.toggle('show');
+                }
+            });
+        });
+
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.dropdown')) {
+                document.querySelectorAll('.dropdown-menu').forEach(dropdown => {
+                    dropdown.classList.remove('show');
+                });
+            }
+        });
         return;
     }
     // Tooltips
@@ -89,25 +108,6 @@ function initializeBootstrap() {
         });
     });
     
-    // Dropdowns
-    const dropdowns = document.querySelectorAll('.dropdown-toggle');
-    dropdowns.forEach(dropdown => {
-        dropdown.addEventListener('click', function(e) {
-            e.preventDefault();
-            const menu = this.nextElementSibling;
-            menu.classList.toggle('show');
-        });
-    });
-    
-    // Close dropdowns when clicking outside
-    document.addEventListener('click', function(e) {
-        if (!e.target.matches('.dropdown-toggle')) {
-            const dropdowns = document.querySelectorAll('.dropdown-menu');
-            dropdowns.forEach(dropdown => {
-                dropdown.classList.remove('show');
-            });
-        }
-    });
 }
 
 // Initialize Tooltips
@@ -462,39 +462,41 @@ function initializeHeaderNotifications() {
 }
 
 function initializeNewsletterForm() {
-    const form = document.querySelector('.footer-newsletter');
-    if (!form) return;
+    const forms = document.querySelectorAll('.footer-newsletter, .js-newsletter-form');
+    if (!forms.length) return;
 
-    const feedback = form.querySelector('.newsletter-feedback');
-    form.addEventListener('submit', async function (event) {
-        event.preventDefault();
-        if (!form.checkValidity()) return;
+    forms.forEach(form => {
+        const feedback = form.querySelector('.newsletter-feedback');
+        form.addEventListener('submit', async function (event) {
+            event.preventDefault();
+            if (!form.checkValidity()) return;
 
-        const formData = new FormData(form);
-        const csrf = form.querySelector('input[name="csrfmiddlewaretoken"]')?.value || '';
+            const formData = new FormData(form);
+            const csrf = form.querySelector('input[name="csrfmiddlewaretoken"]')?.value || '';
 
-        try {
-            const response = await fetch(form.action, {
-                method: 'POST',
-                headers: {
-                    'X-CSRFToken': csrf
-                },
-                body: formData
-            });
+            try {
+                const response = await fetch(form.action, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': csrf
+                    },
+                    body: formData
+                });
 
-            const data = await response.json();
-            if (!response.ok) {
-                throw new Error(data.error || 'Subscription failed');
+                const data = await response.json();
+                if (!response.ok) {
+                    throw new Error(data.error || 'Subscription failed');
+                }
+                if (feedback) {
+                    feedback.textContent = data.message || 'Subscribed successfully.';
+                }
+                form.reset();
+            } catch (err) {
+                if (feedback) {
+                    feedback.textContent = 'Could not subscribe. Try again later.';
+                }
             }
-            if (feedback) {
-                feedback.textContent = data.message || 'Subscribed successfully.';
-            }
-            form.reset();
-        } catch (err) {
-            if (feedback) {
-                feedback.textContent = 'Could not subscribe. Try again later.';
-            }
-        }
+        });
     });
 }
 

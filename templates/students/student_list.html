@@ -52,13 +52,13 @@
                     <td>{{ student.section }}</td>
                     <td>{{ student.user.email }}</td>
                     <td class="text-end">
-                        <a class="btn btn-sm btn-outline-primary" href="{% url 'student_detail' student.id %}">
+                        <a class="btn btn-sm btn-outline-primary" href="{% url 'students:student_detail' student.id %}">
                             View
                         </a>
-                        <a class="btn btn-sm btn-outline-secondary" href="{% url 'student_edit' student.id %}">
+                        <a class="btn btn-sm btn-outline-secondary" href="{% url 'students:student_edit' student.id %}">
                             Edit
                         </a>
-                        <a class="btn btn-sm btn-outline-success" href="{% url 'student_attendance' student.id %}">
+                        <a class="btn btn-sm btn-outline-success" href="{% url 'students:student_attendance' student.id %}">
                             Attendance
                         </a>
                     </td>

@@ -17,7 +17,7 @@
             <button type="submit" class="btn btn-outline-primary">Filter</button>
         </form>
         {% if user.role != 'STUDENT' %}
-        <a href="{% url 'exam_add' %}" class="btn btn-primary">
+        <a href="{% url 'exams:exam_add' %}" class="btn btn-primary">
             <i class="fa-solid fa-calendar-plus me-1"></i>Schedule Exam
         </a>
         {% endif %}
@@ -54,10 +54,10 @@
                         {% endif %}
                     </td>
                     <td class="text-end">
-                        <a class="btn btn-sm btn-outline-primary" href="{% url 'exam_detail' exam.id %}">View</a>
+                        <a class="btn btn-sm btn-outline-primary" href="{% url 'exams:exam_detail' exam.id %}">View</a>
                         {% if user.role != 'STUDENT' %}
-                        <a class="btn btn-sm btn-outline-secondary" href="{% url 'exam_edit' exam.id %}">Edit</a>
-                        <a class="btn btn-sm btn-outline-success" href="{% url 'exam_marks' exam.id %}">Marks</a>
+                        <a class="btn btn-sm btn-outline-secondary" href="{% url 'exams:exam_edit' exam.id %}">Edit</a>
+                        <a class="btn btn-sm btn-outline-success" href="{% url 'exams:exam_marks' exam.id %}">Marks</a>
                         {% endif %}
                     </td>
                 </tr>
