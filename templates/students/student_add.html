@@ -11,7 +11,7 @@
 </div>
 
 <div class="chart-card p-4">
-    <form method="post" action="{% url 'student_add' %}">
+    <form method="post" action="{% url 'students:student_add' %}">
         {% csrf_token %}
         <div class="row g-3">
             {% if user.is_superuser %}

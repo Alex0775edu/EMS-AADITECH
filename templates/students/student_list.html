@@ -19,7 +19,7 @@
             <button type="submit" class="btn btn-outline-primary">Search</button>
         </form>
         {% if user.role != 'STUDENT' %}
-        <a href="{% url 'student_add' %}" class="btn btn-primary">
+        <a href="{% url 'students:student_add' %}" class="btn btn-primary">
             <i class="fa-solid fa-user-plus me-1"></i>Add Student
         </a>
         {% endif %}
