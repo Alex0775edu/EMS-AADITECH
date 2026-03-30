@@ -54,10 +54,10 @@
                     </button>
                 </li>
                 <li class="nav-item dropdown">
-                    <a class="nav-link text-white position-relative" href="#" role="button" data-bs-toggle="dropdown">
+                    <button class="btn btn-link nav-link text-white position-relative" type="button" data-bs-toggle="dropdown" aria-expanded="false" title="Notifications">
                         <i class="fa-regular fa-bell"></i>
                         <span class="notification-dot"></span>
-                    </a>
+                    </button>
                     <ul class="dropdown-menu dropdown-menu-end">
                         <li><span class="dropdown-item-text small text-muted">Notifications</span></li>
                         <li><a class="dropdown-item" href="{% url 'dashboard:notices_page' %}">New notice published</a></li>
@@ -65,9 +65,9 @@
                     </ul>
                 </li>
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle text-white" href="#" role="button" data-bs-toggle="dropdown">
+                    <button class="btn btn-link nav-link dropdown-toggle text-white" type="button" data-bs-toggle="dropdown" aria-expanded="false" title="Account">
                         <i class="fa-regular fa-user me-1"></i>{{ user.get_full_name|default:user.username }}
-                    </a>
+                    </button>
                     <ul class="dropdown-menu dropdown-menu-end">
                         <li><a class="dropdown-item" href="{% url 'dashboard:dashboard' %}">My Profile</a></li>
                         <li><hr class="dropdown-divider"></li>

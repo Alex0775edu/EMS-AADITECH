@@ -847,6 +847,7 @@ main {
     height: 260px;
     border-radius: 50%;
     background: radial-gradient(circle, rgba(37, 99, 235, 0.25) 0%, rgba(37, 99, 235, 0) 70%);
+    pointer-events: none;
 }
 
 .page-hero__eyebrow {

@@ -112,33 +112,50 @@ function initializeBootstrap() {
 
 // Initialize Tooltips
 function initializeTooltips() {
-    // Custom tooltip positions
+    // Mouse + keyboard + touch friendly tooltip behavior.
     const tooltips = document.querySelectorAll('[title]');
+    const isTouchDevice = window.matchMedia && window.matchMedia('(hover: none)').matches;
+
+    const showTooltip = function () {
+        const title = this.getAttribute('title');
+        if (!title) return;
+
+        const tooltipEl = document.createElement('div');
+        tooltipEl.className = 'custom-tooltip';
+        tooltipEl.textContent = title;
+        document.body.appendChild(tooltipEl);
+
+        const rect = this.getBoundingClientRect();
+        tooltipEl.style.left = rect.left + rect.width / 2 - tooltipEl.offsetWidth / 2 + 'px';
+        tooltipEl.style.top = rect.top - tooltipEl.offsetHeight - 5 + 'px';
+
+        this.setAttribute('data-original-title', title);
+        this.removeAttribute('title');
+    };
+
+    const hideTooltip = function () {
+        const originalTitle = this.getAttribute('data-original-title');
+        if (originalTitle) {
+            this.setAttribute('title', originalTitle);
+            this.removeAttribute('data-original-title');
+        }
+        const tooltipEl = document.querySelector('.custom-tooltip');
+        if (tooltipEl) tooltipEl.remove();
+    };
+
     tooltips.forEach(tooltip => {
-        tooltip.addEventListener('mouseenter', function() {
-            const title = this.getAttribute('title');
-            if (title) {
-                const tooltipEl = document.createElement('div');
-                tooltipEl.className = 'custom-tooltip';
-                tooltipEl.textContent = title;
-                document.body.appendChild(tooltipEl);
-                
-                const rect = this.getBoundingClientRect();
-                tooltipEl.style.left = rect.left + rect.width / 2 - tooltipEl.offsetWidth / 2 + 'px';
-                tooltipEl.style.top = rect.top - tooltipEl.offsetHeight - 5 + 'px';
-                
-                this.setAttribute('data-original-title', title);
-                this.removeAttribute('title');
-            }
-        });
-        
-        tooltip.addEventListener('mouseleave', function() {
-            const originalTitle = this.getAttribute('data-original-title');
-            if (originalTitle) {
-                this.setAttribute('title', originalTitle);
-                this.removeAttribute('data-original-title');
-                const tooltipEl = document.querySelector('.custom-tooltip');
-                if (tooltipEl) tooltipEl.remove();
+        if (!isTouchDevice) {
+            tooltip.addEventListener('mouseenter', showTooltip);
+            tooltip.addEventListener('mouseleave', hideTooltip);
+        }
+        tooltip.addEventListener('focus', showTooltip);
+        tooltip.addEventListener('blur', hideTooltip);
+        tooltip.addEventListener('click', function () {
+            const isOpen = !!this.getAttribute('data-original-title');
+            if (isOpen) {
+                hideTooltip.call(this);
+            } else {
+                showTooltip.call(this);
             }
         });
     });
@@ -386,7 +403,7 @@ function initializeThemeToggle() {
 function initializeHeaderNotifications() {
     const bellIcon = document.querySelector('.nav-link .fa-bell');
     const dot = document.querySelector('.notification-dot');
-    const bellLink = bellIcon ? bellIcon.closest('a.nav-link') : null;
+    const bellLink = bellIcon ? bellIcon.closest('.nav-link') : null;
     const dropdown = bellLink ? bellLink.parentElement.querySelector('.dropdown-menu') : null;
 
     if (!bellIcon || !dot || !dropdown || !bellLink) return;
