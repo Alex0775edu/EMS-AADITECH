@@ -154,7 +154,7 @@
                 </div>
             </div>
             <div class="col-lg-5">
-                <form class="footer-newsletter" method="post" action="{% url 'newsletter' %}">
+                <form class="footer-newsletter" method="post" action="{% url 'newsletter' %}" data-no-loading>
                     {% csrf_token %}
                     <div>
                         <h6 class="footer-title mb-1">Newsletter</h6>

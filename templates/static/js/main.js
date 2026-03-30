@@ -467,6 +467,7 @@ function initializeNewsletterForm() {
 
     forms.forEach(form => {
         const feedback = form.querySelector('.newsletter-feedback');
+        const submitBtn = form.querySelector('button[type="submit"], input[type="submit"]');
         form.addEventListener('submit', async function (event) {
             event.preventDefault();
             if (!form.checkValidity()) return;
@@ -494,6 +495,12 @@ function initializeNewsletterForm() {
             } catch (err) {
                 if (feedback) {
                     feedback.textContent = 'Could not subscribe. Try again later.';
+                }
+            } finally {
+                if (submitBtn) {
+                    submitBtn.classList.remove('btn-loading');
+                    submitBtn.removeAttribute('aria-busy');
+                    submitBtn.disabled = false;
                 }
             }
         });

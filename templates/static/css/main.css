@@ -984,6 +984,12 @@ main {
     outline-offset: 2px;
 }
 
+button,
+a.btn,
+.btn {
+    touch-action: manipulation;
+}
+
 @media (max-width: 991.98px) {
     .topbar .navbar-collapse {
         margin-top: 0.65rem;
@@ -1353,6 +1359,7 @@ html {
     flex-direction: column;
     gap: 10px;
     z-index: 9999;
+    pointer-events: none;
 }
 
 .social-float__link {
@@ -1366,6 +1373,7 @@ html {
     text-decoration: none;
     box-shadow: 0 12px 28px rgba(0, 0, 0, 0.28);
     transition: transform 0.15s ease, box-shadow 0.15s ease;
+    pointer-events: auto;
 }
 
 .social-float__link:hover {
