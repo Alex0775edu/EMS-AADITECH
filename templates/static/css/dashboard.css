@@ -2,7 +2,7 @@
 
 /* Dashboard Header */
 .dashboard-header {
-    background: linear-gradient(135deg, #4f46e5 0%, #0b1120 100%);
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary) 100%);
     color: white;
     padding: 30px 0;
     margin-bottom: 30px;
@@ -48,10 +48,10 @@
     margin-bottom: 15px;
 }
 
-.stats-icon.primary { background: linear-gradient(135deg, #4f46e5 0%, #0b1120 100%); }
-.stats-icon.success { background: linear-gradient(135deg, #22c55e 0%, #15803d 100%); }
-.stats-icon.warning { background: linear-gradient(135deg, #f59e0b 0%, #b45309 100%); }
-.stats-icon.danger { background: linear-gradient(135deg, #ef4444 0%, #b91c1c 100%); }
+.stats-icon.primary { background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary) 100%); }
+.stats-icon.success { background: linear-gradient(135deg, var(--success-color) 0%, #15803d 100%); }
+.stats-icon.warning { background: linear-gradient(135deg, var(--accent-color) 0%, var(--accent-strong) 100%); }
+.stats-icon.danger { background: linear-gradient(135deg, var(--danger-color) 0%, #b91c1c 100%); }
 
 .stats-number {
     font-size: 2rem;
@@ -70,8 +70,8 @@
     font-weight: 500;
 }
 
-.stats-change.positive { color: #16a34a; }
-.stats-change.negative { color: #ef4444; }
+.stats-change.positive { color: var(--success-color); }
+.stats-change.negative { color: var(--danger-color); }
 
 /* Quick Actions */
 .quick-actions {
@@ -83,21 +83,21 @@
 
 .quick-action-btn {
     background: var(--surface-color);
-    border: 2px solid #e3e6f0;
+    border: 2px solid var(--border-color);
     border-radius: 10px;
     padding: 20px;
     text-align: center;
     transition: all 0.3s;
     cursor: pointer;
     text-decoration: none;
-    color: #333;
+    color: var(--text-color);
     display: block;
 }
 
 .quick-action-btn:hover {
     border-color: var(--primary-color);
     transform: translateY(-3px);
-    box-shadow: 0 10px 25px rgba(79, 70, 229, 0.18);
+    box-shadow: 0 10px 25px rgba(37, 99, 235, 0.18);
 }
 
 .quick-action-icon {

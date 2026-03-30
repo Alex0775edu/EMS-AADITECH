@@ -37,6 +37,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Initialize cookie consent banner
     initializeCookieBanner();
+
+    // Smooth scrolling for anchor links
+    initializeSmoothScroll();
+
+    // Mobile nav behavior
+    initializeMobileNav();
     
     // Auto-dismiss alerts
     autoDismissAlerts();
@@ -544,6 +550,54 @@ function initializeCookieBanner() {
             banner.classList.remove('is-visible');
         });
     }
+}
+
+// Smooth scrolling with header offset
+function initializeSmoothScroll() {
+    const links = document.querySelectorAll('a[href^="#"]');
+    if (!links.length) return;
+
+    const header = document.querySelector('header.navbar');
+    const offset = header ? header.offsetHeight + 12 : 0;
+
+    links.forEach(link => {
+        link.addEventListener('click', function (event) {
+            const href = link.getAttribute('href');
+            if (!href || href.length < 2) return;
+            const target = document.querySelector(href);
+            if (!target) return;
+
+            event.preventDefault();
+            const top = target.getBoundingClientRect().top + window.pageYOffset - offset;
+            window.scrollTo({ top, behavior: 'smooth' });
+        });
+    });
+}
+
+// Close mobile nav after clicking a link
+function initializeMobileNav() {
+    const collapseEl = document.querySelector('.navbar-collapse');
+    if (!collapseEl) return;
+
+    const links = collapseEl.querySelectorAll('.nav-link, .dropdown-item');
+    if (!links.length) return;
+
+    const hideCollapse = () => {
+        if (typeof bootstrap !== 'undefined' && bootstrap.Collapse) {
+            const instance = bootstrap.Collapse.getInstance(collapseEl) || new bootstrap.Collapse(collapseEl, { toggle: false });
+            instance.hide();
+        } else {
+            collapseEl.classList.remove('show');
+        }
+    };
+
+    links.forEach(link => {
+        link.addEventListener('click', () => {
+            if (window.matchMedia('(max-width: 991.98px)').matches) {
+                hideCollapse();
+            }
+        });
+    });
 }
 
 // Auto Dismiss Alerts

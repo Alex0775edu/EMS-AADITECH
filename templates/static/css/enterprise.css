@@ -1,8 +1,8 @@
 :root {
-    --brand-1: #0b1120;
-    --brand-2: #4f46e5;
-    --brand-3: #06b6d4;
-    --surface: #f8fafc;
+    --brand-1: var(--secondary);
+    --brand-2: var(--primary);
+    --brand-3: var(--accent);
+    --surface: var(--background);
     --topbar-gradient: linear-gradient(90deg, var(--brand-1), var(--brand-2));
 }
 
@@ -25,13 +25,13 @@
     background: var(--surface-color);
     border-radius: 16px;
     padding: 1rem;
-    border: 1px solid rgba(79, 70, 229, 0.2);
+    border: 1px solid rgba(37, 99, 235, 0.2);
 }
 
 .chart-card {
     background: var(--surface-color);
     border-radius: 16px;
-    border: 1px solid rgba(79, 70, 229, 0.2);
+    border: 1px solid rgba(37, 99, 235, 0.2);
     padding: 1rem;
 }
 
@@ -101,7 +101,7 @@ table.table tbody tr:hover {
     height: 58px;
     border-radius: 50%;
     border: 0;
-    background: linear-gradient(130deg, #4f46e5, #06b6d4);
+    background: linear-gradient(130deg, var(--primary), var(--accent));
     color: #fff;
     z-index: 1055;
 }
@@ -113,7 +113,7 @@ table.table tbody tr:hover {
     width: min(380px, calc(100vw - 24px));
     height: 480px;
     background: #fff;
-    border: 1px solid #cbd5e1;
+    border: 1px solid var(--border-color);
     border-radius: 16px;
     display: none;
     z-index: 1055;
