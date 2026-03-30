@@ -63,6 +63,22 @@ document.addEventListener('DOMContentLoaded', function() {
     initializeCounters();
 });
 
+// Utility function to get cookie value by name
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
 // Initialize Bootstrap Components
 function initializeBootstrap() {
     if (typeof bootstrap === 'undefined') {
@@ -929,11 +945,17 @@ document.addEventListener('submit', function(e) {
         submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
         submitBtn.disabled = true;
         
+        // Get CSRF token from form or cookie
+        const csrfToken = form.querySelector('input[name="csrfmiddlewaretoken"]')?.value || 
+                         document.querySelector('input[name="csrfmiddlewaretoken"]')?.value || 
+                         getCookie('csrftoken') || '';
+        
         fetch(form.action, {
             method: form.method,
             body: formData,
             headers: {
-                'X-Requested-With': 'XMLHttpRequest'
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-CSRFToken': csrfToken
             }
         })
         .then(response => response.json())
