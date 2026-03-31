@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block title %}CSRF Verification Failed{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+  <div class="card">
+    <div class="card-body">
+      <h3 class="card-title">403 — CSRF verification failed</h3>
+      <p class="text-muted">The server could not verify the request's authenticity. If you believe this is an error, try refreshing the page and retry the action.</p>
+      {% if reason and debug %}
+        <div class="alert alert-warning"><strong>Debug info:</strong> {{ reason }}</div>
+      {% endif %}
+      <a href="/" class="btn btn-primary">Return Home</a>
+    </div>
+  </div>
+</div>
+{% endblock %}

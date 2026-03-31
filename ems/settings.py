@@ -73,9 +73,16 @@ SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'dev-secret-key-change-me')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env_bool('DJANGO_DEBUG', True)
 
+# Optional: enable a temporary test mode for debugging CSRF issues.
+# Set the environment variable `CSRF_TEST_MODE=1` to force DEBUG=True
+# without changing production config permanently.
+if os.getenv('CSRF_TEST_MODE') == '1':
+    DEBUG = True
+
 default_allowed_hosts = [
     '127.0.0.1',
     'localhost',
+    'aaditech2.pythonanywhere.com',
 ]
 if DEBUG:
     default_allowed_hosts.extend([
@@ -88,6 +95,7 @@ ALLOWED_HOSTS = env_list('DJANGO_ALLOWED_HOSTS', default_allowed_hosts)
 default_csrf_trusted = [
     'http://127.0.0.1:8000',
     'http://localhost:8000',
+    'https://aaditech2.pythonanywhere.com',
 ]
 if DEBUG:
     default_csrf_trusted.extend([
@@ -106,6 +114,30 @@ else:
     ]
 
 CSRF_TRUSTED_ORIGINS = env_list('DJANGO_CSRF_TRUSTED_ORIGINS', csrf_default)
+
+# Ensure the PythonAnywhere origin is present in trusted origins (idempotent)
+if 'https://aaditech2.pythonanywhere.com' not in CSRF_TRUSTED_ORIGINS:
+    CSRF_TRUSTED_ORIGINS.append('https://aaditech2.pythonanywhere.com')
+
+# Configure a CSRF failure view and logging to help debugging CSRF 403s.
+CSRF_FAILURE_VIEW = 'ems.views.csrf_failure'
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'loggers': {
+        'django.security.csrf': {
+            'handlers': ['console'],
+            'level': 'DEBUG' if DEBUG else 'ERROR',
+            'propagate': True,
+        },
+    },
+}
 
 # Rate limiting (per IP, per path)
 RATE_LIMIT_WINDOW = 60
