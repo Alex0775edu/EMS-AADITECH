@@ -161,8 +161,8 @@ SESSION_COOKIE_AGE = int(os.getenv('SESSION_COOKIE_AGE', '1209600'))  # default 
 SESSION_SAVE_EVERY_REQUEST = env_bool('SESSION_SAVE_EVERY_REQUEST', True)
 
 # Ensure the primary PythonAnywhere host is trusted for CSRF (idempotent)
-if 'https://aaditech.pythonanywhere.com' not in CSRF_TRUSTED_ORIGINS:
-    CSRF_TRUSTED_ORIGINS.append('https://aaditech.pythonanywhere.com')
+if 'https://aaditech2.pythonanywhere.com' not in CSRF_TRUSTED_ORIGINS:
+    CSRF_TRUSTED_ORIGINS.append('https://aaditech2.pythonanywhere.com')
 
 if not DEBUG:
     if SECRET_KEY == 'dev-secret-key-change-me':
