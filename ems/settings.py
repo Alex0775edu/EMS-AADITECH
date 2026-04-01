@@ -13,6 +13,8 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 from pathlib import Path
 from urllib.parse import urlparse
 import os
+import importlib
+import logging
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -212,9 +214,10 @@ AUTH_USER_MODEL = 'accounts.User'
 
 
 
-MIDDLEWARE = [
+# Insert WhiteNoise middleware only if the package is available to avoid
+# crashing the WSGI app when the dependency isn't installed.
+_MIDDLEWARE_BASE = [
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',
     'ems.middleware.RateLimitMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.locale.LocaleMiddleware',
@@ -225,6 +228,16 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'dashboard.middleware.ActivityLogMiddleware',
 ]
+
+# Safe attempt to enable whitenoise if it's installed
+try:
+    importlib.import_module('whitenoise')
+    MIDDLEWARE = _MIDDLEWARE_BASE[:]
+    # place WhiteNoise right after SecurityMiddleware
+    MIDDLEWARE.insert(1, 'whitenoise.middleware.WhiteNoiseMiddleware')
+except Exception:
+    logging.getLogger(__name__).warning('whitenoise not installed; skipping WhiteNoiseMiddleware')
+    MIDDLEWARE = _MIDDLEWARE_BASE
 
 ROOT_URLCONF = 'ems.urls'
 
@@ -332,7 +345,13 @@ STATICFILES_DIRS = [
     path for path in (BASE_DIR / 'static', BASE_DIR / 'templates' / 'static') if path.exists()
 ]
 STATIC_ROOT = BASE_DIR / 'staticfiles'
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+# Prefer WhiteNoise storage if available; fall back to default storage otherwise.
+try:
+    importlib.import_module('whitenoise')
+    STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+except Exception:
+    logging.getLogger(__name__).warning('whitenoise not installed; using default staticfiles storage')
+    STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'
 
 
 # Default primary key field type
