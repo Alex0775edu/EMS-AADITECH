@@ -264,6 +264,21 @@ body.has-sidebar.sidebar-open .sidebar-backdrop {
     visibility: visible;
 }
 
+/* Prevent hidden backdrop from intercepting touch/clicks on mobile */
+.sidebar-backdrop {
+    pointer-events: none;
+}
+
+body.has-sidebar.sidebar-open .sidebar-backdrop {
+    pointer-events: auto;
+}
+
+/* Improve touch behavior for buttons on mobile */
+button, a.button, .btn {
+    -webkit-tap-highlight-color: rgba(0,0,0,0.08);
+    touch-action: manipulation;
+}
+
 /* Main Content */
 main {
     padding-top: 20px;

@@ -118,6 +118,9 @@ CSRF_TRUSTED_ORIGINS = env_list('DJANGO_CSRF_TRUSTED_ORIGINS', csrf_default)
 # Ensure the PythonAnywhere origin is present in trusted origins (idempotent)
 if 'https://aaditech2.pythonanywhere.com' not in CSRF_TRUSTED_ORIGINS:
     CSRF_TRUSTED_ORIGINS.append('https://aaditech2.pythonanywhere.com')
+# Also ensure the main deployment host is present in ALLOWED_HOSTS
+if 'aaditech2.pythonanywhere.com' not in ALLOWED_HOSTS:
+    ALLOWED_HOSTS.append('aaditech2.pythonanywhere.com')
 
 # Configure a CSRF failure view and logging to help debugging CSRF 403s.
 CSRF_FAILURE_VIEW = 'ems.views.csrf_failure'
@@ -151,6 +154,15 @@ SECURE_REFERRER_POLICY = 'same-origin'
 SESSION_COOKIE_HTTPONLY = True
 SESSION_COOKIE_SAMESITE = 'Lax'
 CSRF_COOKIE_SAMESITE = 'Lax'
+
+# Session configuration defaults (can be overridden via environment variables)
+SESSION_ENGINE = os.getenv('SESSION_ENGINE', 'django.contrib.sessions.backends.db')
+SESSION_COOKIE_AGE = int(os.getenv('SESSION_COOKIE_AGE', '1209600'))  # default 2 weeks
+SESSION_SAVE_EVERY_REQUEST = env_bool('SESSION_SAVE_EVERY_REQUEST', True)
+
+# Ensure the primary PythonAnywhere host is trusted for CSRF (idempotent)
+if 'https://aaditech.pythonanywhere.com' not in CSRF_TRUSTED_ORIGINS:
+    CSRF_TRUSTED_ORIGINS.append('https://aaditech.pythonanywhere.com')
 
 if not DEBUG:
     if SECRET_KEY == 'dev-secret-key-change-me':
@@ -202,6 +214,7 @@ AUTH_USER_MODEL = 'accounts.User'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'ems.middleware.RateLimitMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.locale.LocaleMiddleware',
@@ -319,6 +332,7 @@ STATICFILES_DIRS = [
     path for path in (BASE_DIR / 'static', BASE_DIR / 'templates' / 'static') if path.exists()
 ]
 STATIC_ROOT = BASE_DIR / 'staticfiles'
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 
 # Default primary key field type

@@ -38,6 +38,9 @@ document.addEventListener('DOMContentLoaded', function() {
     // Initialize cookie consent banner
     initializeCookieBanner();
 
+    // Ensure fetch includes CSRF token for all POST/PUT/DELETE requests
+    enableFetchCsrf();
+
     // Smooth scrolling for anchor links
     initializeSmoothScroll();
 
@@ -77,6 +80,35 @@ function getCookie(name) {
         }
     }
     return cookieValue;
+}
+
+// Enhance fetch to automatically include CSRF token for same-origin unsafe requests
+function enableFetchCsrf() {
+    if (!window.fetch) return;
+
+    const originalFetch = window.fetch.bind(window);
+    window.fetch = function(input, init) {
+        try {
+            init = init || {};
+            const method = (init.method || (typeof input === 'string' && 'GET') ).toUpperCase();
+            const isUnsafe = ['POST','PUT','PATCH','DELETE'].includes(method);
+            const url = (typeof input === 'string') ? input : (input && input.url) || '';
+
+            // Only add CSRF for same-origin requests
+            const isSameOrigin = url.startsWith('/') || url.indexOf(window.location.origin) === 0;
+            if (isUnsafe && isSameOrigin) {
+                init.headers = init.headers || {};
+                // Respect existing header if explicitly provided
+                if (!('X-CSRFToken' in init.headers) && !('x-csrftoken' in init.headers)) {
+                    const token = document.querySelector('input[name="csrfmiddlewaretoken"]')?.value || getCookie('csrftoken') || document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
+                    if (token) init.headers['X-CSRFToken'] = token;
+                }
+            }
+        } catch (err) {
+            console.warn('enableFetchCsrf error', err);
+        }
+        return originalFetch(input, init);
+    };
 }
 
 // Initialize Bootstrap Components
