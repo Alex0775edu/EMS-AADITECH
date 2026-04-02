@@ -15,6 +15,7 @@ from urllib.parse import urlparse
 import os
 import importlib
 import logging
+import sys
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -124,6 +125,35 @@ if 'https://aaditech2.pythonanywhere.com' not in CSRF_TRUSTED_ORIGINS:
 if 'aaditech2.pythonanywhere.com' not in ALLOWED_HOSTS:
     ALLOWED_HOSTS.append('aaditech2.pythonanywhere.com')
 
+# Allow operators to opt-in to production proxy handling and cross-site
+# cookie behavior via environment variables. This helps when the app is
+# served behind a load balancer / proxy or when POSTs originate from a
+# different domain (e.g. CDN, app subdomain, or embedded widget).
+if env_bool('DJANGO_BEHIND_PROXY', False):
+    # Respect X-Forwarded-Proto from the fronting proxy so Django knows
+    # when requests are actually HTTPS. Useful on platforms that terminate
+    # TLS at the edge (set DJANGO_BEHIND_PROXY=1 in the environment).
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
+# Allow cross-site cookies for legitimate cross-origin POSTs when the
+# deployer explicitly opts in. This sets `SameSite=None` and enforces
+# secure cookies (required by browsers when SameSite=None).
+if env_bool('DJANGO_CSRF_CROSS_SITE', False):
+    CSRF_COOKIE_SAMESITE = 'None'
+    CSRF_COOKIE_SECURE = True
+    SESSION_COOKIE_SECURE = True
+
+# Ensure CSRF_TRUSTED_ORIGINS contains scheme-qualified hostnames for
+# production. The environment variable `DJANGO_CSRF_TRUSTED_ORIGINS` may
+# also be used to add additional origins (comma-separated).
+if not DEBUG:
+    # Add any ALLOWED_HOSTS entries (without leading dot) as https origins
+    for host in ALLOWED_HOSTS:
+        if host and not host.startswith('.') and host.startswith('http') is False:
+            origin = f'https://{host}'
+            if origin not in CSRF_TRUSTED_ORIGINS:
+                CSRF_TRUSTED_ORIGINS.append(origin)
+
 # Configure a CSRF failure view and logging to help debugging CSRF 403s.
 CSRF_FAILURE_VIEW = 'ems.views.csrf_failure'
 
@@ -223,6 +253,8 @@ _MIDDLEWARE_BASE = [
     'django.middleware.locale.LocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
+    # Ensure CSRF cookie is available broadly for forms and JS
+    'ems.middleware.EnsureCsrfCookieMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -314,6 +346,11 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
+
+# Use a fast password hasher when running tests to speed up user creation and
+# authentication in the test suite (avoids slow PBKDF2 iterations).
+if 'test' in sys.argv:
+    PASSWORD_HASHERS = ['django.contrib.auth.hashers.MD5PasswordHasher']
 
 
 

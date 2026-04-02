@@ -8,5 +8,6 @@
             "group": "ems"
         }
     ],
-    "sqltools.useNodeRuntime": true
+    "sqltools.useNodeRuntime": true,
+    "python-envs.defaultEnvManager": "ms-python.python:system"
 }

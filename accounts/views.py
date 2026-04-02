@@ -1,5 +1,7 @@
 from datetime import datetime
+import logging
 
+from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
@@ -11,6 +13,8 @@ from django.views.decorators.csrf import ensure_csrf_cookie
 
 from .forms import RegisterForm
 from .models import User
+
+logger = logging.getLogger(__name__)
 
 
 @never_cache
@@ -38,6 +42,7 @@ def custom_login(request):
             if not remember:
                 request.session.set_expiry(0)
 
+            # Prefer a safe next URL if provided
             if next_url and url_has_allowed_host_and_scheme(next_url, allowed_hosts={request.get_host()}):
                 return redirect(next_url)
 
@@ -49,13 +54,16 @@ def custom_login(request):
                 return redirect('dashboard:student_dashboard')
             return redirect('dashboard:dashboard')
 
+        # log failed attempt without sensitive data
+        logger.debug('Failed login attempt for identifier=%s from %s', identifier, request.META.get('REMOTE_ADDR'))
+
         return render(
             request,
             'auth/login.html',
-            {'error': 'Invalid Institute ID/Email or password.', 'identifier': identifier},
+            {'error': 'Invalid Institute ID/Email or password.', 'identifier': identifier, 'next': next_url},
         )
 
-    return render(request, 'auth/login.html')
+    return render(request, 'auth/login.html', {'next': request.GET.get('next', '')})
 
 
 @login_required
@@ -84,9 +92,12 @@ def custom_register(request):
     return render(request, 'auth/register.html', {'form': form})
 
 
-@login_required
 def custom_logout(request):
-    logout(request)
+    # Allow logout to be called even when not authenticated
+    try:
+        logout(request)
+    except Exception:
+        logger.exception('Error during logout')
     return redirect('accounts:login')
 
 
