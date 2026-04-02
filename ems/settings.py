@@ -125,6 +125,14 @@ if 'https://aaditech2.pythonanywhere.com' not in CSRF_TRUSTED_ORIGINS:
 if 'aaditech2.pythonanywhere.com' not in ALLOWED_HOSTS:
     ALLOWED_HOSTS.append('aaditech2.pythonanywhere.com')
 
+# Hardcode PythonAnywhere host variants to avoid CSRF failures after deploy.
+for host_variant in ['aaditech2.pythonanywhere.com', 'www.aaditech2.pythonanywhere.com']:
+    if host_variant not in ALLOWED_HOSTS:
+        ALLOWED_HOSTS.append(host_variant)
+    origin = f'https://{host_variant}'
+    if origin not in CSRF_TRUSTED_ORIGINS:
+        CSRF_TRUSTED_ORIGINS.append(origin)
+
 # Allow operators to opt-in to production proxy handling and cross-site
 # cookie behavior via environment variables. This helps when the app is
 # served behind a load balancer / proxy or when POSTs originate from a
