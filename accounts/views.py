@@ -27,6 +27,17 @@ def custom_login(request):
         next_url = request.POST.get('next') or request.GET.get('next')
 
         user = authenticate(request, username=identifier, password=password)
+        if not user and identifier:
+            candidates = User.objects.filter(
+                Q(email__iexact=identifier)
+                | Q(institute_id__iexact=identifier)
+                | Q(username__iexact=identifier)
+            )
+            for candidate in candidates:
+                authed = authenticate(request, username=candidate.username, password=password)
+                if authed:
+                    user = authed
+                    break
 
         if user:
             login(request, user)
