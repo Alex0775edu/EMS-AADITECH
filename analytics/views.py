@@ -90,9 +90,4 @@ def summary(request):
 
 
 def _can_view_analytics(user):
-    role = getattr(user, 'role', '')
-    return bool(
-        getattr(user, 'is_superuser', False)
-        or getattr(user, 'is_staff', False)
-        or role in {'ADMIN', 'INSTITUTE'}
-    )
+    return bool(getattr(user, 'is_superuser', False))
