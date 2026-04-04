@@ -2,8 +2,17 @@
 {% block title %}Analytics Events - EMS{% endblock %}
 {% block content %}
 <div class="chart-card p-4">
-    <h4 class="mb-2">Platform Event Logs</h4>
-    <p class="text-muted">Track user activity for analytics and security monitoring.</p>
+    <div class="d-flex flex-wrap justify-content-between align-items-start gap-3 mb-2">
+        <div>
+            <h4 class="mb-1">Platform Event Logs</h4>
+            <p class="text-muted mb-0">Track user activity for analytics and security monitoring.</p>
+        </div>
+        <div class="d-flex gap-2">
+            <a class="btn btn-outline-primary btn-sm" href="{% url 'analytics:event_list' %}?type=page_view">Page Views</a>
+            <a class="btn btn-outline-primary btn-sm" href="{% url 'analytics:event_list' %}?type=login">Logins</a>
+            <a class="btn btn-outline-primary btn-sm" href="{% url 'analytics:event_list' %}?type=login_failed">Failed Logins</a>
+        </div>
+    </div>
     {% if events %}
         <div class="table-responsive">
             <table class="table align-middle">
@@ -11,6 +20,8 @@
                     <tr>
                         <th>Event</th>
                         <th>User</th>
+                        <th>Path</th>
+                        <th>IP</th>
                         <th>Time</th>
                     </tr>
                 </thead>
@@ -18,7 +29,9 @@
                     {% for event in events %}
                     <tr>
                         <td>{{ event.event_type }}</td>
-                        <td>{{ event.user.username|default:"System" }}</td>
+                        <td>{{ event.user.username|default:"Guest" }}</td>
+                        <td>{{ event.metadata.path|default:"-" }}</td>
+                        <td>{{ event.ip_address|default:"-" }}</td>
                         <td>{{ event.created_at|date:"M d, Y H:i" }}</td>
                     </tr>
                     {% endfor %}

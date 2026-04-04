@@ -10,6 +10,9 @@
             <li class="sidebar-section">Core</li>
             <li class="nav-item"><a class="nav-link" href="{% url 'dashboard:dashboard' %}"><i class="fa-solid fa-gauge"></i><span class="nav-label">Dashboard</span></a></li>
             <li class="nav-item"><a class="nav-link" href="{% url 'dashboard:reports_page' %}"><i class="fa-solid fa-chart-line"></i><span class="nav-label">Analytics</span></a></li>
+            {% if user.role == 'ADMIN' or user.is_superuser or user.is_staff %}
+            <li class="nav-item"><a class="nav-link" href="{% url 'analytics:summary' %}"><i class="fa-solid fa-chart-pie"></i><span class="nav-label">Traffic</span></a></li>
+            {% endif %}
 
             <li class="sidebar-section">Learning</li>
             <li class="nav-item"><a class="nav-link" href="{% url 'dashboard:courses_page' %}"><i class="fa-solid fa-book-open"></i><span class="nav-label">Courses</span></a></li>
@@ -39,7 +42,7 @@
 
             <li class="sidebar-section">Admin</li>
             <li class="nav-item"><a class="nav-link" href="{% url 'dashboard:settings_page' %}"><i class="fa-solid fa-gear"></i><span class="nav-label">Settings</span></a></li>
-            {% if user.role == 'ADMIN' or user.is_superuser %}
+            {% if user.role == 'ADMIN' or user.is_superuser or user.is_staff %}
             <li class="nav-item"><a class="nav-link" href="{% url 'dashboard:data_hub' %}"><i class="fa-solid fa-database"></i><span class="nav-label">Data Hub</span></a></li>
             {% endif %}
 

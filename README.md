@@ -17,6 +17,7 @@ This project supports school, college, university, and coaching workflows from o
 - Fee tracking
 - Notices and announcements
 - Dashboard analytics with charts
+- Traffic analytics (page views + logins)
 - Forgot password flow (DOB verification + reset)
 
 ## 2. Tech Stack
@@ -88,6 +89,7 @@ ems/
 - `/` home
 - `/accounts/` auth module
 - `/dashboard/` dashboard module
+- `/analytics/` traffic analytics (admin)
 - `/students/`, `/teachers/`, `/attendance/`, `/exams/`, `/fees/`, `/notices/`
 - `/robots.txt` search engine directives
 - `/sitemap.xml` sitemap listing public routes

@@ -269,6 +269,7 @@ _MIDDLEWARE_BASE = [
     # Ensure CSRF cookie is available broadly for forms and JS
     'ems.middleware.EnsureCsrfCookieMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'analytics.middleware.PageViewTrackingMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'dashboard.middleware.ActivityLogMiddleware',

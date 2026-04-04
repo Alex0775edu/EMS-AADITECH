@@ -1,0 +1,141 @@
+{% extends 'base.html' %}
+{% block title %}Traffic Analytics - EMS{% endblock %}
+{% block content %}
+<div class="chart-card p-4 mb-4">
+    <div class="d-flex flex-wrap justify-content-between align-items-start gap-3 mb-3">
+        <div>
+            <h4 class="mb-1">Website Traffic Overview</h4>
+            <p class="text-muted mb-0">Track visits and logins over the last {{ days }} days.</p>
+        </div>
+        <div class="d-flex gap-2">
+            <a class="btn btn-outline-primary btn-sm" href="{% url 'analytics:summary' %}?days=7">7 Days</a>
+            <a class="btn btn-outline-primary btn-sm" href="{% url 'analytics:summary' %}?days=30">30 Days</a>
+            <a class="btn btn-outline-primary btn-sm" href="{% url 'analytics:summary' %}?days=90">90 Days</a>
+        </div>
+    </div>
+
+    <div class="row g-3">
+        <div class="col-md-3">
+            <div class="card h-100 border-0 shadow-sm">
+                <div class="card-body">
+                    <div class="text-muted small">Total Page Views</div>
+                    <div class="fs-4 fw-semibold">{{ total_page_views }}</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card h-100 border-0 shadow-sm">
+                <div class="card-body">
+                    <div class="text-muted small">Unique Visitors (IP)</div>
+                    <div class="fs-4 fw-semibold">{{ unique_visitors }}</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card h-100 border-0 shadow-sm">
+                <div class="card-body">
+                    <div class="text-muted small">Total Logins</div>
+                    <div class="fs-4 fw-semibold">{{ total_logins }}</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card h-100 border-0 shadow-sm">
+                <div class="card-body">
+                    <div class="text-muted small">Unique Logins</div>
+                    <div class="fs-4 fw-semibold">{{ unique_logins }}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="chart-card p-4 mb-4">
+    <h5 class="mb-3">Daily Breakdown</h5>
+    <div class="table-responsive">
+        <table class="table align-middle">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Page Views</th>
+                    <th>Logins</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in series %}
+                <tr>
+                    <td>{{ row.date|date:"M d, Y" }}</td>
+                    <td>{{ row.page_views }}</td>
+                    <td>{{ row.logins }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="row g-3">
+    <div class="col-lg-6">
+        <div class="chart-card p-4 h-100">
+            <h5 class="mb-3">Recent Logins</h5>
+            {% if recent_logins %}
+                <div class="table-responsive">
+                    <table class="table align-middle">
+                        <thead>
+                            <tr>
+                                <th>User</th>
+                                <th>IP</th>
+                                <th>Time</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for event in recent_logins %}
+                            <tr>
+                                <td>{{ event.user.username|default:"Unknown" }}</td>
+                                <td>{{ event.ip_address|default:"-" }}</td>
+                                <td>{{ event.created_at|date:"M d, Y H:i" }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <p class="text-muted mb-0">No logins recorded yet.</p>
+            {% endif %}
+        </div>
+    </div>
+    <div class="col-lg-6">
+        <div class="chart-card p-4 h-100">
+            <h5 class="mb-3">Recent Page Views</h5>
+            {% if recent_views %}
+                <div class="table-responsive">
+                    <table class="table align-middle">
+                        <thead>
+                            <tr>
+                                <th>Path</th>
+                                <th>User</th>
+                                <th>Time</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for event in recent_views %}
+                            <tr>
+                                <td>{{ event.metadata.path|default:"/" }}</td>
+                                <td>{{ event.user.username|default:"Guest" }}</td>
+                                <td>{{ event.created_at|date:"M d, Y H:i" }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <p class="text-muted mb-0">No page views recorded yet.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<div class="mt-4">
+    <a class="btn btn-outline-secondary" href="{% url 'analytics:event_list' %}">View Full Event Log</a>
+</div>
+{% endblock %}
