@@ -143,14 +143,6 @@ if env_bool('DJANGO_BEHIND_PROXY', False):
     # TLS at the edge (set DJANGO_BEHIND_PROXY=1 in the environment).
     SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
-# Allow cross-site cookies for legitimate cross-origin POSTs when the
-# deployer explicitly opts in. This sets `SameSite=None` and enforces
-# secure cookies (required by browsers when SameSite=None).
-if env_bool('DJANGO_CSRF_CROSS_SITE', False):
-    CSRF_COOKIE_SAMESITE = 'None'
-    CSRF_COOKIE_SECURE = True
-    SESSION_COOKIE_SECURE = True
-
 # Ensure CSRF_TRUSTED_ORIGINS contains scheme-qualified hostnames for
 # production. The environment variable `DJANGO_CSRF_TRUSTED_ORIGINS` may
 # also be used to add additional origins (comma-separated).
@@ -194,6 +186,15 @@ SECURE_REFERRER_POLICY = 'same-origin'
 SESSION_COOKIE_HTTPONLY = True
 SESSION_COOKIE_SAMESITE = 'Lax'
 CSRF_COOKIE_SAMESITE = 'Lax'
+
+# Allow cross-site cookies for legitimate cross-origin POSTs when the
+# deployer explicitly opts in. This sets `SameSite=None` and enforces
+# secure cookies (required by browsers when SameSite=None).
+if env_bool('DJANGO_CSRF_CROSS_SITE', False):
+    CSRF_COOKIE_SAMESITE = 'None'
+    CSRF_COOKIE_SECURE = True
+    SESSION_COOKIE_SAMESITE = 'None'
+    SESSION_COOKIE_SECURE = True
 
 # Session configuration defaults (can be overridden via environment variables)
 SESSION_ENGINE = os.getenv('SESSION_ENGINE', 'django.contrib.sessions.backends.db')
@@ -250,6 +251,10 @@ INSTALLED_APPS = [
 
 AUTH_USER_MODEL = 'accounts.User'
 
+AUTHENTICATION_BACKENDS = [
+    'accounts.backends.IdentifierBackend',
+    'django.contrib.auth.backends.ModelBackend',
+]
 
 
 # Insert WhiteNoise middleware only if the package is available to avoid
