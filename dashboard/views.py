@@ -84,9 +84,9 @@ def admin_dashboard(request):
             'pending_fees_count': pending_fees_count,
             'active_classes_count': active_classes_count,
             'recent_notices': recent_notices,
-            'chart_labels': json.dumps(chart_labels),
-            'attendance_data': json.dumps(attendance_data),
-            'performance_data': json.dumps(performance_data),
+            'chart_labels': chart_labels,
+            'attendance_data': attendance_data,
+            'performance_data': performance_data,
         },
     )
 
