@@ -1,21 +1,30 @@
 document.addEventListener('DOMContentLoaded', () => {
     initPageAnimations();
+    initDashboardCharts();
+    initStudentChatbot();
+});
 
+function initDashboardCharts() {
     const attendanceChartEl = document.getElementById('attendanceTrendChart');
     const performanceChartEl = document.getElementById('performanceTrendChart');
-    if (attendanceChartEl && performanceChartEl && window.Chart && window.dashboardChartPayload) {
-        const data = window.dashboardChartPayload;
-        const rootStyles = getComputedStyle(document.documentElement);
-        const primary = rootStyles.getPropertyValue('--primary').trim() || '#2563eb';
-        const accent = rootStyles.getPropertyValue('--accent').trim() || '#14b8a6';
-        const border = rootStyles.getPropertyValue('--border').trim() || '#d9e2ef';
-        const textSubtle = rootStyles.getPropertyValue('--text-subtle').trim() || '#52637a';
-        const surface = rootStyles.getPropertyValue('--card').trim() || '#ffffff';
 
-        Chart.defaults.color = textSubtle;
-        Chart.defaults.font.family = "'Inter', 'Segoe UI', sans-serif";
-        Chart.defaults.borderColor = border;
+    if ((!attendanceChartEl && !performanceChartEl) || !window.Chart || !window.dashboardChartPayload) {
+        return;
+    }
 
+    const data = window.dashboardChartPayload;
+    const rootStyles = getComputedStyle(document.documentElement);
+    const primary = rootStyles.getPropertyValue('--primary').trim() || '#2563eb';
+    const accent = rootStyles.getPropertyValue('--accent').trim() || '#14b8a6';
+    const border = rootStyles.getPropertyValue('--border').trim() || '#d9e2ef';
+    const textSubtle = rootStyles.getPropertyValue('--text-subtle').trim() || '#52637a';
+    const surface = rootStyles.getPropertyValue('--card').trim() || '#ffffff';
+
+    Chart.defaults.color = textSubtle;
+    Chart.defaults.font.family = "'Inter', 'Segoe UI', sans-serif";
+    Chart.defaults.borderColor = border;
+
+    if (attendanceChartEl) {
         new Chart(attendanceChartEl, {
             type: 'line',
             data: {
@@ -59,6 +68,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             }
         });
+    }
+
+    if (performanceChartEl) {
         new Chart(performanceChartEl, {
             type: 'bar',
             data: {
@@ -66,7 +78,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 datasets: [{
                     label: 'Performance %',
                     data: data.performance,
-                    backgroundColor: [primary, accent, primary, accent, primary, accent],
+                    backgroundColor: data.labels.map((_, index) => index % 2 === 0 ? primary : accent),
                     borderRadius: 14,
                     maxBarThickness: 34
                 }],
@@ -96,16 +108,21 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
-
-    initStudentChatbot();
-});
+}
 
 function initPageAnimations() {
     const targets = document.querySelectorAll('.dashboard-kpi, .chart-card, .card, .table-responsive');
+    if (!targets.length) return;
+
     targets.forEach((el, index) => {
         el.classList.add('animatable');
         el.style.transitionDelay = `${Math.min(index * 35, 260)}ms`;
     });
+
+    if (!('IntersectionObserver' in window)) {
+        targets.forEach((el) => el.classList.add('in-view'));
+        return;
+    }
 
     const observer = new IntersectionObserver(
         (entries) => {
@@ -129,24 +146,55 @@ function initStudentChatbot() {
     const input = document.getElementById('chatInput');
     const sendBtn = document.getElementById('chatSend');
     const messages = document.getElementById('chatMessages');
+
     if (!trigger || !panel || !input || !sendBtn || !messages) return;
 
-    trigger.addEventListener('click', () => panel.classList.toggle('open'));
-    if (closeBtn) closeBtn.addEventListener('click', () => panel.classList.remove('open'));
-    sendBtn.addEventListener('click', () => sendChatMessage(input, messages));
-    input.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter') {
-            e.preventDefault();
-            sendChatMessage(input, messages);
+    const setOpen = (open) => {
+        panel.classList.toggle('open', open);
+        panel.setAttribute('aria-hidden', open ? 'false' : 'true');
+        trigger.setAttribute('aria-expanded', open ? 'true' : 'false');
+
+        if (open) {
+            requestAnimationFrame(() => input.focus());
+        } else {
+            trigger.focus();
+        }
+    };
+
+    trigger.setAttribute('aria-controls', 'chatbotWindow');
+    trigger.setAttribute('aria-expanded', 'false');
+    panel.setAttribute('aria-hidden', 'true');
+
+    trigger.addEventListener('click', () => setOpen(!panel.classList.contains('open')));
+
+    if (closeBtn) {
+        closeBtn.addEventListener('click', () => setOpen(false));
+    }
+
+    sendBtn.addEventListener('click', () => sendChatMessage(input, messages, sendBtn));
+
+    input.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter') {
+            event.preventDefault();
+            sendChatMessage(input, messages, sendBtn);
+        }
+    });
+
+    document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape' && panel.classList.contains('open')) {
+            setOpen(false);
         }
     });
 }
 
-function sendChatMessage(input, messages) {
+function sendChatMessage(input, messages, sendBtn) {
     const text = input.value.trim();
-    if (!text) return;
+    if (!text || sendBtn.disabled) return;
+
     appendBubble(messages, text, 'user');
     input.value = '';
+    input.disabled = true;
+    sendBtn.disabled = true;
 
     fetch('/dashboard/chatbot/ask/', {
         method: 'POST',
@@ -156,9 +204,26 @@ function sendChatMessage(input, messages) {
         },
         body: JSON.stringify({ message: text }),
     })
-        .then((r) => r.json())
-        .then((data) => appendBubble(messages, data.reply || 'No response', 'bot'))
-        .catch(() => appendBubble(messages, 'Assistant is unavailable.', 'bot'));
+        .then(async (response) => {
+            let data = {};
+            try {
+                data = await response.json();
+            } catch (error) {
+                data = {};
+            }
+
+            if (!response.ok) {
+                throw new Error(data.error || 'Assistant is unavailable.');
+            }
+
+            appendBubble(messages, data.reply || 'No response', 'bot');
+        })
+        .catch(() => appendBubble(messages, 'Assistant is unavailable.', 'bot'))
+        .finally(() => {
+            input.disabled = false;
+            sendBtn.disabled = false;
+            input.focus();
+        });
 }
 
 function appendBubble(container, text, kind) {

@@ -1,23 +1,37 @@
 {% extends 'base.html' %}
 {% block title %}Assignments - EMS{% endblock %}
 {% block content %}
-<div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-3">
+<section class="section-heading reveal-on-scroll">
     <div>
-        <h4 class="mb-1">Assignments</h4>
-        <p class="text-muted mb-0">Track pending tasks and submit deliverables on time.</p>
+        <div class="section-heading__eyebrow">
+            <i class="fa-solid fa-list-check"></i>
+            Assignments
+        </div>
+        <h2 class="section-heading__title">Keep coursework and submissions in one calmer queue</h2>
+        <p class="section-heading__text">Track due dates, course ownership, and submission status with stronger visual hierarchy.</p>
     </div>
-</div>
+</section>
 
-<div class="chart-card">
+<section class="table-card reveal-on-scroll">
+    <div class="table-card__header">
+        <div>
+            <h3 class="table-card__title">Assignment tracker</h3>
+            <p class="table-card__subtitle">A cleaner assignment table for reviewing tasks and student submission actions.</p>
+        </div>
+        <span class="surface-pill">
+            <i class="fa-solid fa-clipboard-list"></i>
+            Coursework
+        </span>
+    </div>
     <div class="table-responsive">
-        <table class="table align-middle">
+        <table class="table align-middle" data-table="true" data-page-size="8">
             <thead>
                 <tr>
-                    <th>Title</th>
-                    <th>Course</th>
-                    <th>Due Date</th>
+                    <th data-sortable="true">Title</th>
+                    <th data-sortable="true">Course</th>
+                    <th data-sortable="true">Due Date</th>
                     {% if user.role == 'STUDENT' %}
-                    <th>Status</th>
+                    <th data-sortable="true">Status</th>
                     <th>Action</th>
                     {% endif %}
                 </tr>
@@ -45,11 +59,11 @@
                 </tr>
                 {% empty %}
                 <tr>
-                    <td colspan="{% if user.role == 'STUDENT' %}5{% else %}3{% endif %}" class="text-muted text-center">No assignments found</td>
+                    <td colspan="{% if user.role == 'STUDENT' %}5{% else %}3{% endif %}" class="text-muted text-center table-empty">No assignments found</td>
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
     </div>
-</div>
+</section>
 {% endblock %}

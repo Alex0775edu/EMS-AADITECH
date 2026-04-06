@@ -1,5 +1,51 @@
 {% extends 'base.html' %}
 {% block title %}Exams - EMS{% endblock %}
 {% block content %}
-<div class="chart-card"><h4>Exams</h4><div class="table-responsive"><table class="table"><thead><tr><th>Name</th><th>Date</th><th>Total Marks</th></tr></thead><tbody>{% for exam in exams %}<tr><td>{{ exam.name }}</td><td>{{ exam.date }}</td><td>{{ exam.total_marks }}</td></tr>{% empty %}<tr><td colspan="3" class="text-muted text-center">No exams found</td></tr>{% endfor %}</tbody></table></div></div>
+<section class="section-heading reveal-on-scroll">
+    <div>
+        <div class="section-heading__eyebrow">
+            <i class="fa-solid fa-file-pen"></i>
+            Exams
+        </div>
+        <h2 class="section-heading__title">Review exam schedules with less noise</h2>
+        <p class="section-heading__text">Exam records now use the same clearer layout system as the other academic modules.</p>
+    </div>
+</section>
+
+<section class="table-card reveal-on-scroll">
+    <div class="table-card__header">
+        <div>
+            <h3 class="table-card__title">Exam schedule</h3>
+            <p class="table-card__subtitle">Browse assessments, dates, and marks in a cleaner and more readable academic view.</p>
+        </div>
+        <span class="surface-pill">
+            <i class="fa-solid fa-calendar-days"></i>
+            Academic planning
+        </span>
+    </div>
+    <div class="table-responsive">
+        <table class="table align-middle" data-table="true" data-page-size="8">
+            <thead>
+                <tr>
+                    <th data-sortable="true">Name</th>
+                    <th data-sortable="true">Date</th>
+                    <th data-sortable="true">Total Marks</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for exam in exams %}
+                <tr>
+                    <td>{{ exam.name }}</td>
+                    <td>{{ exam.date }}</td>
+                    <td>{{ exam.total_marks }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="3" class="text-muted text-center table-empty">No exams found</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</section>
 {% endblock %}
