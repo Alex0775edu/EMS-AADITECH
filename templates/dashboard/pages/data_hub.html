@@ -3,12 +3,24 @@
 {% block title %}Add Data Hub - EMS{% endblock %}
 
 {% block content %}
-<div class="d-flex justify-content-between align-items-center mb-3">
+<section class="section-heading reveal-on-scroll">
     <div>
-        <h2 class="mb-1">Add Data Hub</h2>
-        <p class="text-muted mb-0">Create Student, Teacher, Course, Fee and Notice from one page.</p>
+        <div class="section-heading__eyebrow">
+            <i class="fa-solid fa-database"></i>
+            Data Hub
+        </div>
+        <h2 class="section-heading__title">Create academic records from one operational workspace</h2>
+        <p class="section-heading__text">Add students, teachers, courses, fee records, and notices without switching modules.</p>
     </div>
-</div>
+    <div class="section-heading__actions">
+        {% if selected_institution %}
+        <span class="surface-pill">
+            <i class="fa-solid fa-building-columns"></i>
+            {{ selected_institution.name }}
+        </span>
+        {% endif %}
+    </div>
+</section>
 
 <div class="row g-3">
     <div class="col-12">

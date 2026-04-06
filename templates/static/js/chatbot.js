@@ -11,6 +11,7 @@
   }
 
   const history = [];
+  let lastTrigger = null;
 
   const getMetaToken = () => {
     const meta = document.querySelector("meta[name='csrf-token']");
@@ -26,34 +27,73 @@
     return "";
   };
 
+  const scrollToLatest = () => {
+    body.scrollTop = body.scrollHeight;
+  };
+
   const addMessage = (text, role) => {
     const wrapper = document.createElement("div");
     wrapper.className = `aaditech-chatbot__message aaditech-chatbot__message--${role}`;
+
     const bubble = document.createElement("div");
     bubble.className = "aaditech-chatbot__bubble";
     bubble.textContent = text;
+
     wrapper.appendChild(bubble);
     body.appendChild(wrapper);
-    body.scrollTop = body.scrollHeight;
+    scrollToLatest();
   };
 
   const setPending = (isPending) => {
     sendBtn.disabled = isPending;
     input.disabled = isPending;
     sendBtn.textContent = isPending ? "..." : "Send";
+    panel.setAttribute("aria-busy", isPending ? "true" : "false");
   };
 
-  const setOpen = (isOpen) => {
-    panel.classList.toggle("is-open", isOpen);
-    toggle.setAttribute("aria-expanded", isOpen ? "true" : "false");
-    if (isOpen) {
-      input.focus();
+  const setOpen = (isOpen, trigger) => {
+    if (isOpen && trigger) {
+      lastTrigger = trigger;
     }
+
+    panel.classList.toggle("is-open", isOpen);
+    panel.setAttribute("aria-hidden", isOpen ? "false" : "true");
+    toggle.setAttribute("aria-expanded", isOpen ? "true" : "false");
+
+    if (isOpen) {
+      requestAnimationFrame(() => {
+        input.focus();
+        scrollToLatest();
+      });
+      return;
+    }
+
+    if (lastTrigger && typeof lastTrigger.focus === "function") {
+      lastTrigger.focus();
+    } else {
+      toggle.focus();
+    }
+  };
+
+  const api = {
+    open(trigger = null) {
+      setOpen(true, trigger);
+    },
+    close() {
+      setOpen(false);
+    },
+    toggle(trigger = null) {
+      setOpen(!panel.classList.contains("is-open"), trigger);
+    },
+    isOpen() {
+      return panel.classList.contains("is-open");
+    },
   };
 
   const sendMessage = async () => {
     const text = input.value.trim();
-    if (!text) return;
+    if (!text || sendBtn.disabled) return;
+
     input.value = "";
     addMessage(text, "user");
     history.push({ role: "user", content: text });
@@ -68,13 +108,21 @@
         },
         body: JSON.stringify({
           message: text,
-          history: history.slice(-6),
+          history: history.slice(-8),
         }),
       });
-      const data = await resp.json();
+
+      let data = {};
+      try {
+        data = await resp.json();
+      } catch (error) {
+        data = {};
+      }
+
       if (!resp.ok || !data.reply) {
         throw new Error(data.error || "AI error");
       }
+
       addMessage(data.reply, "bot");
       history.push({ role: "assistant", content: data.reply });
     } catch (err) {
@@ -84,28 +132,44 @@
     }
   };
 
+  window.AaditechChatbot = api;
+
   toggle.addEventListener("click", () => {
-    setOpen(!panel.classList.contains("is-open"));
+    api.toggle(toggle);
   });
 
   if (closeBtn) {
     closeBtn.addEventListener("click", () => {
-      setOpen(false);
+      api.close();
     });
   }
 
   sendBtn.addEventListener("click", sendMessage);
+
   input.addEventListener("keydown", (event) => {
     if (event.key === "Enter") {
+      event.preventDefault();
       sendMessage();
     }
   });
 
   document.addEventListener("keydown", (event) => {
-    if (event.key === "Escape" && panel.classList.contains("is-open")) {
-      setOpen(false);
+    if (event.key === "Escape" && api.isOpen()) {
+      api.close();
     }
   });
 
-  addMessage("Hi, I am AaDiTeCh. How can I help you today?", "bot");
+  document.addEventListener("aaditech:chatbot-open", (event) => {
+    api.open(event.detail?.trigger || null);
+  });
+
+  document.addEventListener("aaditech:chatbot-close", () => {
+    api.close();
+  });
+
+  panel.setAttribute("aria-hidden", "true");
+
+  if (!body.children.length) {
+    addMessage("Hi, I am AaDiTeCh. How can I help you today?", "bot");
+  }
 })();

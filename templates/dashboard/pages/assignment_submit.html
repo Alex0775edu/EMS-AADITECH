@@ -1,9 +1,32 @@
 {% extends 'base.html' %}
 {% block title %}Submit Assignment - EMS{% endblock %}
 {% block content %}
-<div class="chart-card">
-    <h4 class="mb-2">Submit Assignment</h4>
-    <p class="text-muted mb-4">{{ assignment.title }} · {{ assignment.course.name }} · Due {{ assignment.due_date }}</p>
+<section class="section-heading reveal-on-scroll">
+    <div>
+        <div class="section-heading__eyebrow">
+            <i class="fa-solid fa-upload"></i>
+            Submission
+        </div>
+        <h2 class="section-heading__title">Submit work with a cleaner handoff flow</h2>
+        <p class="section-heading__text">{{ assignment.title }} &middot; {{ assignment.course.name }} &middot; Due {{ assignment.due_date }}</p>
+    </div>
+    <div class="section-heading__actions">
+        <a href="{% url 'dashboard:assignments_page' %}" class="btn btn-outline-secondary">Back to Assignments</a>
+    </div>
+</section>
+
+<section class="form-panel reveal-on-scroll">
+    <div class="form-panel__header">
+        <div>
+            <div class="form-panel__eyebrow">Assignment Upload</div>
+            <h3 class="auth-panel__title">Send your latest files and notes</h3>
+            <p class="auth-panel__text">Upload a supported document or image and optionally add notes for your reviewer.</p>
+        </div>
+        <span class="surface-pill">
+            <i class="fa-solid fa-paperclip"></i>
+            Secure submission
+        </span>
+    </div>
 
     {% if submission %}
     <div class="alert alert-info">
@@ -16,7 +39,7 @@
         <div class="mb-3">
             <label class="form-label">Upload File</label>
             <input type="file" class="form-control" name="attachment" accept=".pdf,.doc,.docx,.png,.jpg,.jpeg">
-            <small class="text-muted">Allowed: PDF, DOCX, JPG, PNG (max 10MB)</small>
+            <div class="field-hint">Allowed: PDF, DOCX, JPG, PNG (max 10MB)</div>
         </div>
         <div class="mb-3">
             <label class="form-label">Notes</label>
@@ -27,5 +50,5 @@
             <a href="{% url 'dashboard:assignments_page' %}" class="btn btn-outline-secondary">Back to Assignments</a>
         </div>
     </form>
-</div>
+</section>
 {% endblock %}

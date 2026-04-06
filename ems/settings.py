@@ -417,4 +417,4 @@ OPENAI_MODEL = os.getenv('OPENAI_MODEL', 'gpt-4.1-mini')
 OPENAI_API_BASE = os.getenv('OPENAI_API_BASE', 'https://api.openai.com/v1')
 
 # Static cache busting
-STATIC_VERSION = os.getenv('STATIC_VERSION', '20260311-4')
+STATIC_VERSION = os.getenv('STATIC_VERSION', '20260407-1')

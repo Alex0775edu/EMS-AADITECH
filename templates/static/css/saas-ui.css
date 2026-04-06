@@ -628,6 +628,7 @@ h6,
 .auth-panel,
 .quick-action-card,
 .dashboard-kpi,
+.table-card,
 .chart-card,
 .soft-card {
     position: relative;
@@ -648,6 +649,7 @@ h6,
 .form-panel::after,
 .auth-panel::after,
 .quick-action-card::after,
+.table-card::after,
 .chart-card::after {
     content: "";
     position: absolute;
@@ -736,6 +738,7 @@ h6,
 }
 
 .section-card,
+.table-card,
 .chart-card,
 .form-panel,
 .auth-panel {
@@ -903,10 +906,6 @@ h6,
     font-size: 0.86rem;
 }
 
-.table-card {
-    padding: 1.2rem;
-}
-
 .table-card__header {
     display: flex;
     flex-wrap: wrap;
@@ -1041,6 +1040,111 @@ h6,
 .table-empty {
     color: var(--text-subtle);
     font-weight: 600;
+}
+
+:where(.chart-card, .table-card, .section-card, .form-panel, .soft-card) > h4:first-child,
+:where(.chart-card, .table-card, .section-card, .form-panel, .soft-card) > h5:first-child,
+:where(.chart-card, .table-card, .section-card, .form-panel, .soft-card) > h6:first-child {
+    margin: 0 0 1rem;
+    font-size: 1.06rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+}
+
+:where(.chart-card, .table-card, .section-card, .form-panel, .soft-card) > p.text-muted:first-of-type {
+    margin-top: -0.4rem;
+    margin-bottom: 1rem;
+}
+
+:where(.chart-card, .table-card, .section-card, .form-panel, .soft-card) .table-responsive {
+    border: 1px solid rgba(148, 163, 184, 0.14);
+    border-radius: 20px;
+    background: var(--card);
+    overflow: auto;
+}
+
+:where(.chart-card, .table-card, .section-card, .form-panel, .soft-card) .table-responsive:not(:first-child) {
+    margin-top: 1rem;
+}
+
+:where(.chart-card, .table-card, .section-card, .form-panel, .soft-card) .table-responsive .table {
+    min-width: 100%;
+}
+
+:where(.chart-card, .table-card, .section-card, .form-panel, .soft-card) .table-sm th,
+:where(.chart-card, .table-card, .section-card, .form-panel, .soft-card) .table-sm td {
+    padding: 0.82rem 0.9rem;
+}
+
+:where(.chart-card, .table-card, .section-card, .form-panel, .soft-card) form {
+    display: grid;
+    gap: 1rem;
+}
+
+:where(.chart-card, .table-card, .section-card, .form-panel, .soft-card) form .row {
+    margin-bottom: 0;
+}
+
+:where(.chart-card, .table-card, .section-card, .form-panel, .soft-card) .btn-sm {
+    min-height: 38px;
+    padding: 0.5rem 0.85rem;
+    border-radius: 12px;
+}
+
+textarea.form-control {
+    min-height: 120px;
+    resize: vertical;
+}
+
+.list-group {
+    --bs-list-group-border-color: rgba(148, 163, 184, 0.14);
+    --bs-list-group-bg: transparent;
+    --bs-list-group-color: var(--text);
+    border-radius: 20px;
+    overflow: hidden;
+}
+
+.list-group-flush > .list-group-item {
+    padding: 0.95rem 1rem;
+    border-color: rgba(148, 163, 184, 0.14);
+    background: transparent;
+}
+
+.list-group-flush > .list-group-item:first-child {
+    border-top: 0;
+}
+
+.list-group-flush > .list-group-item:last-child {
+    border-bottom: 0;
+}
+
+.list-group-item .btn {
+    flex-shrink: 0;
+}
+
+.modal-content {
+    border: 1px solid rgba(148, 163, 184, 0.16);
+    border-radius: 24px;
+    overflow: hidden;
+    background:
+        radial-gradient(circle at top right, rgba(56, 189, 248, 0.12), transparent 34%),
+        linear-gradient(180deg, rgba(255, 255, 255, 0.99), rgba(248, 251, 255, 0.95));
+    box-shadow: var(--shadow-md);
+}
+
+.modal-header,
+.modal-footer {
+    padding: 1rem 1.25rem;
+    border-color: rgba(148, 163, 184, 0.14);
+}
+
+.modal-body {
+    padding: 1.2rem 1.25rem;
+}
+
+.modal-title {
+    font-weight: 800;
+    letter-spacing: -0.02em;
 }
 
 .form-panel__header,
@@ -1309,6 +1413,7 @@ h6,
 }
 
 .card:hover,
+.table-card:hover,
 .chart-card:hover,
 .dashboard-kpi:hover,
 .soft-card:hover {
@@ -1344,6 +1449,7 @@ body.dark-mode .sidebar,
 body.dark-mode .workspace-hero,
 body.dark-mode .metric-card,
 body.dark-mode .section-card,
+body.dark-mode .table-card,
 body.dark-mode .chart-card,
 body.dark-mode .dashboard-kpi,
 body.dark-mode .soft-card,
@@ -1537,6 +1643,7 @@ body.dark-mode .workspace-pulse-card--soft .workspace-pulse-card__meta {
     }
 
     .auth-hero-card,
+    .table-card,
     .chart-card,
     .section-card,
     .form-panel,

@@ -29,6 +29,9 @@ document.addEventListener('DOMContentLoaded', function() {
     // Initialize theme toggle
     initializeThemeToggle();
 
+    // Keyboard shortcut for top search
+    initializeSearchShortcut();
+
     // Initialize newsletter submission
     initializeNewsletterForm();
 
@@ -82,6 +85,69 @@ function getCookie(name) {
     return cookieValue;
 }
 
+function readStoredJson(key, fallback) {
+    try {
+        const raw = window.localStorage.getItem(key);
+        return raw ? JSON.parse(raw) : fallback;
+    } catch (err) {
+        console.warn(`Could not read localStorage key "${key}"`, err);
+        return fallback;
+    }
+}
+
+function writeStoredValue(key, value) {
+    try {
+        const normalizedValue = typeof value === 'string' ? value : JSON.stringify(value);
+        window.localStorage.setItem(key, normalizedValue);
+    } catch (err) {
+        console.warn(`Could not write localStorage key "${key}"`, err);
+    }
+}
+
+function setThemeColorMeta(mode) {
+    const meta = document.querySelector('meta[name="theme-color"]');
+    if (!meta) return;
+    meta.setAttribute('content', mode === 'dark' ? '#081221' : '#0b1120');
+}
+
+function openSharedChatbot(trigger) {
+    if (window.AaditechChatbot && typeof window.AaditechChatbot.open === 'function') {
+        window.AaditechChatbot.open(trigger || null);
+        return;
+    }
+
+    const panel = document.querySelector('.aaditech-chatbot__panel');
+    const toggle = document.querySelector('.aaditech-chatbot__toggle');
+    const input = document.querySelector('.aaditech-chatbot__input');
+    if (!panel) return;
+
+    panel.classList.add('is-open');
+    if (toggle) {
+        toggle.setAttribute('aria-expanded', 'true');
+    }
+    if (input) {
+        input.focus();
+    }
+}
+
+function focusGlobalSearch(triggerOpen) {
+    const searchInput = document.querySelector('.top-search input[type="search"], .top-search .form-control[type="search"]');
+    if (!searchInput) return;
+
+    const collapseEl = searchInput.closest('.navbar-collapse');
+    if (triggerOpen && collapseEl && !collapseEl.classList.contains('show') && window.matchMedia('(max-width: 1199.98px)').matches) {
+        if (typeof bootstrap !== 'undefined' && bootstrap.Collapse) {
+            const instance = bootstrap.Collapse.getInstance(collapseEl) || new bootstrap.Collapse(collapseEl, { toggle: false });
+            instance.show();
+        } else {
+            collapseEl.classList.add('show');
+        }
+    }
+
+    searchInput.focus();
+    searchInput.select();
+}
+
 // Enhance fetch to automatically include CSRF token for same-origin unsafe requests
 function enableFetchCsrf() {
     if (!window.fetch) return;
@@ -90,19 +156,27 @@ function enableFetchCsrf() {
     window.fetch = function(input, init) {
         try {
             init = init || {};
-            const method = (init.method || (typeof input === 'string' && 'GET') ).toUpperCase();
+            const requestMethod =
+                init.method ||
+                (typeof input !== 'string' && input && input.method) ||
+                'GET';
+            const method = String(requestMethod).toUpperCase();
             const isUnsafe = ['POST','PUT','PATCH','DELETE'].includes(method);
-            const url = (typeof input === 'string') ? input : (input && input.url) || '';
+            const url = (typeof input === 'string') ? input : (input && input.url) || window.location.href;
 
             // Only add CSRF for same-origin requests
-            const isSameOrigin = url.startsWith('/') || url.indexOf(window.location.origin) === 0;
+            const resolvedUrl = new URL(url, window.location.origin);
+            const isSameOrigin = resolvedUrl.origin === window.location.origin;
             if (isUnsafe && isSameOrigin) {
-                init.headers = init.headers || {};
+                const headers = new Headers(init.headers || (typeof input !== 'string' && input && input.headers) || {});
                 // Respect existing header if explicitly provided
-                if (!('X-CSRFToken' in init.headers) && !('x-csrftoken' in init.headers)) {
+                if (!headers.has('X-CSRFToken') && !headers.has('x-csrftoken')) {
                     const token = document.querySelector('input[name="csrfmiddlewaretoken"]')?.value || getCookie('csrftoken') || document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
-                    if (token) init.headers['X-CSRFToken'] = token;
+                    if (token) {
+                        headers.set('X-CSRFToken', token);
+                    }
                 }
+                init.headers = headers;
             }
         } catch (err) {
             console.warn('enableFetchCsrf error', err);
@@ -539,26 +613,53 @@ function initializeNotifications() {
 
 function initializeThemeToggle() {
     const toggle = document.getElementById('darkModeToggle');
-    if (!toggle) return;
+    const mediaQuery = window.matchMedia ? window.matchMedia('(prefers-color-scheme: dark)') : null;
 
     const applyTheme = (mode) => {
         document.body.classList.toggle('dark-mode', mode === 'dark');
-        const icon = toggle.querySelector('i');
-        if (icon) {
-            icon.className = mode === 'dark' ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
+        setThemeColorMeta(mode);
+        if (toggle) {
+            toggle.setAttribute('aria-pressed', mode === 'dark' ? 'true' : 'false');
+            const icon = toggle.querySelector('i');
+            if (icon) {
+                icon.className = mode === 'dark' ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
+            }
         }
     };
 
-    const saved = localStorage.getItem('themeMode');
-    const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const saved = (() => {
+        try {
+            return localStorage.getItem('themeMode');
+        } catch (err) {
+            return null;
+        }
+    })();
+    const prefersDark = mediaQuery ? mediaQuery.matches : false;
     applyTheme(saved || (prefersDark ? 'dark' : 'light'));
 
-    toggle.addEventListener('click', function () {
-        const isDark = document.body.classList.contains('dark-mode');
-        const next = isDark ? 'light' : 'dark';
-        localStorage.setItem('themeMode', next);
-        applyTheme(next);
-    });
+    if (toggle) {
+        toggle.addEventListener('click', function () {
+            const isDark = document.body.classList.contains('dark-mode');
+            const next = isDark ? 'light' : 'dark';
+            writeStoredValue('themeMode', next);
+            applyTheme(next);
+        });
+    }
+
+    if (mediaQuery && typeof mediaQuery.addEventListener === 'function') {
+        mediaQuery.addEventListener('change', function (event) {
+            const storedMode = (() => {
+                try {
+                    return localStorage.getItem('themeMode');
+                } catch (err) {
+                    return null;
+                }
+            })();
+            if (!storedMode) {
+                applyTheme(event.matches ? 'dark' : 'light');
+            }
+        });
+    }
 }
 
 function initializeHeaderNotifications() {
@@ -575,8 +676,18 @@ function initializeHeaderNotifications() {
         { id: 3, title: 'Fee reminders updated', url: '/dashboard/fees/' }
     ];
 
-    const stored = JSON.parse(localStorage.getItem('emsNotifications') || 'null') || defaultNotifs;
-    const read = JSON.parse(localStorage.getItem('emsNotificationsRead') || '[]');
+    const stored = (() => {
+        const items = readStoredJson('emsNotifications', defaultNotifs);
+        return Array.isArray(items) && items.length ? items : defaultNotifs;
+    })();
+    const read = new Set((() => {
+        const items = readStoredJson('emsNotificationsRead', []);
+        return Array.isArray(items) ? items : [];
+    })());
+
+    const persistRead = () => {
+        writeStoredValue('emsNotificationsRead', Array.from(read));
+    };
 
     const render = () => {
         dropdown.innerHTML = '';
@@ -590,13 +701,13 @@ function initializeHeaderNotifications() {
             a.className = 'dropdown-item';
             a.href = item.url;
             a.textContent = item.title;
-            if (!read.includes(item.id)) {
+            if (!read.has(item.id)) {
                 a.style.fontWeight = '600';
             }
             a.addEventListener('click', function () {
-                if (!read.includes(item.id)) {
-                    read.push(item.id);
-                    localStorage.setItem('emsNotificationsRead', JSON.stringify(read));
+                if (!read.has(item.id)) {
+                    read.add(item.id);
+                    persistRead();
                 }
             });
             li.appendChild(a);
@@ -613,7 +724,8 @@ function initializeHeaderNotifications() {
         clearBtn.type = 'button';
         clearBtn.textContent = 'Mark all as read';
         clearBtn.addEventListener('click', function () {
-            localStorage.setItem('emsNotificationsRead', JSON.stringify(stored.map(n => n.id)));
+            stored.forEach(item => read.add(item.id));
+            persistRead();
             updateDot();
             render();
         });
@@ -622,21 +734,12 @@ function initializeHeaderNotifications() {
     };
 
     const updateDot = () => {
-        const unreadCount = stored.filter(item => !read.includes(item.id)).length;
+        const unreadCount = stored.filter(item => !read.has(item.id)).length;
         dot.style.display = unreadCount > 0 ? 'inline-block' : 'none';
     };
 
     updateDot();
     render();
-
-    bellLink.addEventListener('click', function () {
-        if (stored.length && read.length !== stored.length) {
-            localStorage.setItem('emsNotificationsRead', JSON.stringify(stored.map(n => n.id)));
-            read.splice(0, read.length, ...stored.map(n => n.id));
-            updateDot();
-            render();
-        }
-    });
 }
 
 function initializeNewsletterForm() {
@@ -654,6 +757,11 @@ function initializeNewsletterForm() {
             const csrf = form.querySelector('input[name="csrfmiddlewaretoken"]')?.value || '';
 
             try {
+                if (submitBtn) {
+                    submitBtn.classList.add('btn-loading');
+                    submitBtn.setAttribute('aria-busy', 'true');
+                    submitBtn.disabled = true;
+                }
                 const response = await fetch(form.action, {
                     method: 'POST',
                     headers: {
@@ -667,11 +775,15 @@ function initializeNewsletterForm() {
                     throw new Error(data.error || 'Subscription failed');
                 }
                 if (feedback) {
+                    feedback.classList.remove('text-danger');
+                    feedback.classList.add('text-success');
                     feedback.textContent = data.message || 'Subscribed successfully.';
                 }
                 form.reset();
             } catch (err) {
                 if (feedback) {
+                    feedback.classList.remove('text-success');
+                    feedback.classList.add('text-danger');
                     feedback.textContent = 'Could not subscribe. Try again later.';
                 }
             } finally {
@@ -688,34 +800,47 @@ function initializeNewsletterForm() {
 function initializeChatbotLinks() {
     const links = document.querySelectorAll('.open-chatbot-link');
     const panel = document.querySelector('.aaditech-chatbot__panel');
-    const toggle = document.querySelector('.aaditech-chatbot__toggle');
-    const input = document.querySelector('.aaditech-chatbot__input');
     if (!links.length || !panel) return;
 
     links.forEach(link => {
         link.addEventListener('click', function (event) {
             event.preventDefault();
-            panel.classList.add('is-open');
-            if (toggle) {
-                toggle.setAttribute('aria-expanded', 'true');
-            }
-            if (input) {
-                input.focus();
-            }
+            openSharedChatbot(link);
         });
 
         link.addEventListener('keydown', function (event) {
             if (event.key === 'Enter' || event.key === ' ') {
                 event.preventDefault();
-                panel.classList.add('is-open');
-                if (toggle) {
-                    toggle.setAttribute('aria-expanded', 'true');
-                }
-                if (input) {
-                    input.focus();
-                }
+                openSharedChatbot(link);
             }
         });
+    });
+}
+
+function initializeSearchShortcut() {
+    const searchInput = document.querySelector('.top-search input[type="search"], .top-search .form-control[type="search"]');
+    if (!searchInput) return;
+
+    document.addEventListener('keydown', function (event) {
+        const key = (event.key || '').toLowerCase();
+        const isMetaCombo = event.ctrlKey || event.metaKey;
+        const activeTag = document.activeElement ? document.activeElement.tagName : '';
+        const isTypingContext = ['INPUT', 'TEXTAREA', 'SELECT'].includes(activeTag) || document.activeElement?.isContentEditable;
+
+        if (isMetaCombo && key === 'k') {
+            event.preventDefault();
+            focusGlobalSearch(true);
+            return;
+        }
+
+        if (event.key === 'Escape' && document.activeElement === searchInput) {
+            searchInput.blur();
+        }
+
+        if (!isTypingContext && key === '/' && !event.altKey && !event.shiftKey) {
+            event.preventDefault();
+            focusGlobalSearch(true);
+        }
     });
 }
 
@@ -751,17 +876,29 @@ function initializeSmoothScroll() {
     const links = document.querySelectorAll('a[href^="#"]');
     if (!links.length) return;
 
-    const header = document.querySelector('header.navbar');
-    const offset = header ? header.offsetHeight + 12 : 0;
+    const header = document.querySelector('header.navbar, .topbar');
 
     links.forEach(link => {
         link.addEventListener('click', function (event) {
             const href = link.getAttribute('href');
-            if (!href || href.length < 2) return;
-            const target = document.querySelector(href);
+            if (!href || href === '#' || href.length < 2 || link.hasAttribute('data-bs-toggle')) return;
+
+            let targetUrl;
+            try {
+                targetUrl = new URL(link.href, window.location.origin);
+            } catch (err) {
+                return;
+            }
+
+            if (targetUrl.origin !== window.location.origin || targetUrl.pathname !== window.location.pathname || !targetUrl.hash) {
+                return;
+            }
+
+            const target = document.querySelector(targetUrl.hash);
             if (!target) return;
 
             event.preventDefault();
+            const offset = header ? header.offsetHeight + 12 : 0;
             const top = target.getBoundingClientRect().top + window.pageYOffset - offset;
             window.scrollTo({ top, behavior: 'smooth' });
         });
@@ -974,6 +1111,11 @@ function initializeScrollReveal() {
     const items = document.querySelectorAll('.reveal-on-scroll');
     if (!items.length) return;
 
+    if (!('IntersectionObserver' in window)) {
+        items.forEach(item => item.classList.add('is-visible'));
+        return;
+    }
+
     const observer = new IntersectionObserver((entries, obs) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
@@ -990,6 +1132,14 @@ function initializeScrollReveal() {
 function initializeCounters() {
     const counters = document.querySelectorAll('[data-counter]');
     if (!counters.length) return;
+
+    if (!('IntersectionObserver' in window)) {
+        counters.forEach(counter => {
+            const target = Number(counter.getAttribute('data-counter')) || 0;
+            counter.textContent = target.toLocaleString();
+        });
+        return;
+    }
 
     const animateCounter = (el) => {
         const target = Number(el.getAttribute('data-counter')) || 0;
@@ -1032,10 +1182,14 @@ function showNotification(notification) {
     const notificationEl = document.createElement('div');
     notificationEl.className = `alert alert-${notification.type} alert-dismissible fade show`;
     notificationEl.role = 'alert';
-    notificationEl.innerHTML = `
-        ${notification.message}
-        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-    `;
+    const messageText = document.createTextNode(notification.message || 'Action completed.');
+    const closeBtn = document.createElement('button');
+    closeBtn.type = 'button';
+    closeBtn.className = 'btn-close';
+    closeBtn.setAttribute('data-bs-dismiss', 'alert');
+    closeBtn.setAttribute('aria-label', 'Close');
+    notificationEl.appendChild(messageText);
+    notificationEl.appendChild(closeBtn);
     
     // Add to notifications container
     const container = document.querySelector('.messages-container') || document.querySelector('main');
@@ -1054,7 +1208,7 @@ function showNotification(notification) {
     }, 5000);
     
     // Browser notification
-    if (Notification.permission === 'granted') {
+    if ('Notification' in window && Notification.permission === 'granted') {
         new Notification(notification.title || 'EMS Notification', {
             body: notification.message,
             icon: '/static/images/aaditech_logo.jpeg'
@@ -1066,7 +1220,9 @@ function showNotification(notification) {
 window.EMS = {
     showNotification,
     formatFileSize,
-    initializeFormValidations
+    initializeFormValidations,
+    openChatbot: openSharedChatbot,
+    focusSearch: focusGlobalSearch
 };
 
 // Add global error handler
@@ -1090,11 +1246,13 @@ document.addEventListener('submit', function(e) {
         
         const formData = new FormData(form);
         const submitBtn = form.querySelector('button[type="submit"]');
-        const originalText = submitBtn.innerHTML;
+        const originalText = submitBtn ? submitBtn.innerHTML : '';
         
         // Show loading state
-        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
-        submitBtn.disabled = true;
+        if (submitBtn) {
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+            submitBtn.disabled = true;
+        }
         
         // Get CSRF token from form or cookie
         const csrfToken = form.querySelector('input[name="csrfmiddlewaretoken"]')?.value || 
@@ -1109,8 +1267,19 @@ document.addEventListener('submit', function(e) {
                 'X-CSRFToken': csrfToken
             }
         })
-        .then(response => response.json())
-        .then(data => {
+        .then(async response => {
+            let data = {};
+            try {
+                data = await response.json();
+            } catch (err) {
+                data = { success: response.ok, message: response.ok ? 'Operation successful' : 'Operation failed' };
+            }
+            return { response, data };
+        })
+        .then(({ response, data }) => {
+            if (!response.ok && data.success === undefined) {
+                data.success = false;
+            }
             if (data.success) {
                 showNotification({
                     type: 'success',
@@ -1137,8 +1306,10 @@ document.addEventListener('submit', function(e) {
         })
         .finally(() => {
             // Reset button state
-            submitBtn.innerHTML = originalText;
-            submitBtn.disabled = false;
+            if (submitBtn) {
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+            }
         });
     }
 });
