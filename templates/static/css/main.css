@@ -89,12 +89,16 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .custom-tooltip {
-    position: absolute;
+    position: fixed;
     background: var(--secondary);
     color: #ffffff;
-    padding: 0.3rem 0.55rem;
-    border-radius: 6px;
+    max-width: min(220px, calc(100vw - 24px));
+    padding: 0.4rem 0.65rem;
+    border-radius: 10px;
     font-size: 0.75rem;
+    line-height: 1.4;
+    text-align: center;
+    transform: translateX(-50%);
     z-index: 1100;
     box-shadow: var(--shadow-soft);
     pointer-events: none;

@@ -110,6 +110,10 @@ function setThemeColorMeta(mode) {
     meta.setAttribute('content', mode === 'dark' ? '#081221' : '#0b1120');
 }
 
+function prefersReducedMotion() {
+    return !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+}
+
 function openSharedChatbot(trigger) {
     if (window.AaditechChatbot && typeof window.AaditechChatbot.open === 'function') {
         window.AaditechChatbot.open(trigger || null);
@@ -237,32 +241,60 @@ function initializeTooltips() {
     // Mouse + keyboard + touch friendly tooltip behavior.
     const tooltips = document.querySelectorAll('[title]');
     const isTouchDevice = window.matchMedia && window.matchMedia('(hover: none)').matches;
+    let activeTooltipTrigger = null;
+    let activeTooltipEl = null;
+
+    const removeActiveTooltip = () => {
+        if (activeTooltipTrigger) {
+            const originalTitle = activeTooltipTrigger.getAttribute('data-original-title');
+            if (originalTitle) {
+                activeTooltipTrigger.setAttribute('title', originalTitle);
+                activeTooltipTrigger.removeAttribute('data-original-title');
+            }
+        }
+        if (activeTooltipEl) {
+            activeTooltipEl.remove();
+        }
+        activeTooltipEl = null;
+        activeTooltipTrigger = null;
+    };
+
+    const positionTooltip = (trigger, tooltipEl) => {
+        const rect = trigger.getBoundingClientRect();
+        const horizontalCenter = rect.left + rect.width / 2;
+        const minLeft = 12 + tooltipEl.offsetWidth / 2;
+        const maxLeft = window.innerWidth - 12 - tooltipEl.offsetWidth / 2;
+        const clampedLeft = Math.min(Math.max(horizontalCenter, minLeft), maxLeft);
+        const top = Math.max(rect.top - tooltipEl.offsetHeight - 10, 12);
+
+        tooltipEl.style.left = `${clampedLeft}px`;
+        tooltipEl.style.top = `${top}px`;
+    };
 
     const showTooltip = function () {
+        if (this.hasAttribute('data-bs-toggle')) return;
         const title = this.getAttribute('title');
         if (!title) return;
 
+        removeActiveTooltip();
+
         const tooltipEl = document.createElement('div');
         tooltipEl.className = 'custom-tooltip';
+        tooltipEl.setAttribute('role', 'tooltip');
         tooltipEl.textContent = title;
         document.body.appendChild(tooltipEl);
-
-        const rect = this.getBoundingClientRect();
-        tooltipEl.style.left = rect.left + rect.width / 2 - tooltipEl.offsetWidth / 2 + 'px';
-        tooltipEl.style.top = rect.top - tooltipEl.offsetHeight - 5 + 'px';
+        positionTooltip(this, tooltipEl);
 
         this.setAttribute('data-original-title', title);
         this.removeAttribute('title');
+        activeTooltipTrigger = this;
+        activeTooltipEl = tooltipEl;
     };
 
     const hideTooltip = function () {
-        const originalTitle = this.getAttribute('data-original-title');
-        if (originalTitle) {
-            this.setAttribute('title', originalTitle);
-            this.removeAttribute('data-original-title');
+        if (!this || activeTooltipTrigger === this) {
+            removeActiveTooltip();
         }
-        const tooltipEl = document.querySelector('.custom-tooltip');
-        if (tooltipEl) tooltipEl.remove();
     };
 
     tooltips.forEach(tooltip => {
@@ -389,6 +421,7 @@ function initializeDataTables() {
         if (!tbody) return;
 
         const tableContainer = table.closest('.table-responsive') || table.parentNode;
+        const tableHost = tableContainer.parentNode;
         const headerCells = Array.from(table.querySelectorAll('thead th'));
         const rows = Array.from(tbody.querySelectorAll('tr'));
         const emptyRow = rows.find(row => row.children.length === 1 && row.querySelector('td[colspan]'));
@@ -416,7 +449,7 @@ function initializeDataTables() {
             </div>
             <div class="table-toolbar__meta" aria-live="polite"></div>
         `;
-        tableContainer.insertBefore(toolbar, table);
+        tableHost.insertBefore(toolbar, tableContainer);
 
         const pagination = document.createElement('div');
         pagination.className = 'table-pagination';
@@ -429,7 +462,11 @@ function initializeDataTables() {
                 <i class="fa-solid fa-chevron-right"></i>
             </button>
         `;
-        tableContainer.appendChild(pagination);
+        if (tableContainer.nextSibling) {
+            tableHost.insertBefore(pagination, tableContainer.nextSibling);
+        } else {
+            tableHost.appendChild(pagination);
+        }
 
         const searchInput = toolbar.querySelector('input');
         const meta = toolbar.querySelector('.table-toolbar__meta');
@@ -815,6 +852,9 @@ function initializeChatbotLinks() {
             }
         });
     });
+
+    window.addEventListener('scroll', removeActiveTooltip, { passive: true });
+    window.addEventListener('resize', removeActiveTooltip);
 }
 
 function initializeSearchShortcut() {
@@ -900,7 +940,7 @@ function initializeSmoothScroll() {
             event.preventDefault();
             const offset = header ? header.offsetHeight + 12 : 0;
             const top = target.getBoundingClientRect().top + window.pageYOffset - offset;
-            window.scrollTo({ top, behavior: 'smooth' });
+            window.scrollTo({ top, behavior: prefersReducedMotion() ? 'auto' : 'smooth' });
         });
     });
 }
@@ -1098,11 +1138,17 @@ function handleResponsiveTables() {
         wrapper.classList.add('table-shell');
 
         const syncScrollState = () => {
-            wrapper.classList.toggle('is-scrolled', wrapper.scrollLeft > 0);
+            const maxScrollLeft = Math.max(wrapper.scrollWidth - wrapper.clientWidth, 0);
+            const isScrollable = maxScrollLeft > 8;
+            const scrollLeft = wrapper.scrollLeft;
+            wrapper.classList.toggle('is-scrollable', isScrollable);
+            wrapper.classList.toggle('is-scrolled', scrollLeft > 6);
+            wrapper.classList.toggle('is-scroll-end', scrollLeft >= maxScrollLeft - 6);
         };
 
         syncScrollState();
         wrapper.addEventListener('scroll', syncScrollState, { passive: true });
+        window.addEventListener('resize', syncScrollState);
     });
 }
 
@@ -1111,7 +1157,7 @@ function initializeScrollReveal() {
     const items = document.querySelectorAll('.reveal-on-scroll');
     if (!items.length) return;
 
-    if (!('IntersectionObserver' in window)) {
+    if (!('IntersectionObserver' in window) || prefersReducedMotion()) {
         items.forEach(item => item.classList.add('is-visible'));
         return;
     }
@@ -1133,7 +1179,7 @@ function initializeCounters() {
     const counters = document.querySelectorAll('[data-counter]');
     if (!counters.length) return;
 
-    if (!('IntersectionObserver' in window)) {
+    if (!('IntersectionObserver' in window) || prefersReducedMotion()) {
         counters.forEach(counter => {
             const target = Number(counter.getAttribute('data-counter')) || 0;
             counter.textContent = target.toLocaleString();

@@ -194,6 +194,14 @@ h6,
     box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6);
 }
 
+.top-search .input-group:focus-within {
+    border-color: rgba(255, 255, 255, 0.32);
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.68),
+        0 0 0 0.22rem rgba(255, 255, 255, 0.12),
+        var(--focus-ring);
+}
+
 .top-search .input-group-text,
 .top-search .form-control,
 .top-search__hint {
@@ -961,10 +969,59 @@ h6,
 }
 
 .table-shell {
+    position: relative;
+    isolation: isolate;
     overflow: auto;
     border: 1px solid rgba(148, 163, 184, 0.14);
     border-radius: 20px;
     background: var(--card);
+    scrollbar-width: thin;
+    scrollbar-color: rgba(148, 163, 184, 0.55) transparent;
+}
+
+.table-shell::before,
+.table-shell::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 18px;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    z-index: 3;
+}
+
+.table-shell::before {
+    left: 0;
+    background: linear-gradient(90deg, rgba(15, 23, 42, 0.12), transparent);
+}
+
+.table-shell::after {
+    right: 0;
+    background: linear-gradient(270deg, rgba(15, 23, 42, 0.12), transparent);
+}
+
+.table-shell.is-scrollable::after,
+.table-shell.is-scrolled::before {
+    opacity: 1;
+}
+
+.table-shell.is-scroll-end::after {
+    opacity: 0;
+}
+
+.table-shell::-webkit-scrollbar {
+    height: 10px;
+}
+
+.table-shell::-webkit-scrollbar-thumb {
+    background: rgba(148, 163, 184, 0.55);
+    border-radius: 999px;
+}
+
+.table-shell::-webkit-scrollbar-track {
+    background: transparent;
 }
 
 .table {
