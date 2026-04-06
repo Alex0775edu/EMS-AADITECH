@@ -3,54 +3,86 @@
 {% block title %}Student Dashboard - EMS Cloud{% endblock %}
 
 {% block content %}
-<div class="d-flex justify-content-between align-items-center flex-wrap mb-3">
+<section class="section-heading reveal-on-scroll">
     <div>
-        <h2 class="mb-1">Student Workspace</h2>
-        <p class="text-muted mb-0">Track your assignments and upcoming exams</p>
-    </div>
-</div>
-
-<div class="row g-3">
-    <div class="col-lg-6">
-        <div class="chart-card">
-            <h6 class="mb-3">Upcoming Exams</h6>
-            <ul class="list-group list-group-flush">
-                {% for exam in exams %}
-                    <li class="list-group-item d-flex justify-content-between">
-                        <span>{{ exam.name }}</span>
-                        <span class="text-muted">{{ exam.date }}</span>
-                    </li>
-                {% empty %}
-                    <li class="list-group-item text-muted">No upcoming exams</li>
-                {% endfor %}
-            </ul>
+        <div class="section-heading__eyebrow">
+            <i class="fa-solid fa-compass-drafting"></i>
+            Student Workspace
         </div>
+        <h2 class="section-heading__title">Everything you need for the week in one place</h2>
+        <p class="section-heading__text">See upcoming exams, active assignments, and reach the assistant without hunting through menus.</p>
     </div>
-    <div class="col-lg-6">
-        <div class="chart-card">
-            <h6 class="mb-3">Assignments</h6>
-            <ul class="list-group list-group-flush">
-                {% for item in assignments %}
-                    <li class="list-group-item d-flex justify-content-between">
-                        <span>{{ item.title }}</span>
-                        <span class="text-muted">Due: {{ item.due_date }}</span>
-                    </li>
-                {% empty %}
-                    <li class="list-group-item text-muted">No assignments available</li>
-                {% endfor %}
-            </ul>
-        </div>
-    </div>
-</div>
+</section>
 
-<button id="chatbotTrigger" class="chatbot-trigger" type="button"><i class="fa-solid fa-robot"></i></button>
+<section class="split-layout reveal-on-scroll">
+    <article class="section-card">
+        <div class="section-card__header">
+            <div>
+                <h3 class="section-card__title">Upcoming exams</h3>
+                <p class="section-card__meta">Your next scheduled evaluations and important exam dates.</p>
+            </div>
+            <span class="surface-pill">
+                <i class="fa-solid fa-clock"></i>
+                Stay prepared
+            </span>
+        </div>
+
+        <div class="timeline-list">
+            {% for exam in exams %}
+            <div class="timeline-item">
+                <div class="timeline-dot"><i class="fa-solid fa-file-pen"></i></div>
+                <div class="timeline-content">
+                    <div class="timeline-content__title">{{ exam.name }}</div>
+                    <div class="timeline-content__meta">{{ exam.date|date:"d M Y" }}</div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="empty-state">
+                <h5 class="mb-2">No upcoming exams</h5>
+                <p class="text-muted mb-0">Your exam schedule will appear here as soon as it is published.</p>
+            </div>
+            {% endfor %}
+        </div>
+    </article>
+
+    <article class="section-card">
+        <div class="section-card__header">
+            <div>
+                <h3 class="section-card__title">Assignments</h3>
+                <p class="section-card__meta">Track due work and keep up with course expectations.</p>
+            </div>
+            <button id="chatbotTrigger" class="btn btn-primary" type="button">
+                <i class="fa-solid fa-robot"></i>
+                Ask Assistant
+            </button>
+        </div>
+
+        <div class="timeline-list">
+            {% for item in assignments %}
+            <div class="timeline-item">
+                <div class="timeline-dot"><i class="fa-solid fa-list-check"></i></div>
+                <div class="timeline-content">
+                    <div class="timeline-content__title">{{ item.title }}</div>
+                    <div class="timeline-content__meta">Due {{ item.due_date|date:"d M Y" }}</div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="empty-state">
+                <h5 class="mb-2">No assignments available</h5>
+                <p class="text-muted mb-0">Fresh coursework will appear here the moment it is shared.</p>
+            </div>
+            {% endfor %}
+        </div>
+    </article>
+</section>
+
 <div id="chatbotWindow" class="chatbot-window">
     <div class="chatbot-header d-flex justify-content-between align-items-center">
         <strong>AI Student Assistant</strong>
         <button id="chatbotClose" class="btn btn-sm btn-light" type="button">Close</button>
     </div>
     <div id="chatMessages" class="chatbot-messages">
-        <div class="bubble bot">Ask: "What is my attendance?", "When is my next exam?", "Show my assignments".</div>
+        <div class="bubble bot">Ask: "What is my attendance?", "When is my next exam?", or "Show my assignments".</div>
     </div>
     <div class="p-2 border-top d-flex gap-2">
         <input id="chatInput" class="form-control" placeholder="Type your question...">

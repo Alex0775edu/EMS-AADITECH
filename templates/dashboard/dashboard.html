@@ -3,107 +3,179 @@
 {% block title %}Dashboard - EMS Cloud{% endblock %}
 
 {% block content %}
-<div class="d-flex flex-wrap align-items-start justify-content-between gap-3 mb-4">
+<section class="section-heading reveal-on-scroll">
     <div>
-        <h2 class="mb-1">Campus Command Center</h2>
-        <p class="text-muted mb-0">Monitor learners, finances, and engagement in one real-time workspace.</p>
+        <div class="section-heading__eyebrow">
+            <i class="fa-solid fa-chart-line"></i>
+            Command Center
+        </div>
+        <h2 class="section-heading__title">Institution performance at a glance</h2>
+        <p class="section-heading__text">
+            Review people, operations, finance, and engagement in one premium workspace built for fast operational decisions.
+        </p>
     </div>
-    <div class="d-flex flex-wrap gap-2">
+    <div class="section-heading__actions">
         {% if user.role == 'ADMIN' or user.is_superuser %}
-        <a href="{% url 'dashboard:data_hub' %}" class="btn btn-primary"><i class="fa-solid fa-database"></i> Add Data</a>
+        <a href="{% url 'dashboard:data_hub' %}" class="btn btn-primary">
+            <i class="fa-solid fa-database"></i>
+            Add Data
+        </a>
         {% endif %}
-        <a href="{% url 'dashboard:reports_page' %}" class="btn btn-outline-primary"><i class="fa-solid fa-chart-line"></i> View Reports</a>
+        <a href="{% url 'dashboard:reports_page' %}" class="btn btn-outline-primary">
+            <i class="fa-solid fa-chart-column"></i>
+            View Reports
+        </a>
     </div>
-</div>
+</section>
 
-<div class="row g-3 mb-4">
-    <div class="col-md-6 col-lg-3">
-        <div class="dashboard-kpi h-100">
-            <small class="text-muted">Total Students</small>
-            <h3 class="mb-1">{{ total_students }}</h3>
-            <div class="text-muted small">Active enrollments</div>
+<section class="metric-grid mb-4 reveal-on-scroll">
+    <article class="metric-card">
+        <div class="metric-card__header">
+            <div class="metric-card__label">Total Students</div>
+            <div class="metric-card__icon"><i class="fa-solid fa-user-graduate"></i></div>
         </div>
-    </div>
-    <div class="col-md-6 col-lg-3">
-        <div class="dashboard-kpi h-100">
-            <small class="text-muted">Total Teachers</small>
-            <h3 class="mb-1">{{ total_teachers }}</h3>
-            <div class="text-muted small">Faculty onboarded</div>
-        </div>
-    </div>
-    <div class="col-md-6 col-lg-3">
-        <div class="dashboard-kpi h-100">
-            <small class="text-muted">Pending Fees</small>
-            <h3 class="mb-1">{{ pending_fees_count }}</h3>
-            <div class="text-muted small">Invoices awaiting payment</div>
-        </div>
-    </div>
-    <div class="col-md-6 col-lg-3">
-        <div class="dashboard-kpi h-100">
-            <small class="text-muted">Active Courses</small>
-            <h3 class="mb-1">{{ active_classes_count }}</h3>
-            <div class="text-muted small">Publishing now</div>
-        </div>
-    </div>
-</div>
+        <h3 class="metric-card__value" data-counter="{{ total_students }}">{{ total_students }}</h3>
+        <div class="metric-card__meta">Active enrollments across your workspace</div>
+        <div class="metric-card__trend"><i class="fa-solid fa-arrow-trend-up"></i> Core enrollment pipeline</div>
+    </article>
 
-<div class="row g-3">
-    <div class="col-lg-8">
-        <div class="chart-card mb-3">
-            <div class="d-flex justify-content-between align-items-center mb-3">
-                <h6 class="mb-0">Attendance Trend</h6>
-                <span class="badge bg-primary">Last 6 months</span>
-            </div>
-            <canvas id="attendanceTrendChart" height="120"></canvas>
+    <article class="metric-card">
+        <div class="metric-card__header">
+            <div class="metric-card__label">Total Teachers</div>
+            <div class="metric-card__icon"><i class="fa-solid fa-chalkboard-user"></i></div>
         </div>
-        <div class="chart-card">
-            <div class="d-flex justify-content-between align-items-center mb-3">
-                <h6 class="mb-0">Recent Notices</h6>
-                <a href="{% url 'dashboard:notices_page' %}" class="btn btn-sm btn-outline-primary">View All</a>
-            </div>
-            <div class="table-responsive">
-                <table class="table align-middle mb-0">
-                    <thead>
-                        <tr>
-                            <th>Title</th>
-                            <th>Target</th>
-                            <th>Date</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for notice in recent_notices %}
-                        <tr>
-                            <td>{{ notice.title }}</td>
-                            <td>{{ notice.target }}</td>
-                            <td>{{ notice.publish_date }}</td>
-                        </tr>
-                        {% empty %}
-                        <tr><td colspan="3" class="text-center text-muted">No notices available</td></tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
+        <h3 class="metric-card__value" data-counter="{{ total_teachers }}">{{ total_teachers }}</h3>
+        <div class="metric-card__meta">Faculty profiles available for allocation</div>
+        <div class="metric-card__trend"><i class="fa-solid fa-user-check"></i> Capacity visible in real time</div>
+    </article>
+
+    <article class="metric-card">
+        <div class="metric-card__header">
+            <div class="metric-card__label">Pending Fees</div>
+            <div class="metric-card__icon"><i class="fa-solid fa-wallet"></i></div>
         </div>
-    </div>
-    <div class="col-lg-4">
-        <div class="chart-card mb-3">
-            <div class="d-flex justify-content-between align-items-center mb-3">
-                <h6 class="mb-0">Performance Trend</h6>
-                <span class="badge bg-info">Avg score</span>
-            </div>
-            <canvas id="performanceTrendChart" height="210"></canvas>
+        <h3 class="metric-card__value" data-counter="{{ pending_fees_count }}">{{ pending_fees_count }}</h3>
+        <div class="metric-card__meta">Payment records still awaiting collection</div>
+        <div class="metric-card__trend is-warning"><i class="fa-solid fa-hourglass-half"></i> Review outstanding balances</div>
+    </article>
+
+    <article class="metric-card">
+        <div class="metric-card__header">
+            <div class="metric-card__label">Active Courses</div>
+            <div class="metric-card__icon"><i class="fa-solid fa-book-open-reader"></i></div>
         </div>
-        <div class="chart-card">
-            <h6 class="mb-3">Quick Actions</h6>
-            <div class="d-grid gap-2">
-                <a class="btn btn-outline-primary" href="{% url 'dashboard:students_page' %}"><i class="fa-solid fa-user-graduate"></i> Manage Students</a>
-                <a class="btn btn-outline-primary" href="{% url 'dashboard:teachers_page' %}"><i class="fa-solid fa-chalkboard-user"></i> Manage Teachers</a>
-                <a class="btn btn-outline-primary" href="{% url 'dashboard:assignments_page' %}"><i class="fa-solid fa-file-arrow-up"></i> Assignments</a>
-                <a class="btn btn-outline-primary" href="{% url 'dashboard:messaging_page' %}"><i class="fa-solid fa-comments"></i> Messaging</a>
+        <h3 class="metric-card__value" data-counter="{{ active_classes_count }}">{{ active_classes_count }}</h3>
+        <div class="metric-card__meta">Programs currently running institution-wide</div>
+        <div class="metric-card__trend"><i class="fa-solid fa-sparkles"></i> Delivery portfolio is live</div>
+    </article>
+</section>
+
+<section class="split-layout mb-4 reveal-on-scroll">
+    <article class="section-card">
+        <div class="section-card__header">
+            <div>
+                <h3 class="section-card__title">Attendance trend</h3>
+                <p class="section-card__meta">Six-month visibility into classroom consistency and operational health.</p>
             </div>
+            <span class="surface-pill">
+                <i class="fa-solid fa-calendar-days"></i>
+                Last 6 months
+            </span>
         </div>
-    </div>
-</div>
+        <canvas id="attendanceTrendChart" height="120"></canvas>
+    </article>
+
+    <article class="section-card">
+        <div class="section-card__header">
+            <div>
+                <h3 class="section-card__title">Performance pulse</h3>
+                <p class="section-card__meta">Academic trendline surfaced as a quick decision aid for leadership.</p>
+            </div>
+            <span class="surface-pill surface-pill--success">
+                <i class="fa-solid fa-bolt"></i>
+                Live scoring
+            </span>
+        </div>
+        <canvas id="performanceTrendChart" height="200"></canvas>
+    </article>
+</section>
+
+<section class="split-layout reveal-on-scroll">
+    <article class="section-card">
+        <div class="section-card__header">
+            <div>
+                <h3 class="section-card__title">Recent notices</h3>
+                <p class="section-card__meta">Announcements, reminders, and institution updates from the latest publishing cycle.</p>
+            </div>
+            <a href="{% url 'dashboard:notices_page' %}" class="btn btn-outline-primary btn-sm">
+                <i class="fa-solid fa-arrow-right"></i>
+                View all
+            </a>
+        </div>
+
+        <div class="notification-list">
+            {% for notice in recent_notices %}
+            <div class="notification-item">
+                <div class="list-icon"><i class="fa-solid fa-bullhorn"></i></div>
+                <div>
+                    <div class="notification-item__title">{{ notice.title }}</div>
+                    <div class="notification-item__text">Target audience: {{ notice.target|default:"All users" }}</div>
+                    <div class="notification-item__meta">{{ notice.publish_date|date:"d M Y" }}</div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="empty-state">
+                <h5 class="mb-2">No notices yet</h5>
+                <p class="text-muted mb-0">As new announcements are published, they’ll show up here instantly.</p>
+            </div>
+            {% endfor %}
+        </div>
+    </article>
+
+    <article class="section-card">
+        <div class="section-card__header">
+            <div>
+                <h3 class="section-card__title">Quick actions</h3>
+                <p class="section-card__meta">Shortcut the most common administrative tasks with fewer clicks.</p>
+            </div>
+            <span class="surface-pill">
+                <i class="fa-solid fa-wand-magic-sparkles"></i>
+                Fast path
+            </span>
+        </div>
+
+        <div class="quick-links-grid">
+            <a class="quick-action-card" href="{% url 'dashboard:students_page' %}">
+                <div class="quick-action-card__icon"><i class="fa-solid fa-user-group"></i></div>
+                <div>
+                    <h4 class="quick-action-card__title">Manage students</h4>
+                    <p class="quick-action-card__text">Review enrollments, classroom assignments, and directory data.</p>
+                </div>
+            </a>
+            <a class="quick-action-card" href="{% url 'dashboard:teachers_page' %}">
+                <div class="quick-action-card__icon"><i class="fa-solid fa-chalkboard-user"></i></div>
+                <div>
+                    <h4 class="quick-action-card__title">Manage teachers</h4>
+                    <p class="quick-action-card__text">Keep subjects, faculty coverage, and profile information in sync.</p>
+                </div>
+            </a>
+            <a class="quick-action-card" href="{% url 'dashboard:assignments_page' %}">
+                <div class="quick-action-card__icon"><i class="fa-solid fa-list-check"></i></div>
+                <div>
+                    <h4 class="quick-action-card__title">Assignments</h4>
+                    <p class="quick-action-card__text">Track academic workload, due dates, and classroom execution.</p>
+                </div>
+            </a>
+            <a class="quick-action-card" href="{% url 'dashboard:messaging_page' %}">
+                <div class="quick-action-card__icon"><i class="fa-solid fa-comments"></i></div>
+                <div>
+                    <h4 class="quick-action-card__title">Messaging</h4>
+                    <p class="quick-action-card__text">Coordinate communication without leaving the operations workspace.</p>
+                </div>
+            </a>
+        </div>
+    </article>
+</section>
 
 <script>
 window.dashboardChartPayload = {

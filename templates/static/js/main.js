@@ -308,62 +308,172 @@ function initializeSubmitLoading() {
 function initializeDataTables() {
     const tables = document.querySelectorAll('table[data-table="true"]');
     tables.forEach(table => {
-        // Add search functionality
-        const searchInput = document.createElement('input');
-        searchInput.type = 'text';
-        searchInput.className = 'form-control form-control-sm';
-        searchInput.placeholder = 'Search...';
-        searchInput.style.marginBottom = '10px';
-        searchInput.style.width = '200px';
-        
+        if (table.dataset.enhanced === 'true') return;
+        table.dataset.enhanced = 'true';
+
+        const tbody = table.querySelector('tbody');
+        if (!tbody) return;
+
         const tableContainer = table.closest('.table-responsive') || table.parentNode;
-        tableContainer.insertBefore(searchInput, table);
-        
-        searchInput.addEventListener('keyup', function() {
-            const filter = this.value.toLowerCase();
-            const rows = table.querySelectorAll('tbody tr');
-            
-            rows.forEach(row => {
-                const text = row.textContent.toLowerCase();
-                row.style.display = text.includes(filter) ? '' : 'none';
+        const headerCells = Array.from(table.querySelectorAll('thead th'));
+        const rows = Array.from(tbody.querySelectorAll('tr'));
+        const emptyRow = rows.find(row => row.children.length === 1 && row.querySelector('td[colspan]'));
+        const dataRows = rows.filter(row => row !== emptyRow);
+        const pageSize = Math.max(parseInt(table.dataset.pageSize || '8', 10), 1);
+        const headers = Array.from(table.querySelectorAll('thead th[data-sortable="true"]'));
+
+        tableContainer.classList.add('table-shell');
+
+        dataRows.forEach(row => {
+            Array.from(row.children).forEach((cell, index) => {
+                const label = headerCells[index] ? headerCells[index].textContent.trim() : 'Value';
+                cell.setAttribute('data-label', label);
             });
         });
-        
-        // Add sort functionality
-        const headers = table.querySelectorAll('thead th[data-sortable="true"]');
+
+        if (!dataRows.length) return;
+
+        const toolbar = document.createElement('div');
+        toolbar.className = 'table-toolbar';
+        toolbar.innerHTML = `
+            <div class="table-toolbar__search">
+                <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+                <input type="search" class="form-control" placeholder="Search this table">
+            </div>
+            <div class="table-toolbar__meta" aria-live="polite"></div>
+        `;
+        tableContainer.insertBefore(toolbar, table);
+
+        const pagination = document.createElement('div');
+        pagination.className = 'table-pagination';
+        pagination.innerHTML = `
+            <div class="table-pagination__label" aria-live="polite"></div>
+            <button type="button" class="btn btn-outline-secondary btn-sm" data-table-prev aria-label="Previous page">
+                <i class="fa-solid fa-chevron-left"></i>
+            </button>
+            <button type="button" class="btn btn-outline-secondary btn-sm" data-table-next aria-label="Next page">
+                <i class="fa-solid fa-chevron-right"></i>
+            </button>
+        `;
+        tableContainer.appendChild(pagination);
+
+        const searchInput = toolbar.querySelector('input');
+        const meta = toolbar.querySelector('.table-toolbar__meta');
+        const pageLabel = pagination.querySelector('.table-pagination__label');
+        const prevBtn = pagination.querySelector('[data-table-prev]');
+        const nextBtn = pagination.querySelector('[data-table-next]');
+
+        let filteredRows = [...dataRows];
+        let currentPage = 1;
+        let activeSort = null;
+
+        const parseValue = (value) => {
+            const trimmed = value.trim();
+            const numberText = trimmed.replace(/[^0-9.-]/g, '');
+            if (numberText && !Number.isNaN(Number(numberText))) {
+                return Number(numberText);
+            }
+
+            const dateValue = Date.parse(trimmed);
+            if (!Number.isNaN(dateValue) && /\d/.test(trimmed)) {
+                return dateValue;
+            }
+
+            return trimmed.toLowerCase();
+        };
+
+        const sortRows = () => {
+            if (!activeSort) return;
+
+            filteredRows.sort((rowA, rowB) => {
+                const aValue = parseValue(rowA.children[activeSort.index]?.textContent || '');
+                const bValue = parseValue(rowB.children[activeSort.index]?.textContent || '');
+                const direction = activeSort.direction === 'desc' ? -1 : 1;
+
+                if (typeof aValue === 'number' && typeof bValue === 'number') {
+                    return (aValue - bValue) * direction;
+                }
+
+                return String(aValue).localeCompare(String(bValue), undefined, {
+                    numeric: true,
+                    sensitivity: 'base'
+                }) * direction;
+            });
+        };
+
+        const updatePagination = () => {
+            const totalRows = filteredRows.length;
+            const totalPages = Math.max(Math.ceil(totalRows / pageSize), 1);
+            currentPage = Math.min(currentPage, totalPages);
+
+            const start = (currentPage - 1) * pageSize;
+            const visibleRows = filteredRows.slice(start, start + pageSize);
+            const visibleSet = new Set(visibleRows);
+
+            dataRows.forEach(row => {
+                row.style.display = visibleSet.has(row) ? '' : 'none';
+            });
+
+            if (emptyRow) {
+                emptyRow.style.display = totalRows ? 'none' : '';
+            }
+
+            meta.textContent = totalRows
+                ? `${totalRows} result${totalRows === 1 ? '' : 's'}`
+                : 'No matching results';
+
+            pageLabel.textContent = totalRows
+                ? `Page ${currentPage} of ${totalPages}`
+                : 'Nothing to paginate';
+
+            prevBtn.disabled = currentPage <= 1 || !totalRows;
+            nextBtn.disabled = currentPage >= totalPages || !totalRows;
+        };
+
+        const applyFilters = () => {
+            const query = (searchInput.value || '').trim().toLowerCase();
+            filteredRows = dataRows.filter(row => row.textContent.toLowerCase().includes(query));
+            sortRows();
+            currentPage = 1;
+            updatePagination();
+        };
+
+        searchInput.addEventListener('input', applyFilters);
+
         headers.forEach(header => {
             header.style.cursor = 'pointer';
             header.addEventListener('click', function() {
                 const columnIndex = Array.from(this.parentNode.children).indexOf(this);
-                const isAscending = this.classList.contains('sort-asc');
-                
-                // Remove sort classes from all headers
-                headers.forEach(h => {
-                    h.classList.remove('sort-asc', 'sort-desc');
-                });
-                
-                // Add sort class to current header
-                this.classList.add(isAscending ? 'sort-desc' : 'sort-asc');
-                
-                // Sort rows
-                const tbody = table.querySelector('tbody');
-                const rows = Array.from(tbody.querySelectorAll('tr'));
-                
-                rows.sort((a, b) => {
-                    const aValue = a.children[columnIndex].textContent.trim();
-                    const bValue = b.children[columnIndex].textContent.trim();
-                    
-                    if (isAscending) {
-                        return bValue.localeCompare(aValue);
-                    } else {
-                        return aValue.localeCompare(bValue);
-                    }
-                });
-                
-                // Reappend rows in sorted order
-                rows.forEach(row => tbody.appendChild(row));
+                const nextDirection = this.classList.contains('sort-asc') ? 'desc' : 'asc';
+
+                headers.forEach(item => item.classList.remove('sort-asc', 'sort-desc'));
+                this.classList.add(nextDirection === 'asc' ? 'sort-asc' : 'sort-desc');
+
+                activeSort = {
+                    index: columnIndex,
+                    direction: nextDirection
+                };
+                sortRows();
+                updatePagination();
             });
         });
+
+        prevBtn.addEventListener('click', () => {
+            if (currentPage > 1) {
+                currentPage -= 1;
+                updatePagination();
+            }
+        });
+
+        nextBtn.addEventListener('click', () => {
+            const totalPages = Math.max(Math.ceil(filteredRows.length / pageSize), 1);
+            if (currentPage < totalPages) {
+                currentPage += 1;
+                updatePagination();
+            }
+        });
+
+        updatePagination();
     });
 }
 
@@ -383,12 +493,15 @@ function initializeDatePickers() {
             input.max = today;
         }
         
-        // Add date picker icon
+        if (input.hasAttribute('data-no-picker-wrap') || input.closest('.date-picker') || input.closest('.form-floating')) {
+            return;
+        }
+
         const wrapper = document.createElement('div');
         wrapper.className = 'input-group date-picker';
         input.parentNode.insertBefore(wrapper, input);
         wrapper.appendChild(input);
-        
+
         const icon = document.createElement('span');
         icon.className = 'input-group-text';
         icon.innerHTML = '<i class="fas fa-calendar"></i>';
@@ -575,6 +688,7 @@ function initializeNewsletterForm() {
 function initializeChatbotLinks() {
     const links = document.querySelectorAll('.open-chatbot-link');
     const panel = document.querySelector('.aaditech-chatbot__panel');
+    const toggle = document.querySelector('.aaditech-chatbot__toggle');
     const input = document.querySelector('.aaditech-chatbot__input');
     if (!links.length || !panel) return;
 
@@ -582,6 +696,9 @@ function initializeChatbotLinks() {
         link.addEventListener('click', function (event) {
             event.preventDefault();
             panel.classList.add('is-open');
+            if (toggle) {
+                toggle.setAttribute('aria-expanded', 'true');
+            }
             if (input) {
                 input.focus();
             }
@@ -591,6 +708,9 @@ function initializeChatbotLinks() {
             if (event.key === 'Enter' || event.key === ' ') {
                 event.preventDefault();
                 panel.classList.add('is-open');
+                if (toggle) {
+                    toggle.setAttribute('aria-expanded', 'true');
+                }
                 if (input) {
                     input.focus();
                 }
@@ -830,23 +950,22 @@ function handleFileUploads() {
 function handleResponsiveTables() {
     const tables = document.querySelectorAll('.table-responsive table');
     tables.forEach(table => {
-        // Add responsive wrapper if not present
         if (!table.parentNode.classList.contains('table-responsive')) {
             const wrapper = document.createElement('div');
             wrapper.className = 'table-responsive';
             table.parentNode.insertBefore(wrapper, table);
             wrapper.appendChild(table);
         }
-        
-        // Make table headers sticky on horizontal scroll
+
         const wrapper = table.parentNode;
-        wrapper.addEventListener('scroll', function() {
-            const scrollLeft = this.scrollLeft;
-            const headers = table.querySelectorAll('thead th');
-            headers.forEach(header => {
-                header.style.transform = `translateX(${scrollLeft}px)`;
-            });
-        });
+        wrapper.classList.add('table-shell');
+
+        const syncScrollState = () => {
+            wrapper.classList.toggle('is-scrolled', wrapper.scrollLeft > 0);
+        };
+
+        syncScrollState();
+        wrapper.addEventListener('scroll', syncScrollState, { passive: true });
     });
 }
 

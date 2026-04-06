@@ -19,6 +19,9 @@ This project supports school, college, university, and coaching workflows from o
 - Dashboard analytics with charts
 - Traffic analytics (page views + logins)
 - Forgot password flow (DOB verification + reset)
+- Premium SaaS-style responsive UI system across dashboard, management modules, settings, and authentication
+- Searchable, sortable, paginated responsive tables for core data views
+- Improved onboarding and recovery forms with clearer grouping and stronger visual hierarchy
 
 ## 2. Tech Stack
 
@@ -297,3 +300,10 @@ from ems.wsgi import application
 - Add downloadable PDF report cards and invoices
 - Add advanced analytics and institute-level KPIs
 - Add full test suite (unit + integration)
+
+## 17. UI System
+
+- Shared premium SaaS shell with upgraded topbar, sidebar, workspace hero, and responsive card system
+- Consistent design tokens for primary, secondary, accent, background, surface, border, and status colors
+- Improved module-level UX for dashboard, students, teachers, attendance, reports, notifications, settings, payments, and results
+- Modernized auth experience for login, registration, and password recovery

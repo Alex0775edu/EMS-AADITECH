@@ -1,5 +1,51 @@
 {% extends 'base.html' %}
 {% block title %}Fees - EMS{% endblock %}
 {% block content %}
-<div class="chart-card"><h4>Fee Tracking</h4><div class="table-responsive"><table class="table"><thead><tr><th>Student</th><th>Amount</th><th>Status</th><th>Payment Date</th></tr></thead><tbody>{% for fee in fees %}<tr><td>{{ fee.student.user.username }}</td><td>{{ fee.amount }}</td><td>{{ fee.status }}</td><td>{{ fee.payment_date|default:'-' }}</td></tr>{% empty %}<tr><td colspan="4" class="text-muted text-center">No fee records found</td></tr>{% endfor %}</tbody></table></div></div>
+<section class="section-heading reveal-on-scroll">
+    <div>
+        <div class="section-heading__eyebrow">
+            <i class="fa-solid fa-money-check-dollar"></i>
+            Fee Tracking
+        </div>
+        <h2 class="section-heading__title">A clearer view of fee records and collection status</h2>
+        <p class="section-heading__text">Fee management now uses the same premium data patterns as the rest of the workspace, with stronger readability and responsive behavior.</p>
+    </div>
+</section>
+
+<section class="table-card reveal-on-scroll">
+    <div class="table-card__header">
+        <div>
+            <h3 class="table-card__title">Fee records</h3>
+            <p class="table-card__subtitle">Searchable, sortable rows with sticky headers and mobile-friendly stacked cards.</p>
+        </div>
+        <span class="surface-pill">
+            <i class="fa-solid fa-wallet"></i>
+            Financial operations
+        </span>
+    </div>
+    <div class="table-responsive">
+        <table class="table align-middle" data-table="true" data-page-size="8">
+            <thead>
+                <tr>
+                    <th data-sortable="true">Student</th>
+                    <th data-sortable="true">Amount</th>
+                    <th data-sortable="true">Status</th>
+                    <th data-sortable="true">Payment Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for fee in fees %}
+                <tr>
+                    <td>{{ fee.student.user.username }}</td>
+                    <td>INR {{ fee.amount }}</td>
+                    <td>{{ fee.status }}</td>
+                    <td>{{ fee.payment_date|default:'-' }}</td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="4" class="text-muted text-center table-empty">No fee records found</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</section>
 {% endblock %}

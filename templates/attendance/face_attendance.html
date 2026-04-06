@@ -3,15 +3,43 @@
 {% block title %}Smart Attendance - EMS{% endblock %}
 
 {% block content %}
-<div class="chart-card">
-    <h4 class="mb-3">Smart Attendance (Face Recognition)</h4>
-    <p class="text-muted">Upload a student face image to auto-mark attendance. Replace backend placeholder with OpenCV + face_recognition for production.</p>
+<section class="section-heading reveal-on-scroll">
+    <div>
+        <div class="section-heading__eyebrow">
+            <i class="fa-solid fa-camera"></i>
+            Smart Attendance
+        </div>
+        <h2 class="section-heading__title">Use a cleaner AI-assisted attendance capture flow</h2>
+        <p class="section-heading__text">The face recognition entry point now feels like a product-grade workflow instead of a placeholder utility.</p>
+    </div>
+</section>
+
+<section class="form-panel reveal-on-scroll">
+    <div class="form-panel__header">
+        <div>
+            <div class="form-panel__eyebrow">AI Capture</div>
+            <h3 class="auth-panel__title">Upload a student face image</h3>
+            <p class="auth-panel__text">Use this flow to scan and auto-mark attendance. Replace the backend placeholder with OpenCV and face recognition for production use.</p>
+        </div>
+        <span class="surface-pill">
+            <i class="fa-solid fa-robot"></i>
+            Assisted workflow
+        </span>
+    </div>
+
     <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
-        <div class="mb-3">
-            <input type="file" class="form-control" name="face_image" accept="image/*" required>
+        <div class="form-section">
+            <label class="form-label" for="faceImage">Face Image</label>
+            <input type="file" class="form-control" id="faceImage" name="face_image" accept="image/*" required>
+            <div class="field-hint">Accepted formats depend on the browser. Use a clear front-facing image for best results.</div>
         </div>
-        <button class="btn btn-primary" type="submit">Scan & Mark Attendance</button>
+        <div class="mt-4">
+            <button class="btn btn-primary" type="submit">
+                <i class="fa-solid fa-camera"></i>
+                Scan & Mark Attendance
+            </button>
+        </div>
     </form>
-</div>
+</section>
 {% endblock %}

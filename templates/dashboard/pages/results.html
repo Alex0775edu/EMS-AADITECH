@@ -2,47 +2,54 @@
 {% load static %}
 {% block title %}Results - EMS{% endblock %}
 {% block content %}
-<div class="row g-4">
-    <div class="col-12">
-        <div class="chart-card p-4">
-            <div class="d-flex flex-wrap align-items-center justify-content-between gap-2">
-                <div>
-                    <h4 class="mb-1">Results & Performance</h4>
-                    <p class="text-muted mb-0">Review student scores, graded assessments, and recent outcomes.</p>
-                </div>
-                <span class="status-pill is-live"><i class="fa-solid fa-signal"></i> Live sync</span>
-            </div>
-            {% if performance %}
-            <div class="table-responsive mt-3">
-                <table class="table align-middle">
-                    <thead>
-                        <tr>
-                            <th>Student</th>
-                            <th>Course</th>
-                            <th>Score</th>
-                            <th>Graded</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for item in performance %}
-                        <tr>
-                            <td>{{ item.student.user.get_full_name|default:item.student.user.username }}</td>
-                            <td>{{ item.course.name }}</td>
-                            <td><span class="badge bg-primary">{{ item.score }}</span></td>
-                            <td>{{ item.graded_at|date:"M d, Y" }}</td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-            {% else %}
-            <div class="empty-state mt-4">
-                <img src="{% static 'images/main-hero.svg' %}" alt="No results yet" loading="lazy">
-                <h5>No results published yet</h5>
-                <p class="text-muted mb-0">Once teachers post grades, they will appear here automatically.</p>
-            </div>
-            {% endif %}
+<section class="section-heading reveal-on-scroll">
+    <div>
+        <div class="section-heading__eyebrow">
+            <i class="fa-solid fa-award"></i>
+            Results
         </div>
+        <h2 class="section-heading__title">Review academic performance in a sharper results workspace</h2>
+        <p class="section-heading__text">Scores, grading dates, and course context are presented in a more polished analytics-style layout for faster review.</p>
     </div>
-</div>
+</section>
+
+<section class="table-card reveal-on-scroll">
+    <div class="table-card__header">
+        <div>
+            <h3 class="table-card__title">Results & performance</h3>
+            <p class="table-card__subtitle">A premium results table with improved readability, responsive behavior, and better scanning for marks review.</p>
+        </div>
+        <span class="status-pill is-live"><i class="fa-solid fa-signal"></i> Live sync</span>
+    </div>
+    {% if performance %}
+    <div class="table-responsive mt-3">
+        <table class="table align-middle" data-table="true" data-page-size="8">
+            <thead>
+                <tr>
+                    <th data-sortable="true">Student</th>
+                    <th data-sortable="true">Course</th>
+                    <th data-sortable="true">Score</th>
+                    <th data-sortable="true">Graded</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in performance %}
+                <tr>
+                    <td>{{ item.student.user.get_full_name|default:item.student.user.username }}</td>
+                    <td>{{ item.course.name }}</td>
+                    <td><span class="badge bg-primary">{{ item.score }}</span></td>
+                    <td>{{ item.graded_at|date:"M d, Y" }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div class="empty-state mt-4">
+        <img src="{% static 'images/main-hero.svg' %}" alt="No results yet" loading="lazy">
+        <h5>No results published yet</h5>
+        <p class="text-muted mb-0">Once teachers post grades, they will appear here automatically.</p>
+    </div>
+    {% endif %}
+</section>
 {% endblock %}

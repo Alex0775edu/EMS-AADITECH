@@ -1,79 +1,100 @@
 {% extends 'base.html' %}
 {% block title %}Settings - EMS{% endblock %}
 {% block content %}
-<div class="row g-4">
-    <div class="col-lg-4">
-        <div class="chart-card p-4 h-100">
-            <h5 class="mb-2">Account Settings</h5>
-            <p class="text-muted">Manage your profile, password, and login preferences.</p>
-            <div class="d-grid gap-2">
-                <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#modalProfile">Update Profile</button>
-                <button class="btn btn-outline-primary" type="button" data-bs-toggle="modal" data-bs-target="#modalPassword">Change Password</button>
-                <button class="btn btn-outline-secondary" type="button" data-bs-toggle="modal" data-bs-target="#modalMfa">
-                    {% if user.mfa_enabled %}Disable MFA{% else %}Enable MFA{% endif %}
-                </button>
-            </div>
-            <div class="small text-muted mt-3">Signed in as {{ user.get_full_name|default:user.username }}.</div>
+<section class="section-heading reveal-on-scroll">
+    <div>
+        <div class="section-heading__eyebrow">
+            <i class="fa-solid fa-gear"></i>
+            Settings
         </div>
+        <h2 class="section-heading__title">Personalize, secure, and manage your workspace</h2>
+        <p class="section-heading__text">Settings now feel more like a modern SaaS control center, with better grouping for account controls, privacy actions, and experience preferences.</p>
     </div>
-    <div class="col-lg-4">
-        <div class="chart-card p-4 h-100">
-            <h5 class="mb-2">Privacy Controls</h5>
-            <p class="text-muted">Control how your data is stored, exported, or removed.</p>
-            <div class="d-grid gap-2">
-                <button class="btn btn-outline-primary" type="button" data-bs-toggle="modal" data-bs-target="#modalDataDownload">Download My Data</button>
-                <button class="btn btn-outline-danger" type="button" data-bs-toggle="modal" data-bs-target="#modalDeleteAccount">Delete My Account</button>
-                <button class="btn btn-outline-secondary" type="button" data-bs-toggle="modal" data-bs-target="#modalConsent">Manage Consent</button>
-            </div>
-            <div class="small text-muted mt-3">Actions are logged for compliance and audit trails.</div>
-        </div>
-    </div>
-    <div class="col-lg-4">
-        <div class="chart-card p-4 h-100">
-            <h5 class="mb-2">Preferences</h5>
-            <p class="text-muted">Personalize notifications and interface settings.</p>
-            <div class="d-grid gap-2">
-                <button class="btn btn-outline-primary" type="button" data-bs-toggle="modal" data-bs-target="#modalNotifications">Notification Preferences</button>
-                <button class="btn btn-outline-primary" type="button" data-bs-toggle="modal" data-bs-target="#modalLanguage">Language & Region</button>
-                <button class="btn btn-outline-primary" type="button" data-bs-toggle="modal" data-bs-target="#modalAccessibility">Accessibility</button>
-            </div>
-        </div>
-    </div>
-</div>
+</section>
 
-<div class="row g-4 mt-1">
-    <div class="col-12">
-        <div class="chart-card p-4">
-            <div class="d-flex flex-wrap align-items-center justify-content-between gap-2">
-                <div>
-                    <h4 class="mb-1">Security & Compliance</h4>
-                    <p class="text-muted mb-0">Security controls are enforced across authentication, session management, and audit logging.</p>
-                </div>
-                <span class="status-pill"><i class="fa-solid fa-shield-halved"></i> Secure by design</span>
+<section class="settings-grid reveal-on-scroll">
+    <article class="section-card settings-panel">
+        <div class="section-card__header">
+            <div>
+                <h3 class="section-card__title">Account settings</h3>
+                <p class="section-card__meta">Manage your profile, password, and login protection without digging through nested pages.</p>
             </div>
-            <div class="row g-3 mt-3">
-                <div class="col-md-4">
-                    <div class="soft-card p-3 h-100">
-                        <h6 class="mb-1">Role-Based Access</h6>
-                        <p class="text-muted mb-0">Permissions scoped to admin, teacher, and student roles.</p>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="soft-card p-3 h-100">
-                        <h6 class="mb-1">Audit Trails</h6>
-                        <p class="text-muted mb-0">Activity logs capture critical actions for review.</p>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="soft-card p-3 h-100">
-                        <h6 class="mb-1">Data Protection</h6>
-                        <p class="text-muted mb-0">Encrypted storage and secure transmission policies.</p>
-                    </div>
-                </div>
+            <span class="surface-pill">
+                <i class="fa-solid fa-user-gear"></i>
+                Signed in
+            </span>
+        </div>
+        <div class="settings-action-list">
+            <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#modalProfile">Update Profile</button>
+            <button class="btn btn-outline-primary" type="button" data-bs-toggle="modal" data-bs-target="#modalPassword">Change Password</button>
+            <button class="btn btn-outline-secondary" type="button" data-bs-toggle="modal" data-bs-target="#modalMfa">
+                {% if user.mfa_enabled %}Disable MFA{% else %}Enable MFA{% endif %}
+            </button>
+        </div>
+        <div class="field-hint mt-3">Signed in as {{ user.get_full_name|default:user.username }}.</div>
+    </article>
+
+    <article class="section-card settings-panel">
+        <div class="section-card__header">
+            <div>
+                <h3 class="section-card__title">Privacy controls</h3>
+                <p class="section-card__meta">Review what is stored, what can be exported, and how consent is managed across the platform.</p>
             </div>
+            <span class="surface-pill surface-pill--warning">
+                <i class="fa-solid fa-shield"></i>
+                Compliance aware
+            </span>
+        </div>
+        <div class="settings-action-list">
+            <button class="btn btn-outline-primary" type="button" data-bs-toggle="modal" data-bs-target="#modalDataDownload">Download My Data</button>
+            <button class="btn btn-outline-danger" type="button" data-bs-toggle="modal" data-bs-target="#modalDeleteAccount">Delete My Account</button>
+            <button class="btn btn-outline-secondary" type="button" data-bs-toggle="modal" data-bs-target="#modalConsent">Manage Consent</button>
+        </div>
+        <div class="field-hint mt-3">Every sensitive action is logged for auditability.</div>
+    </article>
+
+    <article class="section-card settings-panel">
+        <div class="section-card__header">
+            <div>
+                <h3 class="section-card__title">Experience preferences</h3>
+                <p class="section-card__meta">Tune notifications, language, and accessibility in one cleaner cluster.</p>
+            </div>
+            <span class="surface-pill surface-pill--success">
+                <i class="fa-solid fa-sliders"></i>
+                Personalized
+            </span>
+        </div>
+        <div class="settings-action-list">
+            <button class="btn btn-outline-primary" type="button" data-bs-toggle="modal" data-bs-target="#modalNotifications">Notification Preferences</button>
+            <button class="btn btn-outline-primary" type="button" data-bs-toggle="modal" data-bs-target="#modalLanguage">Language & Region</button>
+            <button class="btn btn-outline-primary" type="button" data-bs-toggle="modal" data-bs-target="#modalAccessibility">Accessibility</button>
+        </div>
+    </article>
+</section>
+
+<section class="section-card mt-4 reveal-on-scroll">
+    <div class="section-card__header">
+        <div>
+            <h3 class="section-card__title">Security & compliance</h3>
+            <p class="section-card__meta">Critical platform protections surfaced in a clearer, more trustworthy overview.</p>
+        </div>
+        <span class="status-pill"><i class="fa-solid fa-shield-halved"></i> Secure by design</span>
+    </div>
+    <div class="settings-info-list">
+        <div class="settings-info-item">
+            <h6 class="mb-1">Role-based access</h6>
+            <p class="text-muted mb-0">Permissions stay scoped to admin, teacher, and student responsibilities.</p>
+        </div>
+        <div class="settings-info-item">
+            <h6 class="mb-1">Audit trails</h6>
+            <p class="text-muted mb-0">Important actions are tracked to support review, accountability, and support resolution.</p>
+        </div>
+        <div class="settings-info-item">
+            <h6 class="mb-1">Data protection</h6>
+            <p class="text-muted mb-0">Storage and transport controls are designed to protect user and institution data.</p>
         </div>
     </div>
-</div>
+</section>
 
 <div class="modal fade" id="modalProfile" tabindex="-1" aria-labelledby="modalProfileLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">

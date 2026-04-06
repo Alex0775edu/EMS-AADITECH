@@ -1,51 +1,77 @@
 {% extends 'base.html' %}
 {% block title %}Students - EMS{% endblock %}
 {% block content %}
-<div class="d-flex justify-content-between align-items-center flex-wrap mb-3">
+<section class="section-heading reveal-on-scroll">
     <div>
-        <h2 class="mb-1">Students</h2>
-        <p class="text-muted mb-0">Manage enrolled students, classes, and sections in one place.</p>
+        <div class="section-heading__eyebrow">
+            <i class="fa-solid fa-user-group"></i>
+            Student Management
+        </div>
+        <h2 class="section-heading__title">Manage the student directory with clarity</h2>
+        <p class="section-heading__text">Keep enrollment records, class placement, and section-level visibility organized in a cleaner SaaS-style data view.</p>
     </div>
-    <div class="d-flex gap-2">
+    <div class="section-heading__actions">
         <button type="button" class="btn btn-outline-primary open-chatbot-link">
-            <i class="fa-solid fa-robot me-1"></i> Ask AI Assistant
+            <i class="fa-solid fa-robot"></i>
+            Ask AI Assistant
         </button>
         {% if user.role != 'STUDENT' %}
         <a href="{% url 'students:student_add' %}" class="btn btn-primary">
-            <i class="fa-solid fa-user-plus me-1"></i> Add Student
+            <i class="fa-solid fa-user-plus"></i>
+            Add Student
         </a>
         {% endif %}
     </div>
-</div>
+</section>
 
-<div class="row g-3 mb-3">
-    <div class="col-md-4">
-        <div class="dashboard-kpi">
-            <small class="text-muted">Total Students</small>
-            <h3 class="mb-0">{{ students|length }}</h3>
+<section class="metric-grid mb-4 reveal-on-scroll">
+    <article class="metric-card">
+        <div class="metric-card__header">
+            <div class="metric-card__label">Students</div>
+            <div class="metric-card__icon"><i class="fa-solid fa-user-graduate"></i></div>
         </div>
-    </div>
-    <div class="col-md-4">
-        <div class="dashboard-kpi">
-            <small class="text-muted">Access Level</small>
-            <h3 class="mb-0">{{ user.role|default:'ADMIN' }}</h3>
+        <h3 class="metric-card__value" data-counter="{{ students|length }}">{{ students|length }}</h3>
+        <div class="metric-card__meta">Profiles currently available in this view</div>
+    </article>
+    <article class="metric-card">
+        <div class="metric-card__header">
+            <div class="metric-card__label">Access Level</div>
+            <div class="metric-card__icon"><i class="fa-solid fa-shield-halved"></i></div>
         </div>
-    </div>
-    <div class="col-md-4">
-        <div class="dashboard-kpi">
-            <small class="text-muted">Last Refresh</small>
-            <h3 class="mb-0">{% now "d M Y" %}</h3>
+        <h3 class="metric-card__value">{{ user.role|default:'ADMIN' }}</h3>
+        <div class="metric-card__meta">Role-based permissions applied to data actions</div>
+    </article>
+    <article class="metric-card">
+        <div class="metric-card__header">
+            <div class="metric-card__label">Refresh Date</div>
+            <div class="metric-card__icon"><i class="fa-solid fa-arrows-rotate"></i></div>
         </div>
-    </div>
-</div>
+        <h3 class="metric-card__value">{% now "d M" %}</h3>
+        <div class="metric-card__meta">Synced with the latest enrolled student records</div>
+    </article>
+    <article class="metric-card">
+        <div class="metric-card__header">
+            <div class="metric-card__label">Directory Mode</div>
+            <div class="metric-card__icon"><i class="fa-solid fa-table"></i></div>
+        </div>
+        <h3 class="metric-card__value">Responsive</h3>
+        <div class="metric-card__meta">Search, sort, pagination, and mobile card layouts enabled</div>
+    </article>
+</section>
 
-<div class="chart-card">
-    <div class="d-flex justify-content-between align-items-center flex-wrap mb-2">
-        <h5 class="mb-1">Student Directory</h5>
-        <small class="text-muted">Search and sort columns</small>
+<section class="table-card reveal-on-scroll">
+    <div class="table-card__header">
+        <div>
+            <h3 class="table-card__title">Student directory</h3>
+            <p class="table-card__subtitle">Search, sort, and paginate the roster with sticky headers and a mobile-friendly stacked layout.</p>
+        </div>
+        <span class="surface-pill">
+            <i class="fa-solid fa-list"></i>
+            Organized records
+        </span>
     </div>
     <div class="table-responsive">
-        <table class="table align-middle" data-table="true">
+        <table class="table align-middle" data-table="true" data-page-size="8">
             <thead>
                 <tr>
                     <th data-sortable="true">Name</th>
@@ -63,10 +89,10 @@
                     <td>{{ s.section }}</td>
                 </tr>
                 {% empty %}
-                <tr><td colspan="4" class="text-muted text-center">No students found</td></tr>
+                <tr><td colspan="4" class="text-muted text-center table-empty">No students found</td></tr>
                 {% endfor %}
             </tbody>
         </table>
     </div>
-</div>
+</section>
 {% endblock %}

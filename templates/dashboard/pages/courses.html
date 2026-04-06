@@ -1,24 +1,38 @@
 {% extends 'base.html' %}
 {% block title %}Courses - EMS{% endblock %}
 {% block content %}
-<div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-3">
+<section class="section-heading reveal-on-scroll">
     <div>
-        <h4 class="mb-1">Courses</h4>
-        <p class="text-muted mb-0">Active courses across your institution.</p>
+        <div class="section-heading__eyebrow">
+            <i class="fa-solid fa-book-open"></i>
+            Courses
+        </div>
+        <h2 class="section-heading__title">Browse active courses in a clearer catalog view</h2>
+        <p class="section-heading__text">Course data is now easier to scan across code, ownership, credits, and student progress.</p>
     </div>
-</div>
+</section>
 
-<div class="chart-card">
+<section class="table-card reveal-on-scroll">
+    <div class="table-card__header">
+        <div>
+            <h3 class="table-card__title">Course catalog</h3>
+            <p class="table-card__subtitle">Searchable and sortable course records with an improved hierarchy for program browsing.</p>
+        </div>
+        <span class="surface-pill">
+            <i class="fa-solid fa-layer-group"></i>
+            Learning operations
+        </span>
+    </div>
     <div class="table-responsive">
-        <table class="table align-middle">
+        <table class="table align-middle" data-table="true" data-page-size="8">
             <thead>
                 <tr>
-                    <th>Code</th>
-                    <th>Name</th>
-                    <th>Teacher</th>
-                    <th>Credits</th>
+                    <th data-sortable="true">Code</th>
+                    <th data-sortable="true">Name</th>
+                    <th data-sortable="true">Teacher</th>
+                    <th data-sortable="true">Credits</th>
                     {% if user.role == 'STUDENT' %}
-                    <th>Progress</th>
+                    <th data-sortable="true">Progress</th>
                     {% endif %}
                 </tr>
             </thead>
@@ -32,11 +46,10 @@
                     {% if user.role == 'STUDENT' %}
                     <td>
                         {% if c.progress_percent %}
-                        <div class="progress" style="height: 0.6rem;">
-                            <div class="progress-bar" role="progressbar" style="width: {{ c.progress_percent }}%;" aria-valuenow="{{ c.progress_percent }}" aria-valuemin="0" aria-valuemax="100">
-                                {{ c.progress_percent }}%
-                            </div>
+                        <div class="progress-track">
+                            <div class="progress-fill" style="width: {{ c.progress_percent }}%;"></div>
                         </div>
+                        <div class="field-hint mt-2">{{ c.progress_percent }}% complete</div>
                         {% else %}
                         <span class="text-muted">Not enrolled</span>
                         {% endif %}
@@ -45,11 +58,11 @@
                 </tr>
                 {% empty %}
                 <tr>
-                    <td colspan="{% if user.role == 'STUDENT' %}5{% else %}4{% endif %}" class="text-muted text-center">No courses found</td>
+                    <td colspan="{% if user.role == 'STUDENT' %}5{% else %}4{% endif %}" class="text-muted text-center table-empty">No courses found</td>
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
     </div>
-</div>
+</section>
 {% endblock %}

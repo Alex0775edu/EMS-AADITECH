@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block title %}Smart Education Management System{% endblock %}
+{% block body_class %}landing-page{% endblock %}
 {% block page_hero %}{% endblock %}
 {% block content %}
 
@@ -31,7 +32,7 @@
                     </div>
                 </div>
                 <div class="col-lg-6 text-center reveal-on-scroll">
-                    <img class="img-fluid hero-image" src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=900&q=80" alt="Students learning together" loading="lazy" decoding="async">
+                    <img class="img-fluid hero-image" src="{% static 'images/main-hero.svg' %}" alt="AaDiTeCh EMS platform preview" loading="lazy" decoding="async">
                 </div>
             </div>
         </div>
@@ -99,7 +100,7 @@
             <div class="row g-4 align-items-center">
                 <div class="col-lg-5 reveal-on-scroll">
                     <p class="section-kicker text-white-50">Impact</p>
-                    <h2 class="section-title text-white">Trusted by growing institutions</h2>
+                    <h2 class="section-title text-white">Built for growing institutions</h2>
                     <p class="section-subtitle text-white-50">Track student success and operational performance with confidence.</p>
                 </div>
                 <div class="col-lg-7">
@@ -151,7 +152,7 @@
                 </div>
                 <div class="col-md-4 reveal-on-scroll">
                     <div class="course-card p-4 h-100">
-                        <span class="course-tag"><i class="fa-solid fa-brain"></i> AI & Data</span>
+                        <span class="course-tag"><i class="fa-solid fa-brain"></i> AI &amp; Data</span>
                         <h5 class="mt-3">Data Science Track</h5>
                         <p class="text-muted">Analytics dashboards, ML basics, and reporting projects.</p>
                         <div class="d-flex justify-content-between align-items-center">
@@ -332,18 +333,18 @@
         <div class="container">
             <div class="row align-items-center g-4">
                 <div class="col-lg-6 reveal-on-scroll">
-                    <img class="img-fluid hero-image" src="https://images.unsplash.com/photo-1521791136064-7986c2920216?auto=format&fit=crop&w=900&q=80" alt="Internship collaboration" loading="lazy" decoding="async">
+                    <img class="img-fluid hero-image" src="{% static 'images/main-hero.svg' %}" alt="AaDiTeCh EMS implementation and support" loading="lazy" decoding="async">
                 </div>
                 <div class="col-lg-6 reveal-on-scroll">
-                    <p class="section-kicker">Internships</p>
-                    <h2 class="section-title">Internship highlights that bridge learning and industry</h2>
-                    <p class="section-subtitle">Offer real-world projects, mentorship, and performance feedback to prepare students for placement.</p>
+                    <p class="section-kicker">Implementation Support</p>
+                    <h2 class="section-title">Deployment, onboarding, and support for institutions</h2>
+                    <p class="section-subtitle">AaDiTeCh EMS includes operational support through documentation, setup workflows, AI assistance, email, and WhatsApp.</p>
                     <ul class="list-unstyled mt-3">
-                        <li class="d-flex align-items-start gap-2 mb-2"><i class="fa-solid fa-circle-check text-primary mt-1"></i> Industry-aligned projects and live demos.</li>
-                        <li class="d-flex align-items-start gap-2 mb-2"><i class="fa-solid fa-circle-check text-primary mt-1"></i> Mentor-led weekly evaluations.</li>
-                        <li class="d-flex align-items-start gap-2 mb-2"><i class="fa-solid fa-circle-check text-primary mt-1"></i> Certification and placement readiness scores.</li>
+                        <li class="d-flex align-items-start gap-2 mb-2"><i class="fa-solid fa-circle-check text-primary mt-1"></i> Guided setup for institutions, users, and academic data.</li>
+                        <li class="d-flex align-items-start gap-2 mb-2"><i class="fa-solid fa-circle-check text-primary mt-1"></i> Help center, documentation, and in-app AI support for common tasks.</li>
+                        <li class="d-flex align-items-start gap-2 mb-2"><i class="fa-solid fa-circle-check text-primary mt-1"></i> Direct email and WhatsApp support using live AaDiTeCh contact channels.</li>
                     </ul>
-                    <a href="https://techsima.in/" class="btn btn-gradient mt-2" target="_blank" rel="noopener noreferrer">Explore Internships</a>
+                    <a href="{% url 'help_center' %}" class="btn btn-gradient mt-2">Open Help Center</a>
                 </div>
             </div>
         </div>
@@ -353,32 +354,32 @@
         <div class="container">
             <div class="row align-items-end mb-4">
                 <div class="col-lg-7 reveal-on-scroll">
-                    <p class="section-kicker text-white-50">Testimonials</p>
-                    <h2 class="section-title text-white">Loved by administrators and teachers</h2>
-                    <p class="section-subtitle text-white-50">Trusted workflows that reduce manual effort and improve student outcomes.</p>
+                    <p class="section-kicker text-white-50">Platform Highlights</p>
+                    <h2 class="section-title text-white">Built around actual EMS capabilities</h2>
+                    <p class="section-subtitle text-white-50">These highlights describe real platform behavior and modules instead of sample testimonial quotes.</p>
                 </div>
             </div>
             <div class="row g-4">
                 <div class="col-md-6 reveal-on-scroll">
                     <div class="testimonial-card p-4 h-100">
-                        <p class="mb-3">"EMS reduced our manual work by 70% and gave us clear visibility across every department."</p>
+                        <p class="mb-3">Role-based dashboards help administrators, teachers, and students access the workflows that match their responsibilities.</p>
                         <div class="d-flex align-items-center gap-3">
-                            <i class="fa-solid fa-user-circle fa-2x text-primary"></i>
+                            <i class="fa-solid fa-shield-halved fa-2x text-primary"></i>
                             <div>
-                                <h6 class="mb-0">Principal</h6>
-                                <small class="text-muted">Academic Leadership</small>
+                                <h6 class="mb-0">Role-based Access</h6>
+                                <small class="text-muted">Admins, teachers, students, and institution-level workflows</small>
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="col-md-6 reveal-on-scroll">
                     <div class="testimonial-card p-4 h-100">
-                        <p class="mb-3">"Attendance and reports are now real-time. Our teachers love the dashboards."</p>
+                        <p class="mb-3">Attendance, fees, notices, exams, reporting, and AI assistance are available from one integrated workspace.</p>
                         <div class="d-flex align-items-center gap-3">
-                            <i class="fa-solid fa-user-circle fa-2x text-primary"></i>
+                            <i class="fa-solid fa-chart-line fa-2x text-primary"></i>
                             <div>
-                                <h6 class="mb-0">Administrator</h6>
-                                <small class="text-muted">Operations Team</small>
+                                <h6 class="mb-0">Unified Operations</h6>
+                                <small class="text-muted">Academic, communication, and finance modules in one system</small>
                             </div>
                         </div>
                     </div>
@@ -481,7 +482,7 @@
                         <p class="mb-0">Launch AaDiTeCh EMS and see faster decisions, happier staff, and more engaged students.</p>
                     </div>
                     <div class="col-lg-4 text-lg-end">
-                        <a href="{% url 'accounts:login' %}" class="btn btn-light btn-lg">Request a Demo</a>
+                        <a href="{% url 'help_center' %}" class="btn btn-light btn-lg">Open Help Center</a>
                     </div>
                 </div>
             </div>

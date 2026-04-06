@@ -6,7 +6,9 @@ from django.http import JsonResponse
 from django.views.decorators.http import require_POST
 from django.shortcuts import render
 from django.db import IntegrityError
-from .models import NewsletterSubscription
+from students.models import Student
+from teachers.models import Teacher
+from .models import Institution, NewsletterSubscription
 
 
 SYSTEM_PROMPT = (
@@ -18,6 +20,26 @@ SYSTEM_PROMPT = (
     "If a request needs staff approval or sensitive data, advise contacting the "
     "school admin or support desk."
 )
+
+PLATFORM_FEATURE_APPS = [
+    "accounts",
+    "attendance",
+    "billing",
+    "classes",
+    "communications",
+    "core",
+    "dashboard",
+    "documents",
+    "exams",
+    "fees",
+    "institutions",
+    "materials",
+    "notices",
+    "notifications",
+    "reports",
+    "students",
+    "teachers",
+]
 
 
 def _sanitize_history(raw_history):
@@ -122,7 +144,13 @@ def support_page(request):
 
 
 def about_page(request):
-    return render(request, "pages/about.html")
+    context = {
+        "institutes_supported": Institution.objects.count(),
+        "total_students": Student.objects.count(),
+        "total_teachers": Teacher.objects.count(),
+        "platform_module_count": len(PLATFORM_FEATURE_APPS),
+    }
+    return render(request, "pages/about.html", context)
 
 
 def careers_page(request):

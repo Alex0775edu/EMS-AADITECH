@@ -1,54 +1,81 @@
 {% extends 'base.html' %}
 {% block title %}Attendance - EMS{% endblock %}
 {% block content %}
-<div class="d-flex justify-content-between align-items-center flex-wrap mb-3">
+<section class="section-heading reveal-on-scroll">
     <div>
-        <h2 class="mb-1">Attendance</h2>
-        <p class="text-muted mb-0">Track attendance, run face scan, and review recent activity.</p>
+        <div class="section-heading__eyebrow">
+            <i class="fa-solid fa-calendar-check"></i>
+            Attendance Hub
+        </div>
+        <h2 class="section-heading__title">Monitor attendance with cleaner operational context</h2>
+        <p class="section-heading__text">Track recent attendance events, launch marking workflows, and move between reporting tasks without friction.</p>
     </div>
-    <div class="d-flex gap-2 flex-wrap">
+    <div class="section-heading__actions">
         {% if user.role != 'STUDENT' %}
         <a href="{% url 'attendance:mark_attendance' %}" class="btn btn-primary">
-            <i class="fa-solid fa-clipboard-check me-1"></i> Mark
+            <i class="fa-solid fa-clipboard-check"></i>
+            Mark
         </a>
         <a href="{% url 'attendance:face_attendance' %}" class="btn btn-outline-primary">
-            <i class="fa-solid fa-camera me-1"></i> Face Scan
+            <i class="fa-solid fa-camera"></i>
+            Face Scan
         </a>
         {% endif %}
         <a href="{% url 'attendance:attendance_report' %}" class="btn btn-outline-secondary">
-            <i class="fa-solid fa-chart-column me-1"></i> Report
+            <i class="fa-solid fa-chart-column"></i>
+            Report
         </a>
     </div>
-</div>
+</section>
 
-<div class="row g-3 mb-3">
-    <div class="col-md-4">
-        <div class="dashboard-kpi">
-            <small class="text-muted">Records Loaded</small>
-            <h3 class="mb-0">{{ records|length }}</h3>
+<section class="metric-grid mb-4 reveal-on-scroll">
+    <article class="metric-card">
+        <div class="metric-card__header">
+            <div class="metric-card__label">Records Loaded</div>
+            <div class="metric-card__icon"><i class="fa-solid fa-database"></i></div>
         </div>
-    </div>
-    <div class="col-md-4">
-        <div class="dashboard-kpi">
-            <small class="text-muted">Latest Record</small>
-            <h3 class="mb-0">{% if records %}{{ records.0.date }}{% else %}--{% endif %}</h3>
+        <h3 class="metric-card__value" data-counter="{{ records|length }}">{{ records|length }}</h3>
+        <div class="metric-card__meta">Recent attendance rows available in the current scope</div>
+    </article>
+    <article class="metric-card">
+        <div class="metric-card__header">
+            <div class="metric-card__label">Latest Record</div>
+            <div class="metric-card__icon"><i class="fa-solid fa-calendar-day"></i></div>
         </div>
-    </div>
-    <div class="col-md-4">
-        <div class="dashboard-kpi">
-            <small class="text-muted">Access Level</small>
-            <h3 class="mb-0">{{ user.role|default:'ADMIN' }}</h3>
+        <h3 class="metric-card__value">{% if records %}{{ records.0.date|date:"d M" }}{% else %}--{% endif %}</h3>
+        <div class="metric-card__meta">Most recently captured attendance date</div>
+    </article>
+    <article class="metric-card">
+        <div class="metric-card__header">
+            <div class="metric-card__label">Access Level</div>
+            <div class="metric-card__icon"><i class="fa-solid fa-user-shield"></i></div>
         </div>
-    </div>
-</div>
+        <h3 class="metric-card__value">{{ user.role|default:'ADMIN' }}</h3>
+        <div class="metric-card__meta">Permissions adjust what can be marked and reviewed</div>
+    </article>
+    <article class="metric-card">
+        <div class="metric-card__header">
+            <div class="metric-card__label">View Mode</div>
+            <div class="metric-card__icon"><i class="fa-solid fa-mobile-screen-button"></i></div>
+        </div>
+        <h3 class="metric-card__value">Adaptive</h3>
+        <div class="metric-card__meta">Responsive rows collapse into readable cards on mobile</div>
+    </article>
+</section>
 
-<div class="chart-card">
-    <div class="d-flex justify-content-between align-items-center flex-wrap mb-2">
-        <h5 class="mb-1">Recent Attendance Records</h5>
-        <small class="text-muted">Search and sort columns</small>
+<section class="table-card reveal-on-scroll">
+    <div class="table-card__header">
+        <div>
+            <h3 class="table-card__title">Recent attendance records</h3>
+            <p class="table-card__subtitle">Search and sort attendance events with sticky headers, pagination, and touch-friendly mobile presentation.</p>
+        </div>
+        <span class="surface-pill">
+            <i class="fa-solid fa-wave-square"></i>
+            Real-time operations
+        </span>
     </div>
     <div class="table-responsive">
-        <table class="table align-middle" data-table="true">
+        <table class="table align-middle" data-table="true" data-page-size="10">
             <thead>
                 <tr>
                     <th data-sortable="true">Student</th>
@@ -60,7 +87,7 @@
                 {% for r in records %}
                 <tr>
                     <td>{{ r.student.user.username }}</td>
-                    <td>{{ r.date }}</td>
+                    <td>{{ r.date|date:"d M Y" }}</td>
                     <td>
                         {% if r.status == 'PRESENT' %}
                             <span class="badge bg-success">Present</span>
@@ -72,10 +99,10 @@
                     </td>
                 </tr>
                 {% empty %}
-                <tr><td colspan="3" class="text-muted text-center">No attendance records found</td></tr>
+                <tr><td colspan="3" class="text-muted text-center table-empty">No attendance records found</td></tr>
                 {% endfor %}
             </tbody>
         </table>
     </div>
-</div>
+</section>
 {% endblock %}

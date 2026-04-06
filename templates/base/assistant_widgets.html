@@ -1,12 +1,17 @@
 {% load static %}
 <div class="aaditech-chatbot" aria-live="polite">
-    <div class="aaditech-chatbot__panel" role="dialog" aria-label="AaDiTeCh support chat">
+    <div id="aaditechChatPanel" class="aaditech-chatbot__panel" role="dialog" aria-label="AaDiTeCh support chat">
         <div class="aaditech-chatbot__header">
-            <div>
+            <div class="aaditech-chatbot__header-main">
                 <h4>AaDiTeCh AI Assistant</h4>
                 <div class="aaditech-chatbot__status">Student Support Chatbot</div>
             </div>
-            <div class="aaditech-chatbot__status">Online</div>
+            <div class="aaditech-chatbot__header-actions">
+                <div class="aaditech-chatbot__status">Online</div>
+                <button class="aaditech-chatbot__close" type="button" aria-label="Close chatbot">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
         </div>
         <div class="aaditech-chatbot__note">Ask about this website, or login help.</div>
         <div class="aaditech-chatbot__body"></div>
@@ -16,7 +21,7 @@
         </div>
     </div>
     <div class="aaditech-chatbot__label">AI Chatbot</div>
-    <button class="aaditech-chatbot__toggle" type="button" aria-label="Open AaDiTeCh chat">
+    <button class="aaditech-chatbot__toggle" type="button" aria-label="Open AaDiTeCh chat" aria-controls="aaditechChatPanel" aria-expanded="false">
         <img src="{% static 'images/aaditech_logo.jpeg' %}" alt="AaDiTeCh" loading="lazy" decoding="async">
     </button>
 </div>

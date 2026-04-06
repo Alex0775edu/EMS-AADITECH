@@ -1,26 +1,26 @@
-﻿{% load static %}
-<header class="navbar navbar-expand-lg navbar-dark topbar shadow-sm px-3 position-relative overflow-hidden" role="banner">
+{% load static %}
+<header class="navbar navbar-expand-xl navbar-dark topbar shadow-sm px-3 position-relative overflow-hidden" role="banner">
     <img src="{% static 'images/header-orb.svg' %}" alt="" class="header-orb" aria-hidden="true" loading="lazy" decoding="async">
     <img src="{% static 'images/header-grid.svg' %}" alt="" class="header-grid" aria-hidden="true" loading="lazy" decoding="async">
 
     {% if user.is_authenticated %}
-    
-    <button class="btn btn-link nav-link text-white me-2 d-inline-flex align-items-center sidebar-toggle" id="sidebarToggle" type="button" aria-label="Toggle sidebar" aria-controls="sidebarMenu" aria-expanded="false">
+    <button class="btn btn-link nav-link me-2 d-inline-flex align-items-center sidebar-toggle" id="sidebarToggle" type="button" aria-label="Toggle sidebar" aria-controls="sidebarMenu" aria-expanded="false">
         <i class="fa-solid fa-bars-staggered"></i>
-        <span class="text-uppercase small fw-semibold text-muted text-warning">Menu</span>
+        <span class="text-uppercase small fw-semibold">Menu</span>
     </button>
     {% endif %}
+
     {% if user.is_authenticated %}
     <a class="navbar-brand fw-bold d-flex align-items-center" href="{% url 'dashboard:dashboard' %}">
     {% else %}
     <a class="navbar-brand fw-bold d-flex align-items-center" href="{% url 'home' %}">
     {% endif %}
-        <img src="{% static 'images/aaditech_logo.jpeg' %}" alt="EMS" height="30" class="me-2" loading="eager" decoding="async">
-        EMS Cloud
+        <img src="{% static 'images/aaditech_logo.jpeg' %}" alt="EMS" loading="eager" decoding="async">
+        <span>EMS Cloud</span>
     </a>
     <span class="brand-pill ms-2 d-none d-md-inline-flex">
-        <i class="fa-solid fa-graduation-cap"></i>
-        Smart Campus
+        <i class="fa-solid fa-layer-group"></i>
+        Premium Workspace
     </span>
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#topbarNav" aria-controls="topbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -29,32 +29,33 @@
 
     <div class="collapse navbar-collapse" id="topbarNav">
         {% if user.is_authenticated %}
-            <form class="ms-lg-4 my-2 my-lg-0 w-100 top-search" method="get" action="{% url 'dashboard:search' %}">
+            <form class="ms-xl-4 my-2 my-xl-0 w-100 top-search" method="get" action="{% url 'dashboard:search' %}">
                 <div class="input-group">
-                    <span class="input-group-text bg-transparent border-end-0"><i class="fa-solid fa-magnifying-glass"></i></span>
-                    <input class="form-control border-start-0" type="search" name="q" placeholder="Search students, courses, teachers..." value="{{ request.GET.q|default:'' }}">
+                    <span class="input-group-text"><i class="fa-solid fa-magnifying-glass"></i></span>
+                    <input class="form-control" type="search" name="q" placeholder="Search students, teachers, courses, attendance, reports..." value="{{ request.GET.q|default:'' }}">
+                    <span class="top-search__hint d-none d-lg-inline-flex">Ctrl K</span>
                 </div>
             </form>
 
             <ul class="navbar-nav ms-auto align-items-center gap-2">
-                <li class="nav-item d-none d-lg-flex align-items-center">
-                    <span class="header-kpi">
-                        <i class="fa-solid fa-chart-line"></i>
-                        Live Insights
+                <li class="nav-item d-none d-xl-flex align-items-center">
+                    <span class="topbar-pill">
+                        <i class="fa-solid fa-sparkles"></i>
+                        Live insights workspace
                     </span>
                 </li>
                 <li class="nav-item">
-                    <button class="btn btn-link nav-link text-white open-chatbot-link" type="button" title="Open AI Assistant">
+                    <button class="btn btn-link nav-link topbar-icon open-chatbot-link" type="button" title="Open AI Assistant">
                         <i class="fa-solid fa-robot"></i>
                     </button>
                 </li>
                 <li class="nav-item">
-                    <button class="btn btn-link nav-link text-white" id="darkModeToggle" type="button" title="Toggle dark mode">
+                    <button class="btn btn-link nav-link topbar-icon" id="darkModeToggle" type="button" title="Toggle dark mode">
                         <i class="fa-solid fa-moon"></i>
                     </button>
                 </li>
                 <li class="nav-item dropdown">
-                    <button class="btn btn-link nav-link text-white position-relative" type="button" data-bs-toggle="dropdown" aria-expanded="false" title="Notifications">
+                    <button class="btn btn-link nav-link topbar-icon position-relative" type="button" data-bs-toggle="dropdown" aria-expanded="false" title="Notifications">
                         <i class="fa-regular fa-bell"></i>
                         <span class="notification-dot"></span>
                     </button>
@@ -65,11 +66,16 @@
                     </ul>
                 </li>
                 <li class="nav-item dropdown">
-                    <button class="btn btn-link nav-link dropdown-toggle text-white" type="button" data-bs-toggle="dropdown" aria-expanded="false" title="Account">
-                        <i class="fa-regular fa-user me-1"></i>{{ user.get_full_name|default:user.username }}
+                    <button class="btn btn-link nav-link dropdown-toggle topbar-account" type="button" data-bs-toggle="dropdown" aria-expanded="false" title="Account">
+                        <span class="topbar-account__avatar">{{ user.first_name|default:user.username|first|upper }}</span>
+                        <span class="topbar-account__meta">
+                            <span class="topbar-account__name">{{ user.get_full_name|default:user.username }}</span>
+                            <span class="topbar-account__role">{{ user.role|default:'ADMIN' }}</span>
+                        </span>
                     </button>
                     <ul class="dropdown-menu dropdown-menu-end">
-                        <li><a class="dropdown-item" href="{% url 'dashboard:dashboard' %}">My Profile</a></li>
+                        <li><a class="dropdown-item" href="{% url 'dashboard:settings_page' %}">Profile & Settings</a></li>
+                        <li><a class="dropdown-item" href="{% url 'dashboard:notifications_page' %}">Notification Center</a></li>
                         <li><hr class="dropdown-divider"></li>
                         <li>
                             <form method="post" action="{% url 'accounts:logout' %}">

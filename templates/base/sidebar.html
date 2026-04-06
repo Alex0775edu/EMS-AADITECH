@@ -6,6 +6,21 @@
                 <i class="fa-solid fa-xmark"></i>
             </button>
         </div>
+
+        <div class="sidebar-overview">
+            <div class="sidebar-overview__label">
+                <i class="fa-solid fa-briefcase"></i>
+                Workspace
+            </div>
+            <div class="sidebar-overview__title">{{ user.institution.name|default:"EMS Cloud" }}</div>
+            <div class="sidebar-overview__meta">{{ user.role|default:"ADMIN" }} dashboard with real-time visibility across operations.</div>
+            <div class="sidebar-overview__chips">
+                <span><i class="fa-solid fa-signal"></i> Live</span>
+                <span><i class="fa-solid fa-shield-check"></i> Secure</span>
+                <span><i class="fa-solid fa-mobile-screen"></i> Responsive</span>
+            </div>
+        </div>
+
         <ul class="nav flex-column">
             <li class="sidebar-section">Core</li>
             <li class="nav-item"><a class="nav-link" href="{% url 'dashboard:dashboard' %}"><i class="fa-solid fa-gauge"></i><span class="nav-label">Dashboard</span></a></li>
@@ -57,5 +72,14 @@
                 </form>
             </li>
         </ul>
+
+        <div class="sidebar-footer-card">
+            <div class="sidebar-footer-card__title">Need help fast?</div>
+            <div class="sidebar-footer-card__text">Open the AI assistant for quick guidance on attendance, reports, fees, and workflows.</div>
+            <button type="button" class="btn btn-primary w-100 open-chatbot-link">
+                <i class="fa-solid fa-robot"></i>
+                Ask AI Assistant
+            </button>
+        </div>
     </div>
 </nav>

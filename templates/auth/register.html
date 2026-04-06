@@ -8,94 +8,121 @@
 {% endblock %}
 
 {% block content %}
-<div class="auth-container">
-    <div class="row justify-content-center">
-        <div class="col-md-9 col-lg-7">
-            <div class="card shadow">
-                <div class="card-header text-center bg-primary text-white">
-                    <h4 class="mb-0">Create User Account</h4>
-                </div>
-                <div class="card-body p-4">
-                    {% if form.errors %}
-                        <div class="alert alert-danger">
-                            Please fix the form errors below.
-                        </div>
-                    {% endif %}
-                    {% if form.non_field_errors %}
-                        <div class="alert alert-danger">
-                            {% for err in form.non_field_errors %}
-                                <div>{{ err }}</div>
-                            {% endfor %}
-                        </div>
-                    {% endif %}
+<section class="auth-shell">
+    <div class="auth-bg-orb orb-1"></div>
+    <div class="auth-bg-orb orb-2"></div>
+    <div class="auth-bg-orb orb-3"></div>
 
-                    <form method="post" action="{% url 'accounts:register' %}">
-                        {% csrf_token %}
-
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label for="first_name" class="form-label">First Name</label>
-                                <input type="text" class="form-control" id="first_name" name="first_name" value="{{ form.first_name.value|default:'' }}" required>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-xl-9 col-lg-10">
+                <div class="card auth-login-card animatable">
+                    <div class="card-body">
+                        <div class="auth-panel__header">
+                            <div>
+                                <div class="auth-panel__eyebrow">User Provisioning</div>
+                                <h2 class="auth-panel__title">Create a new user account</h2>
+                                <p class="auth-panel__text mb-0">A more structured setup flow for staff and student onboarding.</p>
                             </div>
-                            <div class="col-md-6 mb-3">
-                                <label for="last_name" class="form-label">Last Name</label>
-                                <input type="text" class="form-control" id="last_name" name="last_name" value="{{ form.last_name.value|default:'' }}" required>
-                            </div>
+                            <span class="surface-pill">
+                                <i class="fa-solid fa-user-plus"></i>
+                                Admin workflow
+                            </span>
                         </div>
 
-                        <div class="mb-3">
-                            <label for="email" class="form-label">Email</label>
-                            <input type="email" class="form-control" id="email" name="email" value="{{ form.email.value|default:'' }}" required>
-                            {% if form.email.errors %}<small class="text-danger">{{ form.email.errors.0 }}</small>{% endif %}
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label for="institute_id" class="form-label">Institute ID</label>
-                                <input type="text" class="form-control" id="institute_id" name="institute_id" value="{{ form.institute_id.value|default:'' }}" required>
-                                {% if form.institute_id.errors %}<small class="text-danger">{{ form.institute_id.errors.0 }}</small>{% endif %}
+                        {% if form.errors %}
+                            <div class="alert alert-danger">
+                                Please fix the form errors below.
                             </div>
-                            <div class="col-md-6 mb-3">
-                                <label for="date_of_birth" class="form-label">Date of Birth</label>
-                                <input type="date" class="form-control" id="date_of_birth" name="date_of_birth" value="{{ form.date_of_birth.value|default:'' }}" required>
-                                {% if form.date_of_birth.errors %}<small class="text-danger">{{ form.date_of_birth.errors.0 }}</small>{% endif %}
+                        {% endif %}
+                        {% if form.non_field_errors %}
+                            <div class="alert alert-danger">
+                                {% for err in form.non_field_errors %}
+                                    <div>{{ err }}</div>
+                                {% endfor %}
                             </div>
-                        </div>
+                        {% endif %}
 
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label for="role" class="form-label">Role</label>
-                                <select class="form-select" id="role" name="role" required>
-                                    <option value="">Select role</option>
-                                    {% for value, label in form.fields.role.choices %}
-                                        <option value="{{ value }}" {% if form.role.value == value %}selected{% endif %}>{{ label }}</option>
-                                    {% endfor %}
-                                </select>
-                                {% if form.role.errors %}<small class="text-danger">{{ form.role.errors.0 }}</small>{% endif %}
+                        <form method="post" action="{% url 'accounts:register' %}">
+                            {% csrf_token %}
+
+                            <div class="form-section">
+                                <h3 class="form-section__title">Identity details</h3>
+                                <p class="form-section__meta">Collect the key information needed to establish the user account.</p>
+                                <div class="row g-3">
+                                    <div class="col-md-6">
+                                        <div class="form-floating">
+                                            <input type="text" class="form-control" id="first_name" name="first_name" value="{{ form.first_name.value|default:'' }}" placeholder="First Name" required>
+                                            <label for="first_name">First Name</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-floating">
+                                            <input type="text" class="form-control" id="last_name" name="last_name" value="{{ form.last_name.value|default:'' }}" placeholder="Last Name" required>
+                                            <label for="last_name">Last Name</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-floating">
+                                            <input type="email" class="form-control" id="email" name="email" value="{{ form.email.value|default:'' }}" placeholder="Email" required>
+                                            <label for="email">Email</label>
+                                        </div>
+                                        {% if form.email.errors %}<small class="text-danger">{{ form.email.errors.0 }}</small>{% endif %}
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="date_of_birth" class="form-label">Date of Birth</label>
+                                        <input type="date" class="form-control" id="date_of_birth" name="date_of_birth" value="{{ form.date_of_birth.value|default:'' }}" required>
+                                        {% if form.date_of_birth.errors %}<small class="text-danger">{{ form.date_of_birth.errors.0 }}</small>{% endif %}
+                                    </div>
+                                </div>
                             </div>
-                            <div class="col-md-6 mb-3">
-                                <label for="institution" class="form-label">Institution (for superuser)</label>
-                                <select class="form-select" id="institution" name="institution">
-                                    <option value="">Select institution</option>
-                                    {% for opt in form.fields.institution.queryset %}
-                                        <option value="{{ opt.id }}" {% if form.institution.value|stringformat:'s' == opt.id|stringformat:'s' %}selected{% endif %}>{{ opt.name }}</option>
-                                    {% endfor %}
-                                </select>
-                                {% if form.institution.errors %}<small class="text-danger">{{ form.institution.errors.0 }}</small>{% endif %}
+
+                            <div class="form-section">
+                                <h3 class="form-section__title">Access configuration</h3>
+                                <p class="form-section__meta">Set role, institution mapping, and identifiers for the user being provisioned.</p>
+                                <div class="row g-3">
+                                    <div class="col-md-6">
+                                        <div class="form-floating">
+                                            <input type="text" class="form-control" id="institute_id" name="institute_id" value="{{ form.institute_id.value|default:'' }}" placeholder="Institute ID" required>
+                                            <label for="institute_id">Institute ID</label>
+                                        </div>
+                                        {% if form.institute_id.errors %}<small class="text-danger">{{ form.institute_id.errors.0 }}</small>{% endif %}
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="role" class="form-label">Role</label>
+                                        <select class="form-select" id="role" name="role" required>
+                                            <option value="">Select role</option>
+                                            {% for value, label in form.fields.role.choices %}
+                                                <option value="{{ value }}" {% if form.role.value == value %}selected{% endif %}>{{ label }}</option>
+                                            {% endfor %}
+                                        </select>
+                                        {% if form.role.errors %}<small class="text-danger">{{ form.role.errors.0 }}</small>{% endif %}
+                                    </div>
+                                    <div class="col-12">
+                                        <label for="institution" class="form-label">Institution (for superuser)</label>
+                                        <select class="form-select" id="institution" name="institution">
+                                            <option value="">Select institution</option>
+                                            {% for opt in form.fields.institution.queryset %}
+                                                <option value="{{ opt.id }}" {% if form.institution.value|stringformat:'s' == opt.id|stringformat:'s' %}selected{% endif %}>{{ opt.name }}</option>
+                                            {% endfor %}
+                                        </select>
+                                        {% if form.institution.errors %}<small class="text-danger">{{ form.institution.errors.0 }}</small>{% endif %}
+                                    </div>
+                                </div>
                             </div>
-                        </div>
 
-                        <div class="alert alert-info">
-                            Default password is user DOB in <strong>DDMMYYYY</strong> format.
-                        </div>
+                            <div class="alert alert-info mt-3">
+                                Default password is user DOB in <strong>DDMMYYYY</strong> format.
+                            </div>
 
-                        <div class="d-grid">
-                            <button type="submit" class="btn btn-primary btn-lg">Create User</button>
-                        </div>
-                    </form>
+                            <div class="d-grid mt-4">
+                                <button type="submit" class="btn btn-primary btn-lg">Create User</button>
+                            </div>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
+</section>
 {% endblock %}

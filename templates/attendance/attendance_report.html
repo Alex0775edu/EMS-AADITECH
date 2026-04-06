@@ -3,42 +3,61 @@
 {% block title %}Attendance Report - EMS{% endblock %}
 
 {% block content %}
-<div class="d-flex justify-content-between align-items-center flex-wrap mb-3">
+<section class="section-heading reveal-on-scroll">
     <div>
-        <h2 class="mb-1">Attendance Report</h2>
-        <p class="text-muted mb-0">Latest attendance analytics and records</p>
-    </div>
-    <a href="{% url 'attendance:mark_attendance' %}" class="btn btn-primary"><i class="fa-solid fa-clipboard-check me-1"></i>Mark Attendance</a>
-</div>
-
-<div class="row g-3 mb-3">
-    {% for item in summary %}
-    <div class="col-md-4">
-        <div class="dashboard-kpi">
-            <small class="text-muted">{{ item.label }}</small>
-            <h3 class="mb-0 text-{{ item.class }}">{{ item.count }}</h3>
-            <small class="text-muted">{{ item.pct }}%</small>
+        <div class="section-heading__eyebrow">
+            <i class="fa-solid fa-chart-column"></i>
+            Attendance Report
         </div>
+        <h2 class="section-heading__title">Analyze attendance with clearer summaries and cleaner records</h2>
+        <p class="section-heading__text">The reporting view now presents status summaries and the recent record ledger in a more modern analytics layout.</p>
     </div>
-    {% endfor %}
-</div>
+    <div class="section-heading__actions">
+        <a href="{% url 'attendance:mark_attendance' %}" class="btn btn-primary">
+            <i class="fa-solid fa-clipboard-check"></i>
+            Mark Attendance
+        </a>
+    </div>
+</section>
 
-<div class="chart-card">
-    <h6 class="mb-3">Recent Records ({{ total_records }})</h6>
+<section class="metric-grid mb-4 reveal-on-scroll">
+    {% for item in summary %}
+    <article class="metric-card">
+        <div class="metric-card__header">
+            <div class="metric-card__label">{{ item.label }}</div>
+            <div class="metric-card__icon"><i class="fa-solid fa-circle-check"></i></div>
+        </div>
+        <h3 class="metric-card__value text-{{ item.class }}">{{ item.count }}</h3>
+        <div class="metric-card__meta">{{ item.pct }}% of total records</div>
+    </article>
+    {% endfor %}
+</section>
+
+<section class="table-card reveal-on-scroll">
+    <div class="table-card__header">
+        <div>
+            <h3 class="table-card__title">Recent records</h3>
+            <p class="table-card__subtitle">Sortable attendance history with better readability and responsive layout support.</p>
+        </div>
+        <span class="surface-pill">
+            <i class="fa-solid fa-database"></i>
+            {{ total_records }} total records
+        </span>
+    </div>
     <div class="table-responsive">
-        <table class="table table-hover align-middle">
+        <table class="table table-hover align-middle" data-table="true" data-page-size="8">
             <thead>
                 <tr>
-                    <th>Date</th>
-                    <th>Student</th>
-                    <th>Roll No</th>
-                    <th>Status</th>
+                    <th data-sortable="true">Date</th>
+                    <th data-sortable="true">Student</th>
+                    <th data-sortable="true">Roll No</th>
+                    <th data-sortable="true">Status</th>
                 </tr>
             </thead>
             <tbody>
                 {% for record in records %}
                 <tr>
-                    <td>{{ record.date }}</td>
+                    <td>{{ record.date|date:"d M Y" }}</td>
                     <td>{{ record.student.user.get_full_name|default:record.student.user.username }}</td>
                     <td>{{ record.student.roll_no }}</td>
                     <td>
@@ -52,10 +71,10 @@
                     </td>
                 </tr>
                 {% empty %}
-                <tr><td colspan="4" class="text-center text-muted">No attendance records yet.</td></tr>
+                <tr><td colspan="4" class="text-center text-muted table-empty">No attendance records yet.</td></tr>
                 {% endfor %}
             </tbody>
         </table>
     </div>
-</div>
+</section>
 {% endblock %}

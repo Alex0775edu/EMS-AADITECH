@@ -2,62 +2,111 @@
 {% block title %}Add Teacher - EMS{% endblock %}
 
 {% block content %}
-<div class="d-flex justify-content-between align-items-center flex-wrap mb-3">
+<section class="section-heading reveal-on-scroll">
     <div>
-        <h2 class="mb-1">Add Teacher</h2>
-        <p class="text-muted mb-0">Create a faculty account.</p>
+        <div class="section-heading__eyebrow">
+            <i class="fa-solid fa-user-plus"></i>
+            Faculty Onboarding
+        </div>
+        <h2 class="section-heading__title">Create a faculty profile with stronger structure</h2>
+        <p class="section-heading__text">Teacher creation is now grouped by identity and teaching details so onboarding feels cleaner and more deliberate.</p>
     </div>
-    <a href="{% url 'teachers:teacher_list' %}" class="btn btn-outline-secondary">Back to List</a>
-</div>
+    <div class="section-heading__actions">
+        <a href="{% url 'teachers:teacher_list' %}" class="btn btn-outline-secondary">
+            <i class="fa-solid fa-arrow-left"></i>
+            Back to List
+        </a>
+    </div>
+</section>
 
-<div class="chart-card p-4">
+<section class="form-panel reveal-on-scroll">
+    <div class="form-panel__header">
+        <div>
+            <div class="form-panel__eyebrow">Faculty Form</div>
+            <h3 class="auth-panel__title">Teacher account setup</h3>
+            <p class="auth-panel__text">Capture personal information and teaching context in a cleaner, more readable workflow.</p>
+        </div>
+        <span class="surface-pill">
+            <i class="fa-solid fa-chalkboard-user"></i>
+            Guided entry
+        </span>
+    </div>
+
     <form method="post" action="{% url 'teachers:teacher_add' %}">
         {% csrf_token %}
-        <div class="row g-3">
-            {% if user.is_superuser %}
-            <div class="col-12">
-                <label class="form-label" for="institutionId">Institution</label>
-                <select class="form-select" id="institutionId" name="institution_id" required>
-                    <option value="">Select institution</option>
-                    {% for institution in institutions %}
-                    <option value="{{ institution.id }}">{{ institution.name }}</option>
-                    {% endfor %}
-                </select>
-            </div>
-            {% endif %}
-            <div class="col-md-6">
-                <label class="form-label" for="firstName">First Name</label>
-                <input class="form-control" id="firstName" name="first_name" required>
-            </div>
-            <div class="col-md-6">
-                <label class="form-label" for="lastName">Last Name</label>
-                <input class="form-control" id="lastName" name="last_name">
-            </div>
-            <div class="col-md-6">
-                <label class="form-label" for="email">Email</label>
-                <input class="form-control" id="email" type="email" name="email" required>
-            </div>
-            <div class="col-md-6">
-                <label class="form-label" for="dob">Date of Birth</label>
-                <input class="form-control" id="dob" type="date" name="date_of_birth">
-            </div>
-            <div class="col-md-6">
-                <label class="form-label" for="instituteId">Institute ID</label>
-                <input class="form-control" id="instituteId" name="institute_id" placeholder="Optional">
-            </div>
-            <div class="col-md-6">
-                <label class="form-label" for="subject">Subject</label>
-                <input class="form-control" id="subject" name="subject" required>
-            </div>
-            <div class="col-md-12">
-                <label class="form-label" for="qualification">Qualification</label>
-                <input class="form-control" id="qualification" name="qualification" required>
+
+        <div class="form-section">
+            <h4 class="form-section__title">Identity</h4>
+            <p class="form-section__meta">Basic information used to establish the teacher account.</p>
+            <div class="row g-3">
+                {% if user.is_superuser %}
+                <div class="col-12">
+                    <label class="form-label" for="institutionId">Institution</label>
+                    <select class="form-select" id="institutionId" name="institution_id" required>
+                        <option value="">Select institution</option>
+                        {% for institution in institutions %}
+                        <option value="{{ institution.id }}">{{ institution.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                {% endif %}
+                <div class="col-md-6">
+                    <div class="form-floating">
+                        <input class="form-control" id="firstName" name="first_name" placeholder="First Name" required>
+                        <label for="firstName">First Name</label>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-floating">
+                        <input class="form-control" id="lastName" name="last_name" placeholder="Last Name">
+                        <label for="lastName">Last Name</label>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-floating">
+                        <input class="form-control" id="email" type="email" name="email" placeholder="Email" required>
+                        <label for="email">Email</label>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label" for="dob">Date of Birth</label>
+                    <input class="form-control" id="dob" type="date" name="date_of_birth">
+                </div>
+                <div class="col-md-6">
+                    <div class="form-floating">
+                        <input class="form-control" id="instituteId" name="institute_id" placeholder="Institute ID">
+                        <label for="instituteId">Institute ID</label>
+                    </div>
+                </div>
             </div>
         </div>
+
+        <div class="form-section">
+            <h4 class="form-section__title">Teaching profile</h4>
+            <p class="form-section__meta">Subject and qualification fields keep staffing data ready for planning and reporting.</p>
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <div class="form-floating">
+                        <input class="form-control" id="subject" name="subject" placeholder="Subject" required>
+                        <label for="subject">Subject</label>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-floating">
+                        <input class="form-control" id="qualification" name="qualification" placeholder="Qualification" required>
+                        <label for="qualification">Qualification</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div class="d-flex justify-content-end gap-2 mt-4">
             <a class="btn btn-outline-secondary" href="{% url 'teachers:teacher_list' %}">Cancel</a>
-            <button type="submit" class="btn btn-primary">Create Teacher</button>
+            <button type="submit" class="btn btn-primary">
+                <i class="fa-solid fa-user-check"></i>
+                Create Teacher
+            </button>
         </div>
     </form>
-</div>
+</section>
 {% endblock %}

@@ -3,17 +3,45 @@
 {% block title %}Teacher Dashboard - EMS Cloud{% endblock %}
 
 {% block content %}
-<div class="d-flex justify-content-between align-items-center mb-3">
+<section class="section-heading reveal-on-scroll">
     <div>
-        <h2 class="mb-1">Teacher Dashboard</h2>
-        <p class="text-muted mb-0">Manage classes, attendance, assignments and results</p>
+        <div class="section-heading__eyebrow">
+            <i class="fa-solid fa-graduation-cap"></i>
+            Teacher Workspace
+        </div>
+        <h2 class="section-heading__title">Run classroom operations with less friction</h2>
+        <p class="section-heading__text">Jump straight into attendance, assignments, exams, and notices from a focused teacher cockpit.</p>
     </div>
-</div>
+</section>
 
-<div class="row g-3">
-    <div class="col-md-6 col-lg-3"><a href="{% url 'dashboard:attendance_page' %}" class="dashboard-kpi d-block text-decoration-none"><small class="text-muted">Attendance</small><h5>Mark Attendance</h5></a></div>
-    <div class="col-md-6 col-lg-3"><a href="{% url 'dashboard:assignments_page' %}" class="dashboard-kpi d-block text-decoration-none"><small class="text-muted">Assignments</small><h5>Upload Tasks</h5></a></div>
-    <div class="col-md-6 col-lg-3"><a href="{% url 'dashboard:exams_page' %}" class="dashboard-kpi d-block text-decoration-none"><small class="text-muted">Exams</small><h5>Exam Planner</h5></a></div>
-    <div class="col-md-6 col-lg-3"><a href="{% url 'dashboard:notices_page' %}" class="dashboard-kpi d-block text-decoration-none"><small class="text-muted">Notices</small><h5>Announcements</h5></a></div>
-</div>
+<section class="quick-links-grid reveal-on-scroll">
+    <a href="{% url 'dashboard:attendance_page' %}" class="quick-action-card">
+        <div class="quick-action-card__icon"><i class="fa-solid fa-calendar-check"></i></div>
+        <div>
+            <h3 class="quick-action-card__title">Attendance</h3>
+            <p class="quick-action-card__text">Mark and review daily attendance without losing context.</p>
+        </div>
+    </a>
+    <a href="{% url 'dashboard:assignments_page' %}" class="quick-action-card">
+        <div class="quick-action-card__icon"><i class="fa-solid fa-file-arrow-up"></i></div>
+        <div>
+            <h3 class="quick-action-card__title">Assignments</h3>
+            <p class="quick-action-card__text">Manage coursework and keep student submissions on track.</p>
+        </div>
+    </a>
+    <a href="{% url 'dashboard:exams_page' %}" class="quick-action-card">
+        <div class="quick-action-card__icon"><i class="fa-solid fa-file-pen"></i></div>
+        <div>
+            <h3 class="quick-action-card__title">Exams</h3>
+            <p class="quick-action-card__text">Coordinate evaluation timelines and upcoming exam planning.</p>
+        </div>
+    </a>
+    <a href="{% url 'dashboard:notices_page' %}" class="quick-action-card">
+        <div class="quick-action-card__icon"><i class="fa-solid fa-bullhorn"></i></div>
+        <div>
+            <h3 class="quick-action-card__title">Announcements</h3>
+            <p class="quick-action-card__text">Keep classes aligned with notices, updates, and reminders.</p>
+        </div>
+    </a>
+</section>
 {% endblock %}

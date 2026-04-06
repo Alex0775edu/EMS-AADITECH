@@ -2,6 +2,7 @@
 {% load static %}
 
 {% block title %}Login - EMS{% endblock %}
+{% block body_class %}auth-page{% endblock %}
 
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'css/auth.css' %}?v={{ STATIC_VERSION }}">
@@ -18,18 +19,14 @@
             <div class="col-lg-6">
                 <div class="auth-hero-card animatable">
                     <p class="auth-kicker">Smart Education Platform</p>
-                    <h1 class="auth-title">Welcome Back</h1>
+                    <h1 class="auth-title">Welcome back to your operations workspace</h1>
                     <p class="auth-subtitle">
-                        Securely manage students, attendance, courses, fees and reports from one professional dashboard.
+                        Securely manage students, attendance, courses, finance, and reports from one modern control center.
                     </p>
                     <div class="auth-feature-list">
-                        <div><i class="fa-solid fa-shield-halved"></i> Institution-level data privacy</div>
-                        <div><i class="fa-solid fa-chart-simple"></i> Real-time analytics and reporting</div>
-                        <div>
-                            <i class="fa-solid fa-robot"></i>
-                            <span class="auth-chatbot-link open-chatbot-link" role="button" tabindex="0">AI assistant</span>
-                            and smart workflows
-                        </div>
+                        <div><i class="fa-solid fa-shield-halved"></i> Institution-level data privacy and role-aware access</div>
+                        <div><i class="fa-solid fa-chart-simple"></i> Real-time dashboards, reporting, and audit visibility</div>
+                        <div><i class="fa-solid fa-robot"></i> Embedded AI assistant for fast workflow guidance</div>
                     </div>
                     <div class="auth-hero-image mt-4">
                         <img src="{% static 'images/main-hero.svg' %}" alt="AaDiTeCh EMS Dashboard Preview" loading="lazy" decoding="async">
@@ -38,11 +35,18 @@
             </div>
 
             <div class="col-lg-6">
-                <div class="card auth-login-card shadow-lg animatable">
-                    <div class="card-body p-4 p-md-5">
-                        <div class="text-center mb-4">
-                            <h4 class="mb-1">Sign In</h4>
-                            <p class="text-muted mb-0">Use Institute ID or Email to continue</p>
+                <div class="card auth-login-card animatable">
+                    <div class="card-body">
+                        <div class="auth-panel__header">
+                            <div>
+                                <div class="auth-panel__eyebrow">Secure Sign In</div>
+                                <h2 class="auth-panel__title">Access your workspace</h2>
+                                <p class="auth-panel__text mb-0">Use your institute ID or email to continue.</p>
+                            </div>
+                            <span class="surface-pill surface-pill--success">
+                                <i class="fa-solid fa-lock"></i>
+                                Trusted access
+                            </span>
                         </div>
 
                         <form method="post" action="{% url 'accounts:login' %}">
@@ -53,22 +57,26 @@
                                 <div class="alert alert-danger">{{ error }}</div>
                             {% endif %}
 
-                            <div class="mb-3">
-                                <label for="identifier" class="form-label">Institute ID or Email</label>
-                                <input type="text" class="form-control" id="identifier" name="identifier" value="{{ identifier|default:'' }}" required autofocus>
-                            </div>
+                            <div class="row g-3">
+                                <div class="col-12">
+                                    <div class="form-floating">
+                                        <input type="text" class="form-control" id="identifier" name="identifier" value="{{ identifier|default:'' }}" placeholder="Institute ID or Email" required autofocus>
+                                        <label for="identifier">Institute ID or Email</label>
+                                    </div>
+                                </div>
 
-                            <div class="mb-3">
-                                <label for="password" class="form-label">Password</label>
-                                <div class="input-group">
-                                    <input type="password" class="form-control" id="password" name="password" required>
-                                    <button type="button" class="btn btn-outline-secondary" id="togglePassword">
-                                        <i class="fa-regular fa-eye"></i>
-                                    </button>
+                                <div class="col-12">
+                                    <label for="password" class="form-label">Password</label>
+                                    <div class="input-group">
+                                        <input type="password" class="form-control" id="password" name="password" required>
+                                        <button type="button" class="btn btn-outline-secondary" id="togglePassword">
+                                            <i class="fa-regular fa-eye"></i>
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
 
-                            <div class="d-flex justify-content-between align-items-center mb-3">
+                            <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mt-3 mb-4">
                                 <div class="form-check m-0">
                                     <input type="checkbox" class="form-check-input" id="remember" name="remember">
                                     <label class="form-check-label" for="remember">Remember me</label>

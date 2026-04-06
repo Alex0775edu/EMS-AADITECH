@@ -1,6 +1,7 @@
 (() => {
   const panel = document.querySelector(".aaditech-chatbot__panel");
   const toggle = document.querySelector(".aaditech-chatbot__toggle");
+  const closeBtn = document.querySelector(".aaditech-chatbot__close");
   const body = document.querySelector(".aaditech-chatbot__body");
   const input = document.querySelector(".aaditech-chatbot__input");
   const sendBtn = document.querySelector(".aaditech-chatbot__send");
@@ -42,6 +43,14 @@
     sendBtn.textContent = isPending ? "..." : "Send";
   };
 
+  const setOpen = (isOpen) => {
+    panel.classList.toggle("is-open", isOpen);
+    toggle.setAttribute("aria-expanded", isOpen ? "true" : "false");
+    if (isOpen) {
+      input.focus();
+    }
+  };
+
   const sendMessage = async () => {
     const text = input.value.trim();
     if (!text) return;
@@ -76,13 +85,25 @@
   };
 
   toggle.addEventListener("click", () => {
-    panel.classList.toggle("is-open");
+    setOpen(!panel.classList.contains("is-open"));
   });
+
+  if (closeBtn) {
+    closeBtn.addEventListener("click", () => {
+      setOpen(false);
+    });
+  }
 
   sendBtn.addEventListener("click", sendMessage);
   input.addEventListener("keydown", (event) => {
     if (event.key === "Enter") {
       sendMessage();
+    }
+  });
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && panel.classList.contains("is-open")) {
+      setOpen(false);
     }
   });
 

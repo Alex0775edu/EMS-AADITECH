@@ -1,51 +1,154 @@
 {% extends 'base.html' %}
-{% block title %}About{% endblock %}
+{% load static %}
+{% block title %}About AaDiTeCh EMS{% endblock %}
 {% block content %}
-<div class="row g-4">
-    <div class="col-lg-8">
-        <div class="chart-card p-4">
-            <p class="section-kicker">About</p>
-            <h2 class="section-title">AaDiTeCh EMS</h2>
-            <p class="section-subtitle">A focused platform for managing students, attendance, exams, fees, and performance with clarity and speed.</p>
-            <div class="row g-3 mt-2">
-                <div class="col-md-4">
-                    <div class="dashboard-kpi">
-                        <small class="text-muted">Institutes</small>
-                        <h3 class="mb-0">85+</h3>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="dashboard-kpi">
-                        <small class="text-muted">Students</small>
-                        <h3 class="mb-0">12k+</h3>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="dashboard-kpi">
-                        <small class="text-muted">Modules</small>
-                        <h3 class="mb-0">10+</h3>
-                    </div>
+<section class="section-heading reveal-on-scroll">
+    <div>
+        <div class="section-heading__eyebrow">
+            <i class="fa-solid fa-circle-info"></i>
+            About AaDiTeCh EMS
+        </div>
+        <h2 class="section-heading__title">A real education operations platform built by AaDiTeCh</h2>
+        <p class="section-heading__text">
+            AaDiTeCh EMS is designed to help institutions manage student records, attendance, exams, fees, notices, analytics, and support workflows from one connected system.
+        </p>
+    </div>
+    <div class="section-heading__actions">
+        <a href="{% url 'documentation' %}" class="btn btn-outline-primary">
+            <i class="fa-solid fa-book"></i>
+            Documentation
+        </a>
+        <a href="{% url 'support' %}" class="btn btn-primary">
+            <i class="fa-solid fa-headset"></i>
+            Contact Support
+        </a>
+    </div>
+</section>
+
+<section class="metric-grid mb-4 reveal-on-scroll">
+    <article class="metric-card">
+        <div class="metric-card__header">
+            <div class="metric-card__label">Institutions In Data</div>
+            <div class="metric-card__icon"><i class="fa-solid fa-school"></i></div>
+        </div>
+        <h3 class="metric-card__value" data-counter="{{ institutes_supported }}">{{ institutes_supported }}</h3>
+        <div class="metric-card__meta">Institutions currently present in the EMS database</div>
+    </article>
+    <article class="metric-card">
+        <div class="metric-card__header">
+            <div class="metric-card__label">Students In Data</div>
+            <div class="metric-card__icon"><i class="fa-solid fa-user-graduate"></i></div>
+        </div>
+        <h3 class="metric-card__value" data-counter="{{ total_students }}">{{ total_students }}</h3>
+        <div class="metric-card__meta">Student profiles available in the current system data</div>
+    </article>
+    <article class="metric-card">
+        <div class="metric-card__header">
+            <div class="metric-card__label">Teachers In Data</div>
+            <div class="metric-card__icon"><i class="fa-solid fa-chalkboard-user"></i></div>
+        </div>
+        <h3 class="metric-card__value" data-counter="{{ total_teachers }}">{{ total_teachers }}</h3>
+        <div class="metric-card__meta">Teacher records currently managed through EMS</div>
+    </article>
+    <article class="metric-card">
+        <div class="metric-card__header">
+            <div class="metric-card__label">Feature Apps</div>
+            <div class="metric-card__icon"><i class="fa-solid fa-layer-group"></i></div>
+        </div>
+        <h3 class="metric-card__value">{{ platform_module_count }}</h3>
+        <div class="metric-card__meta">Feature apps currently included in the project architecture</div>
+    </article>
+</section>
+
+<section class="split-layout reveal-on-scroll">
+    <article class="section-card">
+        <div class="section-card__header">
+            <div>
+                <h3 class="section-card__title">What the platform actually includes</h3>
+                <p class="section-card__meta">These workflows are based on the live modules and routes present in this EMS project.</p>
+            </div>
+            <span class="surface-pill">
+                <i class="fa-solid fa-bolt"></i>
+                Real platform scope
+            </span>
+        </div>
+        <div class="collection-list">
+            <div class="collection-item">
+                <div class="list-icon"><i class="fa-solid fa-user-shield"></i></div>
+                <div class="collection-item__body">
+                    <h4 class="collection-item__title">Role-based authentication</h4>
+                    <p class="collection-item__text">Supports `ADMIN`, `TEACHER`, `STUDENT`, and `INSTITUTE` account flows with scoped access.</p>
                 </div>
             </div>
-            <div class="mt-3">
-                <h6>Our Focus</h6>
-                <ul class="text-muted mb-0">
-                    <li>Streamline daily campus operations.</li>
-                    <li>Improve transparency for students and staff.</li>
-                    <li>Deliver reliable reports for leadership.</li>
-                </ul>
+            <div class="collection-item">
+                <div class="list-icon"><i class="fa-solid fa-building-columns"></i></div>
+                <div class="collection-item__body">
+                    <h4 class="collection-item__title">Institute-wise data management</h4>
+                    <p class="collection-item__text">Student, teacher, fee, attendance, and reporting data are scoped per institution for non-superusers.</p>
+                </div>
+            </div>
+            <div class="collection-item">
+                <div class="list-icon"><i class="fa-solid fa-calendar-check"></i></div>
+                <div class="collection-item__body">
+                    <h4 class="collection-item__title">Academic operations</h4>
+                    <p class="collection-item__text">Attendance, exams, results, assignments, notices, materials, and reporting workflows are built into the platform.</p>
+                </div>
+            </div>
+            <div class="collection-item">
+                <div class="list-icon"><i class="fa-solid fa-robot"></i></div>
+                <div class="collection-item__body">
+                    <h4 class="collection-item__title">AI-assisted support</h4>
+                    <p class="collection-item__text">AaDiTeCh AI assistant is available for website help, login guidance, and EMS workflow support.</p>
+                </div>
             </div>
         </div>
-    </div>
-    <div class="col-lg-4">
-        <div class="chart-card p-4 h-100">
-            <h5 class="mb-2">Connect with us</h5>
-            <p class="text-muted mb-3">We love to support growing institutions.</p>
-            <div class="d-grid gap-2">
-                <a href="mailto:aaditya0775@gmail.com" class="btn btn-primary">Email AaDiTeCh</a>
-                <a href="https://wa.me/919023208267" class="btn btn-outline-success" target="_blank" rel="noopener noreferrer">WhatsApp Support</a>
+    </article>
+
+    <article class="section-card">
+        <div class="section-card__header">
+            <div>
+                <h3 class="section-card__title">Company and support details</h3>
+                <p class="section-card__meta">Public contact details below are the same ones already used across the site footer and support pages.</p>
+            </div>
+            <span class="surface-pill surface-pill--success">
+                <i class="fa-solid fa-circle-check"></i>
+                Verified site data
+            </span>
+        </div>
+        <div class="collection-list">
+            <div class="collection-item">
+                <div class="list-icon"><i class="fa-solid fa-location-dot"></i></div>
+                <div class="collection-item__body">
+                    <h4 class="collection-item__title">Location</h4>
+                    <p class="collection-item__text">Ballia, Uttar Pradesh, India</p>
+                </div>
+            </div>
+            <div class="collection-item">
+                <div class="list-icon"><i class="fa-solid fa-clock"></i></div>
+                <div class="collection-item__body">
+                    <h4 class="collection-item__title">Support hours</h4>
+                    <p class="collection-item__text">9:00 AM to 6:00 PM IST</p>
+                </div>
+            </div>
+            <div class="collection-item">
+                <div class="list-icon"><i class="fa-solid fa-envelope"></i></div>
+                <div class="collection-item__body">
+                    <h4 class="collection-item__title">Email</h4>
+                    <p class="collection-item__text">aaditya0775@gmail.com</p>
+                </div>
+            </div>
+            <div class="collection-item">
+                <div class="list-icon"><i class="fa-brands fa-whatsapp"></i></div>
+                <div class="collection-item__body">
+                    <h4 class="collection-item__title">WhatsApp</h4>
+                    <p class="collection-item__text">+91 9023208267</p>
+                </div>
             </div>
         </div>
-    </div>
-</div>
+        <div class="d-grid gap-2 mt-4">
+            <a href="mailto:aaditya0775@gmail.com" class="btn btn-primary">Email AaDiTeCh</a>
+            <a href="https://wa.me/919023208267" class="btn btn-outline-success" target="_blank" rel="noopener noreferrer">WhatsApp Support</a>
+        </div>
+    </article>
+</section>
 {% endblock %}

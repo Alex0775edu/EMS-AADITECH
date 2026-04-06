@@ -5,19 +5,95 @@ document.addEventListener('DOMContentLoaded', () => {
     const performanceChartEl = document.getElementById('performanceTrendChart');
     if (attendanceChartEl && performanceChartEl && window.Chart && window.dashboardChartPayload) {
         const data = window.dashboardChartPayload;
+        const rootStyles = getComputedStyle(document.documentElement);
+        const primary = rootStyles.getPropertyValue('--primary').trim() || '#2563eb';
+        const accent = rootStyles.getPropertyValue('--accent').trim() || '#14b8a6';
+        const border = rootStyles.getPropertyValue('--border').trim() || '#d9e2ef';
+        const textSubtle = rootStyles.getPropertyValue('--text-subtle').trim() || '#52637a';
+        const surface = rootStyles.getPropertyValue('--card').trim() || '#ffffff';
+
+        Chart.defaults.color = textSubtle;
+        Chart.defaults.font.family = "'Inter', 'Segoe UI', sans-serif";
+        Chart.defaults.borderColor = border;
+
         new Chart(attendanceChartEl, {
             type: 'line',
             data: {
                 labels: data.labels,
-                datasets: [{ label: 'Attendance %', data: data.attendance, borderColor: '#06b6d4', tension: 0.35 }],
+                datasets: [{
+                    label: 'Attendance %',
+                    data: data.attendance,
+                    borderColor: primary,
+                    backgroundColor: 'rgba(37, 99, 235, 0.12)',
+                    fill: true,
+                    pointBackgroundColor: surface,
+                    pointBorderColor: primary,
+                    pointRadius: 4,
+                    pointHoverRadius: 5,
+                    pointBorderWidth: 2,
+                    borderWidth: 3,
+                    tension: 0.4
+                }],
             },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+                scales: {
+                    x: {
+                        grid: {
+                            display: false
+                        }
+                    },
+                    y: {
+                        beginAtZero: true,
+                        suggestedMax: 100,
+                        ticks: {
+                            callback: (value) => `${value}%`
+                        }
+                    }
+                }
+            }
         });
         new Chart(performanceChartEl, {
             type: 'bar',
             data: {
                 labels: data.labels,
-                datasets: [{ label: 'Performance %', data: data.performance, backgroundColor: '#4f46e5' }],
+                datasets: [{
+                    label: 'Performance %',
+                    data: data.performance,
+                    backgroundColor: [primary, accent, primary, accent, primary, accent],
+                    borderRadius: 14,
+                    maxBarThickness: 34
+                }],
             },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+                scales: {
+                    x: {
+                        grid: {
+                            display: false
+                        }
+                    },
+                    y: {
+                        beginAtZero: true,
+                        suggestedMax: 100,
+                        ticks: {
+                            callback: (value) => `${value}%`
+                        }
+                    }
+                }
+            }
         });
     }
 
